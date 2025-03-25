@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Mainframe DBA - Chapter 7: Automatisering en scripting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <style>
+        /* General styles */
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Mainframe DBA</h1>
+            <p>Chapter 7: Automatisering en scripting</p>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#jcl_scripting">Schrijven en debuggen van JCL-scripts</a></li>
+                <li><a href="#routine_tasks">Automatiseren van routinetaken</a></li>
+                <li><a href="#db2_utilities">Integreren van DB2-utilities in geautomatiseerde workflows</a></li>
+            </ul>
+        </nav>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>
+                Dit hoofdstuk behandelt de competenties die nodig zijn voor het automatiseren van databasebeheertaken met JCL en andere tools.  Automatisering is cruciaal voor het efficiënt beheren van DB2 Mainframe-systemen, het verminderen van handmatige fouten en het vrijmaken van DBA-tijd voor meer strategische taken.
+            </p>
+            <p>
+                We behandelen het schrijven en debuggen van JCL-scripts, het automatiseren van routinetaken en het integreren van DB2-utilities in geautomatiseerde workflows.
+            </p>
+        </section>
+
+        <section id="jcl_scripting">
+            <h2>Schrijven en debuggen van JCL-scripts</h2>
+            <p>
+                JCL (Job Control Language) is een scripttaal die wordt gebruikt op z/OS-systemen om batch jobs te definiëren.  DB2 DBA's gebruiken JCL om taken te automatiseren zoals backups, recovery, en utility-uitvoering.
+            </p>
+
+            <h3>JCL basisprincipes</h3>
+            <p>
+                Een JCL-script bestaat uit een reeks statements die de stappen definiëren die het systeem moet uitvoeren.  De belangrijkste statements zijn:
+            </p>
+            <ul>
+                <li><strong>JOB statement:</strong>  Identificeert de job en geeft algemene parameters op.</li>
+                <li><strong>EXEC statement:</strong>  Specificeert het programma of de procedure die moet worden uitgevoerd.</li>
+                <li><strong>DD statements:</strong>  Definiëren de datasets (bestanden) die door de job worden gebruikt.</li>
+            </ul>
+
+            <h3>Voorbeeld van een JCL-script voor een DB2 backup</h3>
+            <div class="code-block">
+                <pre><code>
+//BACKUPDB2 JOB (ACCOUNT),'DB2 BACKUP',CLASS=A
+//*
+//STEP1    EXEC PGM=DSNUTILB,PARM=('ssid')  <-- ssid is het DB2 subsystem ID
+//SYSPRINT DD  SYSOUT=*
+//SYSIN    DD  *
+    COPY TABLESPACE database.tablespace
+           FULL YES
+           COPYDDN(COPY1)
+    ;
+//COPY1    DD  DSN='backup.dataset.name',
+//             DISP=(NEW,CATLG,DELETE),
+//             UNIT=SYSDA,
+//             SPACE=(CYL,(10,5))
+//SYSUDUMP DD  SYSOUT=*
+                </code></pre>
+            </div>
+            <p>
+                Dit script maakt een full image copy backup van een tablespace.
+            </p>
+
+            <h3>JCL debugging</h3>
+            <p>
+                Het debuggen van JCL omvat het identificeren en oplossen van fouten in de script.  Veel voorkomende fouten zijn syntaxisfouten, onjuiste datasetdefinities en logische fouten.
+            </p>
+            <ul>
+                <li><strong>SYSPRINT:</strong>  De SYSPRINT DD statement definieert een dataset waarin het systeem berichten en foutmeldingen schrijft.  Controleer deze output zorgvuldig om fouten op te sporen.</li>
+                <li><strong>SYSUDUMP:</strong>  De SYSUDUMP DD statement genereert een dump van het geheugen als er een abnormale beëindiging (abend) optreedt.  Dit kan nuttig zijn voor het diagnosticeren van complexere problemen.</li>
+                <li><strong>JCL-editors en tools:</strong>  Gebruik gespecialiseerde editors en tools om JCL-scripts te schrijven en te valideren.</li>
+            </ul>
+        </section>
+
+        <section id="routine_tasks">
+            <h2>Automatiseren van routinetaken</h2>
+            <p>
+                Automatisering kan worden gebruikt om veelvoorkomende DB2 DBA-taken te stroomlijnen, zoals database backups, het verzamelen van statistieken, en het controleren van de database integriteit.  Dit vermindert de kans op menselijke fouten en zorgt ervoor dat taken consistent en op tijd worden uitgevoerd.
+            </p>
+
+            <h3>Taken die kunnen worden geautomatiseerd</h3>
+            <ul>
+                <li><strong>Database backups:</strong>  Plan regelmatige backups van databases en logbestanden.</li>
+                <li><strong>RUNSTATS:</strong>  Verzamel statistieken over tabellen en indexen om de query performance te optimaliseren.</li>
+                <li><strong>REORG:</strong>  Herorganiseer tabellen en indexen om de performance te verbeteren na significante datawijzigingen.</li>
+                <li><strong>DBCC (Database Consistency Check):</strong>  Controleer de fysieke en logische integriteit van de database.</li>
+                <li><strong>Ruimtebeheer:</strong>  Monitor de database ruimte en breid datasets uit indien nodig.</li>
+                <li><strong>Rapportage:</strong>  Genereer periodieke rapporten over database status, performance en capaciteitsgebruik.</li>
+            </ul>
+
+            <h3>Scheduling tools</h3>
+            <p>
+                z/OS biedt verschillende tools voor het plannen van geautomatiseerde taken:
+            </p>
+            <ul>
+                <li><strong>z/OS Job Scheduler (JES2 of JES3):</strong>  Plant en beheert de uitvoering van batch jobs.</li>
+                <li><strong>IBM Workload Scheduler (voorheen Tivoli Workload Scheduler):</strong>  Een uitgebreide tool voor het plannen en beheren van workloads op verschillende platforms.</li>
+                <li><strong>CRON:</strong>  Een standaard Unix/Linux tool die ook beschikbaar is op z/OS via z/OS UNIX.</li>
+            </ul>
+
+            <h3>Voorbeeld van het automatiseren van een DB2 backup met JCL en Job Scheduler</h3>
+            <p>
+                1. Schrijf een JCL-script (zoals het voorbeeld in de vorige sectie) om de DB2 backup uit te voeren.
+            </p>
+            <p>
+                2. Definieer een job in de z/OS Job Scheduler om het JCL-script op een bepaald schema uit te voeren (bijvoorbeeld dagelijks om 02:00 uur).
+            </p>
+            <div class="terminal">
+                <pre><code>
+//DAILYBKUP JOB (ACCOUNT),'DAILY DB2 BACKUP',CLASS=A
+//STEP1    EXEC PGM=IEFBR14  <-- Leeg dataset aanmaken
+//DD1      DD DSN=DSN.DAILYBKUP.CNTL(DAILYBKUP),
+//             DISP=(NEW,CATLG,DELETE),
+//             UNIT=SYSDA,
+//             SPACE=(TRK,(5,5,1))
+//STEP2    EXEC PGM=IKJEFT01  <-- TSO commando processor starten
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+  ALLOC DA(DSN.DAILYBKUP.CNTL(DAILYBKUP)) SHR
+  EDIT
+I 00100 //DAILYBKUP JOB (ACCOUNT),'DAILY DB2 BACKUP',CLASS=A
+I 00200 //*
+I 00300 //STEP1    EXEC PGM=DSNUTILB,PARM=('ssid')
+I 00400 //SYSPRINT DD  SYSOUT=*
+I 00500 //SYSIN    DD  *
+I 00600     COPY TABLESPACE database.tablespace
+I 00700            FULL YES
+I 00800            COPYDDN(COPY1)
+I 00900     ;
+I 01000 //COPY1    DD  DSN='backup.dataset.name',
+I 01100 //             DISP=(NEW,CATLG,DELETE),
+I 01200 //             UNIT=SYSDA,
+I 01300 //             SPACE=(CYL,(10,5))
+I 01400 //SYSUDUMP DD  SYSOUT=*
+SAVE
+END
+EXIT
+                </code></pre>
+            </div>
+            <p>
+               3. Gebruik de Job Scheduler om de Job te starten.
+            </p>
+        </section>
+
+        <section id="db2_utilities">
+            <h2>Integreren van DB2-utilities in geautomatiseerde workflows</h2>
+            <p>
+                DB2 biedt een set van utilities voor het uitvoeren van verschillende databasebeheertaken.  Deze utilities kunnen worden geïntegreerd in geautomatiseerde workflows om taken efficiënter en consistenter uit te voeren.
+            </p>
+
+            <h3>Veelgebruikte DB2-utilities</h3>
+            <ul>
+                <li><strong>COPY:</strong>  Maakt image copies (backups) van tablespaces en tabellen.</li>
+                <li><strong>RECOVER:</strong>  Herstelt tablespaces en tabellen van image copies.</li>
+                <li><strong>RUNSTATS:</strong>  Verzamelt statistieken over tabellen en indexen.</li>
+                <li><strong>REORG:</strong>  Herorganiseert tabellen en indexen.</li>
+                <li><strong>LOAD:</strong>  Laadt data in een tabel.</li>
+                <li><strong>UNLOAD:</strong>  Haalt data uit een tabel.</li>
+                <li><strong>CHECK:</strong> Controleert de consistentie van data en indexen.</li>
+            </ul>
+
+            <h3>Integratiemethoden</h3>
+            <p>
+                DB2-utilities kunnen op verschillende manieren worden geïntegreerd in geautomatiseerde workflows:
+            </p>
+            <ul>
+                <li><strong>JCL:</strong>  DB2-utilities kunnen worden aangeroepen vanuit JCL-scripts, zoals getoond in de voorbeelden hierboven.</li>
+                <li><strong>Stored procedures:</strong>  DB2-utilities kunnen worden aangeroepen vanuit stored procedures.</li>
+                <li><strong>REXX-scripts:</strong>  REXX is een scripttaal die kan worden gebruikt om DB2-utilities aan te roepen en hun output te verwerken.</li>
+                <li><strong>Automation tools:</strong>  Gebruik tools zoals IBM Z Automation Utilities om DB2-taken te automatiseren.</li>
+            </ul>
+
+            <h3>Voorbeeld van het integreren van RUNSTATS in een geautomatiseerde workflow</h3>
+            <p>
+                Dit voorbeeld illustreert hoe u de RUNSTATS utility kunt integreren in een JCL-script dat periodiek wordt uitgevoerd om statistieken over een tabel te verzamelen.
+            </p>
+            <div class="code-block">
+                <pre><code>
+//RUNSTATSJOB JOB (ACCOUNT),'RUNSTATS JOB',CLASS=A
+//*
+//STEP1    EXEC PGM=DSNUTILB,PARM=('ssid')
+//SYSPRINT DD  SYSOUT=*
+//SYSIN    DD  *
+    RUNSTATS TABLESPACE database.tablespace
+             TABLE(tabelnaam)
+             INDEX(ALL)
+             ;
+//SYSUDUMP DD  SYSOUT=*
+                </code></pre>
+            </div>
+            <p>
+                Dit JCL-script roept de DSNUTILB utility aan om de RUNSTATS utility uit te voeren voor de opgegeven tabel.  Het kan worden gepland om regelmatig te worden uitgevoerd met een z/OS Job Scheduler.
+            </p>
+        </section>
+    </div>
+</body>
+
+<footer>
+    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+</footer>
+</html>

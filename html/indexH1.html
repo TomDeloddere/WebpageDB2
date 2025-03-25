@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Mainframe DBA - Chapter 1: DB2 Fundamentals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <style>
+        /* General styles - Mainframe inspired but optimized for learning */
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Mainframe DBA</h1>
+            <p>Chapter 1: DB2 Fundamentals</p>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#relational_database_concepts">Understanding Relational Database Concepts</a></li>
+                <li><a href="#db2_architecture">DB2 Components and Structures</a></li>
+                <li><a href="#zos_integration">DB2 and z/OS Integration</a></li>
+                <li><a href="#data_storage">Data Storage</a></li>
+                <li><a href="#buffer_pools">Buffer Pools</a></li>
+                <li><a href="#logging">Logging</a></li>
+                <li><a href="#security">Security</a></li>
+            </ul>
+        </nav>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>
+                Welcome to the first chapter of our deep dive into DB2 Mainframe Database Administration. In this chapter, we will lay the groundwork for understanding DB2, its core concepts, its architecture, and its tight integration with the z/OS operating system.  This foundational knowledge is crucial for anyone aspiring to become a proficient DB2 DBA.
+            </p>
+            <p>
+                This chapter covers the following key areas:
+            </p>
+            <ul>
+                <li>Understanding Relational Database Concepts</li>
+                <li>DB2 Components and Structures</li>
+                <li>DB2 and z/OS Integration</li>
+                <li>Data Storage</li>
+                <li>Buffer Pools</li>
+                <li>Logging</li>
+                 <li>Security</li>
+            </ul>
+        </section>
+
+        <section id="relational_database_concepts">
+            <h2>Understanding Relational Database Concepts</h2>
+            <p>
+                DB2, at its heart, is a Relational Database Management System (RDBMS).  The relational model, introduced by Edgar F. Codd at IBM, provides a structured way to represent and manage data using tables.
+            </p>
+            <p class="important">
+                Key takeaway: The relational model simplifies data management.
+            </p>
+
+            <h3>Core Relational Database Terms</h3>
+            <p>
+                Here's a breakdown of essential terminology:
+            </p>
+            <ul>
+                <li><strong>Table:</strong> A structured collection of related data (rows and columns).</li>
+                <li><strong>Row (Record, Tuple):</strong> A single instance of data in a table.</li>
+                <li><strong>Column (Attribute):</strong> A characteristic of the data in a table.</li>
+                <li><strong>Primary Key:</strong> A unique identifier for each row in a table.
+                    <p class="important">
+                        Red Flag:  A table *must* have a primary key.
+                    </p>
+                </li>
+                <li><strong>Foreign Key:</strong>  A link between tables, referencing the primary key of another table.</li>
+                <li><strong>Schema:</strong>  A logical container for database objects.</li>
+            </ul>
+
+            <h3>Why the Relational Model?</h3>
+            <p>
+                The relational model offers several advantages:
+            </p>
+            <ul>
+                <li><strong>Simplicity:</strong> Easy to understand and use.</li>
+                <li><strong>Data Integrity:</strong> Ensures data accuracy and consistency.</li>
+                <li><strong>Data Independence:</strong> Isolates applications from storage changes.</li>
+                <li><strong>Flexibility:</strong>  SQL provides a powerful way to manage data.</li>
+                <li><strong>Scalability:</strong>  Handles large amounts of data and users.</li>
+            </ul>
+        </section>
+
+        <section id="db2_architecture">
+            <h2>DB2 Components and Structures</h2>
+            <p>
+                Understanding DB2's core components is essential for effective administration.
+            </p>
+            <p class="important">
+                 Red Alert: Incorrect component configuration impacts DB2 performance.
+            </p>
+
+            <h3>Essential DB2 Components</h3>
+            <ul>
+                <li><strong>System Services Address Space (SSAS):</strong>  The control center for a DB2 subsystem.
+                    <p class="note">
+                        Fun Fact:  The SSAS manages DB2 startup and shutdown.
+                    </p>
+                </li>
+                <li><strong>Database Services Address Space (DSAS):</strong>  Handles data access and contains buffer pools.
+                    <p class="important">
+                         Key point:  DSAS tuning is critical for performance.
+                    </p>
+                </li>
+                <li><strong>Instrumentation Facility Component (IFC):</strong>  DB2's monitoring system.
+                     <p class="note">
+                        Fun Fact: The IFC generates SMF records.
+                    </p>
+                </li>
+                <li><strong>Catalog:</strong>  Stores metadata about the database structure.
+                     <p class="important">
+                        Red Alert:  Catalog damage can cripple DB2.
+                    </p>
+                </li>
+                <li><strong>Directory:</strong>  Contains internal control information for DB2.</li>
+                <li><strong>Log Manager:</strong>  Ensures transaction integrity and enables recovery.
+                     <p class="important">
+                        Key point:  Proper log management is vital.
+                     </p>
+                </li>
+            </ul>
+
+            <h3>DB2 Subsystems: Single vs. Data Sharing</h3>
+            <p>
+                DB2 can be deployed in two configurations:
+            </p>
+            <ul>
+                <li><strong>Single Subsystem:</strong>  All components on a single z/OS system.</li>
+                <li><strong>Data Sharing:</strong>  Multiple subsystems on different z/OS systems share data for high availability and scalability.
+                     <p class="note">
+                        Fun Fact:  Data sharing uses Group Buffer Pools (GBPs).
+                     </p>
+                </li>
+            </ul>
+        </section>
+
+        <section id="zos_integration">
+            <h2>DB2 and z/OS Integration</h2>
+            <p>
+                DB2 leverages z/OS features for reliability, scalability, and performance.
+            </p>
+            <p class="important">
+                 Red Alert:  DBAs need z/OS knowledge.
+            </p>
+
+            <h3>Key Aspects of z/OS Integration</h3>
+            <ul>
+                <li><strong>Workload Manager (WLM):</strong>  Manages resource allocation for DB2.
+                     <p class="note">
+                        Think of WLM as a traffic controller.
+                     </p>
+                </li>
+                <li><strong>System Management Facilities (SMF):</strong>  Collects DB2 performance data.</li>
+                <li><strong>Resource Recovery Services (RRS):</strong>  Coordinates transaction recovery.
+                     <p class="note">
+                         Fun Fact: RRS uses two-phase commit.
+                     </p>
+                </li>
+                <li><strong>Virtual Storage Access Method (VSAM):</strong>  DB2 uses VSAM for data storage.</li>
+                <li><strong>System Authorization Facility (SAF):</strong>  Controls access to DB2 resources.
+                     <p class="important">
+                        Red Alert:  Proper security is crucial.
+                     </p>
+                </li>
+            </ul>
+        </section>
+
+        <section id="data_storage">
+            <h2>Data Storage</h2>
+            <p>
+                DB2 organizes data in a hierarchy.
+            </p>
+            <h3>Tablespaces</h3>
+            <ul>
+                 <li><strong>Tablespace:</strong> Logical storage area for tables.</li>
+                 <li><strong>Partitioning:</strong> Dividing tablespaces for large tables.</li>
+                 <li><strong>Segmenting:</strong> Dividing space into segments for variable row sizes.</li>
+            </ul>
+            <h3>Pages and Extents</h3>
+            <ul>
+                <li><strong>Page:</strong> Basic unit of data storage.</li>
+                <li><strong>Extent:</strong> Contiguous group of pages.</li>
+            </ul>
+        </section>
+
+        <section id="buffer_pools">
+          <h2>Buffer Pools</h2>
+          <p>
+            Buffer pools are memory areas that cache frequently accessed data, reducing I/O.
+          </p>
+          <h3>Buffer Pool Management</h3>
+          <ul>
+            <li><strong>LRU Algorithm:</strong>  Manages buffer pool contents.</li>
+            <li><strong>Multiple Buffer Pools:</strong>  Segregates data for better control.</li>
+          </ul>
+        </section>
+
+        <section id="logging">
+            <h2>Logging</h2>
+            <p>
+                DB2 logging ensures data recoverability.
+            </p>
+            <h3>Log Types</h3>
+            <ul>
+                <li><strong>Active Logs:</strong>  For current transactions.</li>
+                <li><strong>Archive Logs:</strong>  Historical record of changes.</li>
+            </ul>
+            <h3>Log Management</h3>
+            <ul>
+                <li><strong>Log Sequence Number (LSN):</strong>  Indicates change order.</li>
+                <li><strong>Checkpoints:</strong>  Write modified data to disk.</li>
+            </ul>
+        </section>
+
+        <section id="security">
+            <h2>Security</h2>
+            <p>
+               DB2 provides features to protect data.
+            </p>
+            <h3>Security Mechanisms</h3>
+            <ul>
+                <li><strong>Authentication:</strong>  Verifies user identity.</li>
+                <li><strong>Authorization:</strong>  Grants privileges.</li>
+                 <li><strong>z/OS Security Products:</strong>  Integrates with RACF, ACF2, Top Secret.</li>
+                <li><strong>GRANT and REVOKE:</strong>  SQL statements for privileges.</li>
+                <li><strong>Roles:</strong> Collections of privileges.</li>
+                <li><strong>Trusted Contexts:</strong> Secure connections.</li>
+                <li><strong>Data Encryption:</strong> Protects data at rest and in transit.</li>
+            </ul>
+        </section>
+    </div>
+</body>
+
+<footer>
+    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+</footer>
+</html>

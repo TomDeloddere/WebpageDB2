@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Mainframe DBA - Chapter 4: Performance-optimalisatie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <style>
+        /* General styles */
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Mainframe DBA</h1>
+            <p>Chapter 4: Performance Optimization</p>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#runstats">Running RUNSTATS and Interpreting Results</a></li>
+                <li><a href="#performance_bottlenecks">Identifying and Resolving Performance Bottlenecks</a></li>
+                <li><a href="#query_optimization">Optimizing Query Execution</a></li>
+            </ul>
+        </nav>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>
+                This chapter focuses on the critical skill of performance optimization in DB2 Mainframe environments.  DB2 DBAs must be proficient in monitoring, analyzing, and optimizing database performance to ensure applications run efficiently and meet service level agreements.
+            </p>
+            <p>
+                We'll cover how to use the <code>RUNSTATS</code> utility and interpret its output, identify and resolve common performance bottlenecks, and optimize the execution of SQL queries.
+            </p>
+        </section>
+
+        <section id="runstats">
+            <h2>Running RUNSTATS and Interpreting Results</h2>
+            <p>
+                The <code>RUNSTATS</code> utility is essential for collecting statistics about the data in your DB2 tables and indexes.  These statistics are used by the DB2 optimizer to determine the most efficient way to execute SQL queries.
+            </p>
+
+            <h3>Importance of RUNSTATS</h3>
+            <ul>
+                <li><strong>Accurate Access Paths:</strong>  The DB2 optimizer relies on accurate statistics to choose the best access path for a query.  Outdated or missing statistics can lead to poor query performance.</li>
+                <li><strong>Performance Monitoring:</strong>  Changes in statistics over time can indicate changes in data volume or distribution, which may require adjustments to database design or application code.</li>
+            </ul>
+
+            <h3>Running RUNSTATS</h3>
+            <p>
+                The <code>RUNSTATS</code> utility can be executed using the <code>RUNSTATS TABLESPACE</code> or <code>RUNSTATS TABLE</code> command.  You can specify various options to control the level of detail of the statistics collected.
+            </p>
+            <div class="code-block">
+                <pre><code>
+RUNSTATS TABLESPACE database_name.tablespace_name
+    TABLE(ALL)
+    INDEX(ALL)
+    HISTORY(ALL);
+                </code></pre>
+            </div>
+            <p>
+                This example collects statistics for all tables and indexes in the specified tablespace, and also collects historical statistics.
+            </p>
+
+            <h3>Interpreting RUNSTATS Output</h3>
+            <p>
+                The output of <code>RUNSTATS</code> provides valuable information about the characteristics of your data.  Key statistics to examine include:
+            </p>
+            <ul>
+                <li><strong>CARD:</strong>  Cardinality (number of rows) in the table.</li>
+                <li><strong>NPAGES:</strong>  Number of pages used by the table.</li>
+                <li><strong>FAROFFPOS:</strong>  A measure of how far the data is from its optimal location.</li>
+                <li><strong>COLCARD:</strong>  Cardinality of distinct values in a column.</li>
+                <li><strong>HIGH2KEY/LOW2KEY:</strong>  The second highest and lowest values in a column.</li>
+            </ul>
+            <p class="important">
+                Red Flag:  Significant changes in these statistics may indicate a need to re-evaluate your database design or query strategy.
+            </p>
+            <p class="note">
+                Fun Fact:  You can use the <code>SYSSTAT</code> catalog views to query the statistics collected by <code>RUNSTATS</code>.
+            </p>
+        </section>
+
+        <section id="performance_bottlenecks">
+            <h2>Identifying and Resolving Performance Bottlenecks</h2>
+            <p>
+                DB2 performance problems can arise from various sources.  It's crucial to have a systematic approach to identify and resolve these bottlenecks.
+            </p>
+
+            <h3>Common Performance Bottlenecks</h3>
+            <ul>
+                <li><strong>Poorly Performing SQL:</strong>  Inefficiently written SQL queries are a frequent cause of performance problems.</li>
+                <li><strong>Lack of Proper Indexes:</strong>  Missing or inadequate indexes can force DB2 to perform full table scans, which are very expensive.</li>
+                <li><strong>Buffer Pool Issues:</strong>  Insufficient buffer pool size or improper configuration can lead to excessive I/O.</li>
+                <li><strong>Lock Contention:</strong>  When multiple applications try to access the same data concurrently, lock contention can occur, causing delays.</li>
+                <li><strong>I/O Bottlenecks:</strong>  Slow disk I/O can limit overall DB2 performance.</li>
+                <li><strong>System Resource Constraints:</strong>  Insufficient CPU, memory, or network resources can also impact DB2.</li>
+            </ul>
+
+            <h3>Identifying Bottlenecks</h3>
+            <p>
+                DB2 provides several tools and techniques for identifying performance bottlenecks:
+            </p>
+            <ul>
+                <li><strong>EXPLAIN:</strong>  The <code>EXPLAIN</code> statement shows the access path that DB2 will use to execute a query.  This can help you identify inefficient query plans.</li>
+                <li><strong>DB2 Monitor:</strong>  The DB2 Monitor provides real-time information about DB2 activity, including CPU usage, I/O rates, and lock contention.</li>
+                <li><strong>Statistics Reports:</strong>  Reports based on SMF (System Management Facilities) data can provide historical information about DB2 performance.</li>
+                <li><strong>z/OS Performance Tools:</strong>  Tools like RMF (Resource Measurement Facility) can help identify system-level bottlenecks.</li>
+            </ul>
+
+            <h3>Resolving Bottlenecks</h3>
+            <p>
+                Once you've identified the bottleneck, you can take steps to resolve it.  Here are some common solutions:
+            </p>
+            <ul>
+                <li><strong>Optimize SQL:</strong>  Rewrite poorly performing SQL queries.</li>
+                <li><strong>Create Appropriate Indexes:</strong>  Add or modify indexes to improve data access.</li>
+                <li><strong>Tune Buffer Pools:</strong>  Adjust buffer pool size and configuration.</li>
+                <li><strong>Reduce Lock Contention:</strong>  Optimize application logic to minimize the duration of locks.</li>
+                <li><strong>Improve I/O Performance:</strong>  Consider using faster storage devices or optimizing disk layout.</li>
+                <li><strong>Upgrade System Resources:</strong>  Increase CPU, memory, or network capacity if necessary.</li>
+            </ul>
+        </section>
+
+        <section id="query_optimization">
+            <h2>Optimizing Query Execution</h2>
+            <p>
+                Optimizing individual SQL queries is a key aspect of DB2 performance tuning.  This section delves deeper into techniques for improving query performance.
+            </p>
+
+            <h3>Understanding the DB2 Optimizer</h3>
+            <p>
+                The DB2 optimizer is responsible for determining the most efficient way to execute a SQL query.  It considers various factors, including the available indexes, the size of the tables, and the distribution of the data.
+            </p>
+
+            <h3>Factors Affecting Query Performance</h3>
+            <ul>
+                 <li><strong>Access Path Selection:</strong>  The optimizer chooses an access path, which is the sequence of steps DB2 takes to retrieve the data.  This could involve a table scan, an index scan, or a combination of both.</li>
+                 <li><strong>Join Methods:</strong>  When joining multiple tables, the optimizer selects a join method, such as a nested loop join, a merge join, or a hash join.  The choice of join method can significantly impact performance.</li>
+                 <li><strong>Data Skew:</strong>  Uneven distribution of data can affect the efficiency of certain access paths.</li>
+            </ul>
+
+            <h3>Techniques for Optimizing Queries</h3>
+            <ul>
+                <li><strong>Use Indexes Effectively:</strong>
+                    <ul>
+                        <li>Ensure that frequently queried columns are indexed.</li>
+                        <li>Avoid using functions in the <code>WHERE</code> clause that prevent index usage.</li>
+                        <li>Consider using composite indexes for queries that involve multiple columns.</li>
+                    </ul>
+                </li>
+                <li><strong>Optimize Join Queries:</strong>
+                    <ul>
+                        <li>Use the most appropriate type of join (e.g., INNER JOIN, LEFT JOIN).</li>
+                        <li>Ensure that join columns are indexed.</li>
+                        <li>Consider the order in which tables are joined.</li>
+                    </ul>
+                </li>
+                <li><strong>Minimize Data Retrieval:</strong>
+                    <ul>
+                        <li>Use the <code>SELECT</code> statement to retrieve only the necessary columns.</li>
+                        <li>Use the <code>WHERE</code> clause to filter out unnecessary rows.</li>
+                        <li>Use the <code>FETCH FIRST n ROWS ONLY</code> clause to limit the number of rows returned.</li>
+                    </ul>
+                </li>
+                <li><strong>Use of Views and Stored Procedures:</strong>
+                    <ul>
+                         <li>Views can simplify complex queries and improve readability.</li>
+                         <li>Stored procedures can improve performance by precompiling SQL statements and reducing network traffic.</li>
+                     </ul>
+                </li>
+                <li><strong>Query Rewrite:</strong>  Sometimes, rewriting a query in a different way can improve its performance.</li>
+                 <li><strong>Parallel Processing:</strong> DB2 can parallelize query execution to utilize multiple processors.</li>
+            </ul>
+        </section>
+    </div>
+</body>
+
+<footer>
+    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+</footer>
+</html>

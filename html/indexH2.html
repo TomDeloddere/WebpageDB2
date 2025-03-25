@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Mainframe DBA - Chapter 2: SQL and Application Programming</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <style>
+        /* General styles */
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Mainframe DBA</h1>
+            <p>Chapter 2: SQL and Application Programming</p>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#sql_queries">Writing and Optimizing SQL Queries</a></li>
+                <li><a href="#stored_procedures">Developing and Managing Stored Procedures</a></li>
+                <li><a href="#application_interaction">Understanding Application Interaction with DB2</a></li>
+            </ul>
+        </nav>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>
+                This chapter delves into SQL and application programming within the DB2 Mainframe environment.  A strong command of SQL is fundamental for any DB2 DBA, and understanding application interaction is essential for data integrity, performance, and security.
+            </p>
+            <p>
+                We'll cover writing and optimizing SQL queries, developing and managing stored procedures, and exploring application interaction with DB2.
+            </p>
+        </section>
+
+        <section id="sql_queries">
+            <h2>Writing and Optimizing SQL Queries</h2>
+            <p>
+                SQL (Structured Query Language) is the standard language for interacting with relational databases.  This section explores writing effective SQL queries in DB2 and optimizing them for performance.
+            </p>
+
+            <h3>Basic SQL Query Structure</h3>
+            <p>
+                The foundation of any SQL query is the <code>SELECT</code> statement.
+            </p>
+            <div class="code-block">
+                <pre><code>
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+                </code></pre>
+            </div>
+            <ul>
+                <li><code>SELECT</code>: Specifies columns to retrieve.</li>
+                <li><code>FROM</code>: Indicates the table.</li>
+                <li><code>WHERE</code>: Filters rows.</li>
+            </ul>
+
+            <h3>Essential SQL Statements</h3>
+            <p>
+                DB2 supports a rich set of SQL statements:
+            </p>
+            <ul>
+                <li><code>INSERT</code>: Adds rows.</li>
+                <li><code>UPDATE</code>: Modifies rows.</li>
+                <li><code>DELETE</code>: Removes rows.</li>
+                <li><code>JOIN</code>: Combines rows from tables.</li>
+                <li><code>GROUP BY</code>: Groups rows.</li>
+                <li><code>ORDER BY</code>: Sorts results.</li>
+            </ul>
+
+            <h3>Data Definition Language (DDL)</h3>
+            <p>
+                DDL statements define the database structure:
+            </p>
+            <ul>
+                <li><code>CREATE TABLE</code>: Creates a table.</li>
+                <li><code>ALTER TABLE</code>: Modifies a table.</li>
+                <li><code>DROP TABLE</code>: Deletes a table.</li>
+                <li><code>CREATE INDEX</code>: Creates an index.</li>
+                <li><code>CREATE VIEW</code>: Creates a virtual table.</li>
+            </ul>
+
+            <h3>Optimizing SQL Queries</h3>
+            <p>
+                Efficient SQL is crucial for performance.  Key optimization techniques:
+            </p>
+            <ul>
+                <li><strong>Using Indexes:</strong> Speed up data retrieval.
+                    <p class="important">
+                        Red Flag: Avoid too many indexes.
+                    </p>
+                </li>
+                <li><strong>Efficient WHERE Clauses:</strong> Optimize filtering.</li>
+                <li><strong>Using Joins Wisely:</strong> Use appropriate join types and index join columns.</li>
+                <li><strong>Limiting Result Sets:</strong> Use <code>FETCH FIRST n ROWS ONLY</code>.</li>
+                <li><strong>Using EXPLAIN:</strong> Analyze query access paths.
+                     <p class="note">
+                        Fun Fact: <code>EXPLAIN</code> is invaluable for tuning.
+                     </p>
+                </li>
+                <li><strong>Statistics:</strong>  Use <code>RUNSTATS</code> for up-to-date statistics.</li>
+            </ul>
+        </section>
+
+        <section id="stored_procedures">
+            <h2>Developing and Managing Stored Procedures</h2>
+            <p>
+                Stored procedures are pre-compiled SQL code stored in the database, offering advantages for application development and management.
+            </p>
+
+            <h3>Benefits of Stored Procedures</h3>
+            <ul>
+                <li><strong>Improved Performance:</strong> Reduced compilation overhead.</li>
+                <li><strong>Encapsulation:</strong>  Encapsulate complex logic.</li>
+                <li><strong>Enhanced Security:</strong> Control access to data.</li>
+                <li><strong>Reduced Network Traffic:</strong> Reduce communication overhead.</li>
+            </ul>
+
+            <h3>Creating Stored Procedures</h3>
+            <p>
+                Use <code>CREATE PROCEDURE</code>.
+            </p>
+            <div class="code-block">
+                <pre><code>
+CREATE PROCEDURE procedure_name (IN parameter1 data_type, OUT parameter2 data_type, ...)
+BEGIN
+  -- SQL statements and procedural logic here
+END;
+                </code></pre>
+            </div>
+            <ul>
+                <li><code>IN</code>: Passes data in.</li>
+                <li><code>OUT</code>: Returns data.</li>
+            </ul>
+
+            <h3>Managing Stored Procedures</h3>
+            <p>
+                DB2 provides statements for management:
+            </p>
+            <ul>
+                <li><code>CALL</code>: Executes.</li>
+                <li><code>ALTER PROCEDURE</code>: Modifies.</li>
+                <li><code>DROP PROCEDURE</code>: Deletes.</li>
+                <li><code>GRANT</code>/<code>REVOKE</code>: Controls access.</li>
+            </ul>
+        </section>
+
+        <section id="application_interaction">
+            <h2>Understanding Application Interaction with DB2</h2>
+            <p>
+                Applications interact with DB2 in various ways.
+            </p>
+
+            <h3>Common Application Interaction Methods</h3>
+            <ul>
+                <li><strong>Embedded SQL:</strong> SQL embedded in application code.
+                     <p class="note">
+                        Fun Fact: Embedded SQL was an early method.
+                     </p>
+                </li>
+                <li><strong>Call Level Interface (CLI):</strong> Function calls (e.g., ODBC).</li>
+                <li><strong>JDBC (Java Database Connectivity):</strong> Java interaction.</li>
+                 <li><strong>Web Services:</strong> Access through web services.</li>
+            </ul>
+
+            <h3>Connection Management</h3>
+            <p>
+                Crucial for application development. Connection pooling improves performance.
+            </p>
+
+            <h3>Transaction Management</h3>
+            <p>
+                Ensures data consistency. Applications must manage transactions properly.
+            </p>
+        </section>
+    </div>
+</body>
+
+<footer>
+    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+</footer>
+</html>

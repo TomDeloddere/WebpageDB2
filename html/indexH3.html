@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Mainframe DBA - Chapter 3: Databaseontwerp en -implementatie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <style>
+        /* General styles */
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Mainframe DBA</h1>
+            <p>Chapter 3: Databaseontwerp en -implementatie</p>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#efficient_database_schemas">Designing Efficient Database Schemas</a></li>
+                <li><a href="#tables_indexes_views">Creating and Managing Tables, Indexes, and Views</a></li>
+                <li><a href="#referential_integrity">Implementing Referential Integrity</a></li>
+            </ul>
+        </nav>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>
+                This chapter covers the essential aspects of database design and implementation within the DB2 Mainframe environment.  Effective database design is crucial for ensuring data integrity, optimizing performance, and simplifying data management.
+            </p>
+            <p>
+                We'll explore the principles of designing efficient database schemas, creating and managing database objects like tables, indexes, and views, and implementing referential integrity to maintain data consistency.
+            </p>
+        </section>
+
+        <section id="efficient_database_schemas">
+            <h2>Designing Efficient Database Schemas</h2>
+            <p>
+                A database schema is the blueprint of a database, defining how data is organized and related.  Designing an efficient schema is a critical step in the database development process.
+            </p>
+
+            <h3>Key Principles of Schema Design</h3>
+            <ul>
+                <li><strong>Normalization:</strong>  Organizing data to reduce redundancy and improve data integrity.  Different normal forms (1NF, 2NF, 3NF, etc.) provide guidelines for achieving this.
+                    <p class="important">
+                        Red Flag:  Failing to normalize can lead to update anomalies and data inconsistencies.
+                    </p>
+                </li>
+                <li><strong>Data Types:</strong>  Choosing the appropriate data types for each column is essential for efficient storage and retrieval.  DB2 supports a wide range of data types, including character, numeric, and date/time types.</li>
+                <li><strong>Constraints:</strong>  Constraints enforce rules on the data in a table, ensuring data integrity.  Common types of constraints include:
+                    <ul>
+                        <li><strong>Primary Key:</strong>  Uniquely identifies each row in a table.</li>
+                        <li><strong>Foreign Key:</strong>  Establishes relationships between tables.</li>
+                        <li><strong>Unique:</strong>  Ensures that the values in a column are unique.</li>
+                        <li><strong>Not Null:</strong>  Ensures that a column cannot contain null values.</li>
+                        <li><strong>Check:</strong>  Ensures that the values in a column satisfy a specific condition.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Entity-Relationship (E-R) Modeling</h3>
+            <p>
+                E-R modeling is a popular technique for designing database schemas.  It involves identifying the entities (objects or concepts) in the system and the relationships between those entities.  E-R diagrams provide a visual representation of the database schema.
+            </p>
+            <p class="note">
+                Fun Fact:  E-R diagrams use symbols like rectangles (entities), ellipses (attributes), and diamonds (relationships).
+            </p>
+
+            <h3>Denormalization</h3>
+            <p>
+                While normalization is generally desirable, there are cases where denormalization (intentionally introducing redundancy) can improve performance.  This is often done in data warehousing scenarios where query performance is paramount.
+            </p>
+            <p class="important">
+                 Red Flag:  Denormalization should be done carefully, as it can increase the risk of data inconsistencies.
+            </p>
+        </section>
+
+        <section id="tables_indexes_views">
+            <h2>Creating and Managing Tables, Indexes, and Views</h2>
+            <p>
+                Once the database schema is designed, you need to create the database objects that will store and organize the data.  The primary database objects in DB2 are tables, indexes, and views.
+            </p>
+
+            <h3>Tables</h3>
+            <p>
+                Tables are the fundamental building blocks of a relational database.  They consist of rows and columns, where each row represents a single instance of the entity and each column represents an attribute of the entity.
+            </p>
+            <h4>Creating Tables</h4>
+            <p>
+                Tables are created using the <code>CREATE TABLE</code> statement.
+            </p>
+            <div class="code-block">
+                <pre><code>
+CREATE TABLE table_name (
+    column1 data_type constraint1,
+    column2 data_type constraint2,
+    ...
+    PRIMARY KEY (column_name(s))
+);
+                </code></pre>
+            </div>
+            <p>
+                This statement specifies the name of the table, the names and data types of the columns, and any constraints that apply to the columns.
+            </p>
+
+            <h4>Altering Tables</h4>
+            <p>
+                Tables can be modified using the <code>ALTER TABLE</code> statement.  This statement allows you to add, modify, or delete columns, and add or drop constraints.
+            </p>
+
+            <h4>Dropping Tables</h4>
+            <p>
+                Tables can be deleted using the <code>DROP TABLE</code> statement.
+            </p>
+            <p class="important">
+                Red Flag:  Dropping a table deletes all of its data, so this should be done with caution.
+            </p>
+
+            <h3>Indexes</h3>
+            <p>
+                Indexes are optional data structures that improve the speed of data retrieval.  They provide a quick lookup path to specific data in a table.
+            </p>
+            <h4>Creating Indexes</h4>
+             <p>
+                Indexes are created using the <code>CREATE INDEX</code> statement.
+            </p>
+            <div class="code-block">
+                <pre><code>
+CREATE INDEX index_name
+ON table_name (column_name(s));
+                </code></pre>
+            </div>
+            <p>
+                This statement specifies the name of the index, the table on which the index is created, and the column(s) that the index is based on.
+            </p>
+            <p class="note">
+                Fun Fact:  DB2 supports different types of indexes, including B-tree indexes and hash indexes.
+            </p>
+
+            <h4>Managing Indexes</h4>
+            <p>
+                Indexes can be altered using the <code>ALTER INDEX</code> statement and deleted using the <code>DROP INDEX</code> statement.
+            </p>
+
+            <h3>Views</h3>
+            <p>
+                Views are virtual tables that are based on the result of a SQL query.  They provide a simplified or customized view of the data in one or more tables.
+            </p>
+
+            <h4>Creating Views</h4>
+            <p>
+                Views are created using the <code>CREATE VIEW</code> statement.
+            </p>
+            <div class="code-block">
+                <pre><code>
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+                </code></pre>
+            </div>
+            <p>
+                This statement specifies the name of the view and the SQL query that defines the view.
+            </p>
+
+            <h4>Using Views</h4>
+            <p>
+                Views can be queried like regular tables, but they do not store data themselves.  Instead, the data is retrieved from the underlying tables when the view is queried.
+            </p>
+             <p class="note">
+                Fun Fact:  Views can be used to simplify complex queries and to restrict access to sensitive data.
+            </p>
+
+            <h4>Managing Views</h4>
+            <p>
+                Views can be altered using the <code>ALTER VIEW</code> statement and deleted using the <code>DROP VIEW</code> statement.
+            </p>
+        </section>
+
+        <section id="referential_integrity">
+            <h2>Implementing Referential Integrity</h2>
+            <p>
+                Referential integrity (RI) is a database concept that ensures the consistency of data across related tables.  It is based on the concept of foreign keys.
+            </p>
+
+            <h3>Foreign Keys</h3>
+            <p>
+                A foreign key is a column (or set of columns) in one table that references the primary key in another table.  The table containing the foreign key is called the dependent table or child table, and the table containing the primary key is called the parent table or referenced table.
+            </p>
+            <p class="diagram">
+                [Diagram of Parent and Child Tables with Foreign Key Relationship]
+            </p>
+
+            <h3>Referential Integrity Constraints</h3>
+            <p>
+                Referential integrity constraints are rules that enforce referential integrity.  These constraints are defined when the table is created or altered.
+            </p>
+
+            <h3>Enforcing Referential Integrity</h3>
+            <p>
+                When a row is inserted, updated, or deleted in a table, DB2 checks the referential integrity constraints to ensure that the operation does not violate the relationships between tables.
+            </p>
+            <p class="important">
+                Red Flag:  Violations of referential integrity can lead to data inconsistencies and application errors.
+            </p>
+
+            <h3>Cascade Delete</h3>
+            <p>
+                A key aspect of referential integrity is how the database handles the deletion of a parent record that has related child records.  One option is to use a "cascade delete" rule.  This means that when a row is deleted from the parent table, DB2 automatically deletes the corresponding rows in the child table.
+            </p>
+             <p class="note">
+                Fun Fact:  Cascade deletes can simplify application logic but require careful consideration.
+            </p>
+        </section>
+    </div>
+</body>
+
+<footer>
+    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+</footer>
+</html>

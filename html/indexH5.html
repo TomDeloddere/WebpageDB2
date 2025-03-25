@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Mainframe DBA - Chapter 5: Backup en recovery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <style>
+        /* General styles */
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Mainframe DBA</h1>
+            <p>Chapter 5: Backup en recovery</p>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#backup_strategies">Implementing Backup Strategies</a></li>
+                <li><a href="#recovery_procedures">Executing Recovery Procedures</a></li>
+                <li><a href="#disaster_recovery">Planning for Disaster Recovery</a></li>
+            </ul>
+        </nav>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>
+                This chapter addresses the critical aspects of backup and recovery in DB2 Mainframe environments.  Protecting data and ensuring its availability after an incident is a core responsibility of a DBA.
+            </p>
+            <p>
+                We'll cover how to implement effective backup strategies, execute recovery procedures, and plan for disaster recovery to minimize data loss and downtime.
+            </p>
+        </section>
+
+        <section id="backup_strategies">
+            <h2>Implementing Backup Strategies</h2>
+            <p>
+                A well-defined backup strategy is essential for protecting DB2 data.  The goal is to create backups that can be used to restore the database in case of data loss or corruption.
+            </p>
+
+            <h3>Types of Backups</h3>
+            <ul>
+                <li><strong>Full Backup (Image Copy):</strong>  A full backup copies all of the data in a tablespace or table.  It provides the most complete backup but can take a significant amount of time and storage space.
+                    <p class="note">
+                        Fun Fact:  Full image copies are often used as the basis for incremental backups.
+                    </p>
+                </li>
+                <li><strong>Incremental Backup:</strong>  An incremental backup copies only the data that has changed since the last full or incremental backup.  This type of backup is faster and requires less storage space than a full backup.
+                    <p class="important">
+                        Red Flag:  Restoring from an incremental backup requires the last full backup and all subsequent incremental backups.
+                    </p>
+                </li>
+                <li><strong>System-Level Backup:</strong>  Involves backing up the entire z/OS system, including the DB2 subsystem.  This provides a comprehensive backup but may not be suitable for frequent backups.</li>
+            </ul>
+
+            <h3>Backup Frequency</h3>
+            <p>
+                The frequency of backups depends on several factors, including:
+            </p>
+            <ul>
+                <li><strong>Rate of Data Change:</strong>  Tables that change frequently should be backed up more often.</li>
+                <li><strong>Recovery Time Objective (RTO):</strong>  The maximum acceptable time to restore the database.</li>
+                <li><strong>Recovery Point Objective (RPO):</strong>  The maximum acceptable amount of data loss.</li>
+                <li><strong>Storage Capacity:</strong>  The amount of storage space available for backups.</li>
+            </ul>
+
+            <h3>Backup Methods</h3>
+            <p>
+                DB2 provides several methods for creating backups:
+            </p>
+            <ul>
+                <li><strong>COPY Utility:</strong>  The <code>COPY</code> utility is the primary method for creating image copies of tablespaces and tables.  It provides various options for controlling the backup process.</li>
+                <li><strong>DSN1COPY:</strong>  A lower-level utility that can be used to copy database objects.  It offers more flexibility but is also more complex to use than the <code>COPY</code> utility.</li>
+                <li><strong>Storage Management Subsystem (SMS):</strong>  SMS can be used to automate backup and recovery processes.</li>
+            </ul>
+
+            <h3>Backup Considerations</h3>
+            <ul>
+                <li><strong>Backup Consistency:</strong>  Ensure that backups are consistent by quiescing the database objects before the backup.</li>
+                <li><strong>Backup Storage:</strong>  Store backups on reliable media, such as tape or disk, and consider storing copies offsite for disaster recovery purposes.</li>
+                <li><strong>Backup Retention:</strong>  Establish a backup retention policy to determine how long backups should be kept.</li>
+                <li><strong>Backup Automation:</strong>  Automate the backup process using JCL or other scheduling tools.
+                    <p class="note">
+                        Fun Fact:  Automating backups reduces the risk of human error.
+                    </p>
+                </li>
+            </ul>
+        </section>
+
+        <section id="recovery_procedures">
+            <h2>Executing Recovery Procedures</h2>
+            <p>
+                Recovery procedures define the steps to take to restore a DB2 database after a failure.  A well-defined recovery plan is essential for minimizing downtime and data loss.
+            </p>
+
+            <h3>Types of Recovery</h3>
+            <ul>
+                <li><strong>Table Space Recovery:</strong>  Restores one or more table spaces to a previous point in time.</li>
+                <li><strong>Table Recovery:</strong> Restores one or more tables to a previous point in time.</li>
+                <li><strong>Log Apply Recovery:</strong>  Applies log records to a restored database to bring it to a more current state.</li>
+                 <li><strong>Crash Recovery:</strong> DB2 automatically performs crash recovery after a system failure, using the active logs.</li>
+            </ul>
+
+            <h3>Recovery Utilities</h3>
+            <p>
+                DB2 provides utilities for performing recovery:
+            </p>
+            <ul>
+                <li><strong>RECOVER Utility:</strong>  The <code>RECOVER</code> utility is the primary tool for restoring table spaces and tables from image copies.</li>
+                <li><strong>DSN1LOGP:</strong>  The Log Print utility, used to examine the DB2 logs.</li>
+                <li><strong>DSN1CHKR:</strong>  The Checkpoint/Restart utility.</li>
+            </ul>
+
+            <h3>Recovery Steps</h3>
+            <p>
+                A typical recovery procedure involves the following steps:
+            </p>
+            <ol>
+                <li><strong>Identify the Problem:</strong>  Determine the cause and extent of the failure.</li>
+                <li><strong>Isolate the Affected Objects:</strong>  Identify the table spaces or tables that need to be recovered.</li>
+                <li><strong>Restore from Backup:</strong>  Use the <code>RECOVER</code> utility to restore the database objects from the most recent backup.</li>
+                <li><strong>Apply Logs:</strong>  Apply the log records to bring the database to a consistent state.</li>
+                <li><strong>Verify Recovery:</strong>  Ensure that the database is consistent and that all data is accessible.</li>
+            </ol>
+
+            <h3>Recovery Considerations</h3>
+            <ul>
+                <li><strong>Recovery Time:</strong>  Minimize recovery time by using appropriate backup strategies and optimizing recovery procedures.</li>
+                <li><strong>Data Consistency:</strong>  Ensure data consistency by applying logs and performing necessary recovery steps.</li>
+                <li><strong>Testing Recovery Procedures:</strong>  Regularly test recovery procedures to ensure they are effective and that personnel are familiar with them.
+                    <p class="important">
+                        Red Flag:  Failure to test recovery procedures can lead to prolonged downtime and data loss in a real disaster.
+                    </p>
+                </li>
+                 <li><strong>Outage Planning:</strong> Plan for scheduled outages.</li>
+            </ul>
+        </section>
+
+        <section id="disaster_recovery">
+            <h2>Planning for Disaster Recovery</h2>
+            <p>
+                Disaster recovery (DR) planning involves preparing for events that could cause a prolonged outage or data loss, such as natural disasters, fires, or major system failures.
+            </p>
+
+            <h3>Key Components of a DR Plan</h3>
+            <ul>
+                <li><strong>Offsite Backup Storage:</strong>  Store backup copies of data at a geographically separate location.</li>
+                <li><strong>Alternate Site:</strong>  Identify an alternate site where the DB2 system can be restored.  This could be a hot site (fully operational), a warm site (partially operational), or a cold site (basic infrastructure).</li>
+                <li><strong>Recovery Procedures:</strong>  Develop detailed procedures for restoring the DB2 system at the alternate site.</li>
+                <li><strong>Testing:</strong>  Regularly test the DR plan to ensure its effectiveness.
+                     <p class="note">
+                        Fun Fact:  DR testing can reveal unexpected dependencies or weaknesses in the plan.
+                    </p>
+                </li>
+                 <li><strong>Communication Plan:</strong> Establish how personal will communicate during a disaster.</li>
+            </ul>
+
+            <h3>DR Considerations</h3>
+            <ul>
+                <li><strong>Data Replication:</strong>  Use data replication technologies to minimize data loss in a disaster.  DB2 supports various replication solutions.</li>
+                <li><strong>Network Connectivity:</strong>  Ensure that there is adequate network connectivity between the primary site and the alternate site.</li>
+                <li><strong>Hardware and Software Compatibility:</strong>  Ensure that the hardware and software at the alternate site are compatible with the DB2 system.</li>
+                <li><strong>Personnel Training:</strong>  Train personnel on the DR procedures.</li>
+            </ul>
+        </section>
+    </div>
+</body>
+
+<footer>
+    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+</footer>
+</html>
