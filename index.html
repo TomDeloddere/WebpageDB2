@@ -6,300 +6,463 @@
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
-    <link rel="stylesheet" href="./css/site.css">
+    
 <meta id="ConnectiveDocSignExtentionInstalled" name="ConnectiveDocSignExtentionInstalled" data-extension-version="1.0.7"></head>
 
+<style>
+/* General styles */
+body {
+  background-color: #121212; /* Dark terminal background */
+  color: #33ff33; /* Classic green terminal text */
+  font-family: 'Courier New', monospace; /* Retro monospaced font */
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.8);
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 0.9rem;
+  color: #66ff66;
+}
+
+
+/* Headings */
+h1, h2 {
+  color: #00ff99;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-bottom: 2px solid #00ff99;
+  display: inline-block;
+  padding-bottom: 5px;
+  width: 100%; /* Ensures full width */
+  box-sizing: border-box; /* Ensures full width */  
+}
+
+/* Links */
+a {
+  color: #33ff33;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+
+a:hover {
+  color: #00ff99;
+  text-shadow: 0 0 5px #00ff99;
+}
+
+/* Collection header */
+.collection.with-header {
+  background-color: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0px 0px 10px rgba(51, 255, 51, 0.4);
+  border: 1px solid #33ff33;
+}
+
+/* Mainframe-style header */
+.collection-header h2 {
+  font-size: 1.5rem;
+  padding: 20px;
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  background-color: #003300; /* Deep green, terminal-like */
+  color: #33ff33; /* Classic green text */
+  border-bottom: 2px solid #009900;
+  box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.4);
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.8);
+  height: auto; /* Adjusted for dynamic content */
+}
+
+/* Hover effect for the header */
+.collection-header h2:hover {
+  background-color: #004d00; /* Slightly lighter green */
+  text-shadow: 0 0 10px rgba(51, 255, 51, 1);
+  border-bottom: 2px solid #00ff00;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+}
+
+
+/* Collection items */
+.collection-item {
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid #33ff33;
+  transition: background 0.3s;
+  justify-content: space-between; /* Ensures text on left, icon on right */
+  align-items: center; /* Aligns vertically */
+}
+
+.collection-item-inhoud {
+  display: flex;
+  justify-content: space-between; /* Keeps text on the left, icons on the right */
+  align-items: center;
+  padding: 12px 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid #33ff33;
+  transition: background 0.3s ease-in-out, color 0.3s;
+  font-size: 1.1rem; /* Slightly larger for readability */
+  line-height: 1.5;
+  color: #33ff33;
+  text-shadow: 0 0 4px rgba(51, 255, 51, 0.7);
+}
+
+
+.collection-item:hover {
+  background-color: rgba(51, 255, 51, 0.2);
+  color: #00ff99;
+  text-shadow: 0 0 6px rgba(0, 255, 153, 0.9);
+}
+
+.collection-item-inhoud:hover {
+  background-color: rgba(51, 255, 51, 0.2);
+  color: #00ff99;
+  text-shadow: 0 0 6px rgba(0, 255, 153, 0.9);
+}
+
+.collection-item span {
+  padding-left: 10px; /* Moves text slightly inwards */
+}
+
+
+/* Icon styles */
+.secondary-content {
+  display: flex;
+  justify-content: flex-end; /* Align icons to the right */
+}
+
+.secondary-content i {
+  color: #33ff33;
+  transition: transform 0.2s ease-in-out, color 0.2s;
+}
+
+/* Fix disappearing issue */
+.secondary-content a {
+  display: inline-flex; /* Ensures the link wraps around the icon properly */
+  align-items: center;
+}
+
+/* Hover effect */
+.secondary-content i:hover {
+  transform: scale(1.5);
+  color: #00ff99;
+  cursor: pointer;
+}
+
+/* Improve grid layout */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.container {
+    max-width: 1200px; /* Limit container width for larger screens */
+    margin: 20px auto;
+  border: 2px solid #33ff33;
+  padding: 20px;
+  box-shadow: 0px 0px 15px rgba(51, 255, 51, 0.6);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+
+
+/* Make it more responsive */
+@media (max-width: 600px) {
+  h1 {
+      font-size: 1.8rem;
+  }
+  .grid {
+      grid-template-columns: 1fr;
+  }
+}
+
+
+</style>
 <body>
     <div class="container">
-        <h1>Competentie Framework voor Database Administrator Level 1</h1>
+        <h1>Competency Framework for Database Administrator Level 1</h1>
 <p>
-    Deze website ondersteunt de bachelorproef over het definiëren en ontwikkelen van een competentie framework 
-    voor de startersfunctie van Database Administrator Level 1 binnen de z/OS mainframe-industrie.
+    This website supports the bachelor thesis on defining and developing a competency framework
+    for the entry-level position of Database Administrator Level 1 within the z/OS mainframe industry.
 </p>
 <p>
-    Hier vind je de indeling van de bachelorproef, inclusief relevante documentatie, literatuurstudies en een 
-    proof-of-concept webapplicatie. De focus ligt op het ontwikkelen van een gestructureerde aanpak voor opleiders 
-    om studenten beter voor te bereiden op een carrière in de mainframe-sector.
+    Here you will find the structure of the bachelor thesis, including relevant documentation, literature studies, and a
+    proof-of-concept web application. The focus is on developing a structured approach for educators
+    to better prepare students for a career in the mainframe sector.
 </p>
 <p>
-    Praktische, taakgerichte oefeningen en use cases spelen een cruciale rol. Deze omvatten hands-on ervaring met 
-    fundamentele z/OS mainframeconcepten zoals JCL scripting, DB2 databasebeheer en RUNSTATS-optimalisatie.
+    Practical, task-oriented exercises and use cases play a crucial role. These include hands-on experience with
+    fundamental z/OS mainframe concepts such as JCL scripting, DB2 database management, and RUNSTATS optimization.
 </p>
 <p>
-    Tijdens mijn stage bij Belfius werk ik samen met ervaren mainframeprofessionals om de relevantie en toepasbaarheid 
-    van het framework te verfijnen. Alle materialen en oplossingen worden hier beschikbaar gesteld.
+    During my internship at Belfius, I collaborate with experienced mainframe professionals to refine the relevance and applicability
+    of the framework. All materials and solutions are made available here.
 </p>
 
-        <div class="grid">
-            <!--Les 1-->
-            <div>
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h2>DB2-fundamententals</h2>
-                    </li>
-                    <li class="collection-item-inhoud">
-                        <p>Inhoud:</p>
-                        <ul class="browser-default">
-                            <li>Begrijpen van relationele databaseconcepten ​</li>
-                            <li>Kennis van DB2-componenten en -structuren ​</li>
-                            <li>Inzicht in de integratie van DB2 met z/OS </li>
-                        </ul> ​
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Slides
-                            <a href="./html/indexH1.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
-                        </div>
-                    </li>
-
-                    <li class="collection-item">
-                        <div>Oefeningen<a href="./html/indexH1Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Opgeloste oefeningen<a href="./html/indexH1Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
-                        </div>
-                    </li>
+<div class="grid">
+    <!--Lesson 1-->
+    <div>
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h2>DB2 Fundamentals</h2>
+            </li>
+            <li class="collection-item-inhoud">
+                <p>Content:</p>
+                <ul class="browser-default">
+                    <li>Understanding relational database concepts</li>
+                    <li>Knowledge of DB2 components and structures</li>
+                    <li>Understanding DB2 integration with z/OS</li>
                 </ul>
-            </div>
-            <!--Les2-->
-            <div>
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h2>SQL en applicatieprogrammering</h2>
-                    </li>
-                    <li class="collection-item-inhoud">
-                        <p>Inhoud:</p>
-                        <ul class="browser-default">
-                            <li>Schrijven en optimaliseren van SQL-query's</li>
-                            <li>Ontwikkelen en beheren van stored procedures</li>
-                            <li>Begrijpen van applicatie-interactie met DB2</li>
-                        </ul>
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Slides
-                            <a href="./html/indexH2.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
-                        </div>
-                    </li>
-
-                    <li class="collection-item">
-                        <div>Oefeningen
-                            <a href="./html/indexH2Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Opgeloste oefeningen
-                            <a href="./html/indexH2Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
-                        </div>
-                    </li>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Slides
+                    <a href="./html/indexH1.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Exercises<a href="./html/indexH1Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Solved exercises<a href="./html/indexH1Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--Lesson 2-->
+    <div>
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h2>SQL and Application Programming</h2>
+            </li>
+            <li class="collection-item-inhoud">
+                <p>Content:</p>
+                <ul class="browser-default">
+                    <li>Writing and optimizing SQL queries</li>
+                    <li>Developing and managing stored procedures</li>
+                    <li>Understanding application interaction with DB2</li>
                 </ul>
-            </div>
-            <!--Les 3-->
-            <div>
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h2>Databaseontwerp en -implementatie</h2>
-                    </li>
-                    <li class="collection-item-inhoud">
-                        <p>Inhoud:</p>
-                        <ul class="browser-default">
-                            <li>Ontwerpen van efficiënte databaseschema's </li>
-                            <li>Creëren en beheren van tabellen, indexen en views </li>
-                            <li>Implementeren van referentiële integriteit </li>
-                        </ul>
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Slides
-                            <a href="./html/indexH3.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
-                        </div>
-                    </li>
-
-                    <li class="collection-item">
-                        <div>Oefeningen
-                            <a href="./html/indexH3Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Opgeloste oefeningen
-                            <a href="./html/indexH3Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
-                        </div>
-                    </li>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Slides
+                    <a href="./html/indexH2.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Exercises
+                    <a href="./html/indexH2Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Solved exercises
+                    <a href="./html/indexH2Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--Lesson 3-->
+    <div>
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h2>Database Design and Implementation</h2>
+            </li>
+            <li class="collection-item-inhoud">
+                <p>Content:</p>
+                <ul class="browser-default">
+                    <li>Designing efficient database schemas</li>
+                    <li>Creating and managing tables, indexes, and views</li>
+                    <li>Implementing referential integrity</li>
                 </ul>
-            </div>
-            <!--Les 4-->
-            <div>
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h2>Performance-optimalisatie</h2>
-                    </li>
-                    <li class="collection-item-inhoud">
-                        <p>Inhoud:</p>
-                        <ul class="browser-default">
-                            <li>Uitvoeren van RUNSTATS en interpreteren van resultaten </li>
-                            <li>Identificeren en oplossen van performance-knelpunten </li>
-                            <li>Optimaliseren van query-uitvoering Kleuren</li>
-                        </ul> ​
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Slides
-                            <a href="./html/indexH4.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
-                        </div>
-                    </li>
-
-                    <li class="collection-item">
-                        <div>Oefeningen
-                            <a href="./html/indexH4Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Opgeloste oefeningen
-                            <a href="./html/indexH4Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
-                        </div>
-                    </li>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Slides
+                    <a href="./html/indexH3.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Exercises
+                    <a href="./html/indexH3Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Solved exercises
+                    <a href="./html/indexH3Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--Lesson 4-->
+    <div>
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h2>Performance Optimization</h2>
+            </li>
+            <li class="collection-item-inhoud">
+                <p>Content:</p>
+                <ul class="browser-default">
+                    <li>Executing RUNSTATS and interpreting results</li>
+                    <li>Identifying and resolving performance bottlenecks</li>
+                    <li>Optimizing query execution Colors</li>
                 </ul>
-            </div>
-            <!--Les 5-->
-            <div>
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h2>Backup en recovery</h2>
-                    </li>
-                    <li class="collection-item-inhoud">
-                        <p>Inhoud:</p>
-                        <ul class="browser-default">
-                            <li>Implementeren van backup-strategieën</li>
-                            <li>Uitvoeren van recovery-procedures</li>
-                            <li>Plannen van disaster recovery</li>
-                        </ul>
-                        ​
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Slides
-                            <a href="./html/indexH5.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
-                        </div>
-                    </li>
-
-                    <li class="collection-item">
-                        <div>Oefeningen
-                            <a href="./html/indexH5Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Opgeloste oefeningen
-                            <a href="./html/indexH5Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
-                        </div>
-                    </li>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Slides
+                    <a href="./html/indexH4.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Exercises
+                    <a href="./html/indexH4Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Solved exercises
+                    <a href="./html/indexH4Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--Lesson 5-->
+    <div>
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h2>Backup and Recovery</h2>
+            </li>
+            <li class="collection-item-inhoud">
+                <p>Content:</p>
+                <ul class="browser-default">
+                    <li>Implementing backup strategies</li>
+                    <li>Executing recovery procedures</li>
+                    <li>Planning disaster recovery</li>
                 </ul>
-            </div>
-            <!--Les 6-->
-            <div>
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h2>Beveiliging en compliance</h2>
-                    </li>
-                    <li class="collection-item-inhoud">
-                        <p>Inhoud:</p>
-                        <ul class="browser-default">
-                            <li>Implementeren van toegangscontrole</li>
-                            <li>Beheren van gebruikersrechten</li>                                
-                            <li>Waarborgen van data privacy en compliance</li>                        </ul>
-                        ​
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Slides
-                            <a href="./html/indexH6.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
-                        </div>
-                    </li>
-
-                    <li class="collection-item">
-                        <div>Oefeningen
-                            <a href="./html/indexH6Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Opgeloste oefeningen
-                            <a href="./html/indexH6Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
-                        </div>
-                    </li>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Slides
+                    <a href="./html/indexH5.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Exercises
+                    <a href="./html/indexH5Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Solved exercises
+                    <a href="./html/indexH5Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--Lesson 6-->
+    <div>
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h2>Security and Compliance</h2>
+            </li>
+            <li class="collection-item-inhoud">
+                <p>Content:</p>
+                <ul class="browser-default">
+                    <li>Implementing access control</li>
+                    <li>Managing user permissions</li>
+                    <li>Ensuring data privacy and compliance</li>
                 </ul>
-            </div>
-            <!--Les 7-->
-            <div>
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h2>Automatisering en scripting</h2>
-                    </li>
-                    <li class="collection-item-inhoud">
-                        <p>Inhoud:</p>
-                        <ul class="browser-default">
-                            <li>Schrijven en debuggen van JCL-scripts </li>
-                            <li>Automatiseren van routinetaken</li>
-                            <li>Integreren van DB2-utilities in geautomatiseerde workflows</li>
-                            
-                        </ul>
-                        ​
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Slides
-                            <a href="./html/indexH7.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
-                        </div>
-                    </li>
-
-                    <li class="collection-item">
-                        <div>Oefeningen
-                            <a href="./html/indexH7Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div>Opgeloste oefeningen
-                            <a href="./html/indexH7Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
-                        </div>
-                    </li>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Slides
+                    <a href="./html/indexH6.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Exercises
+                    <a href="./html/indexH6Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Solved exercises
+                    <a href="./html/indexH6Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--Lesson 7-->
+    <div>
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h2>Automation and Scripting</h2>
+            </li>
+            <li class="collection-item-inhoud">
+                <p>Content:</p>
+                <ul class="browser-default">
+                    <li>Writing and debugging JCL scripts</li>
+                    <li>Automating routine tasks</li>
+                    <li>Integrating DB2 utilities into automated workflows</li>
                 </ul>
-            </div>
-
-
-
-                 
-                
-            </ul>
-        </div>
-            <div>
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h2>Voorbeeldexamen</h2>
-                    </li>
-                    <li class="collection-item-inhoud">
-                        <p>Inhoud:</p>
-                        <ul class="browser-default">
-                            <li>Voorbeeld examen</li>
-                            <li>Opgave</li>
-                            <li>Startbestanden</li>
-                            <li>Oplossing</li>
-                        </ul>
-                        ​
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Voorbeeldexamen startbestanden - opgave
-                            <a href="./html/indexH7Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div>
-                            Voorbeeldexamen oplossing
-                            <a href="./html/indexH7Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
-                        </div>
-                    </li>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Slides
+                    <a href="./html/indexH7.html" target="_blank" class="secondary-content"><i class="material-icons">slideshow</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Exercises
+                    <a href="./html/indexH7Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Solved exercises
+                    <a href="./html/indexH7Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</ul>
+</div>
+    <div>
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h2>Sample Exam</h2>
+            </li>
+            <li class="collection-item-inhoud">
+                <p>Content:</p>
+                <ul class="browser-default">
+                    <li>Sample exam</li>
+                    <li>Assignment</li>
+                    <li>Starting files</li>
+                    <li>Solution</li>
                 </ul>
-            </div>
-        </div>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Sample exam starting files - assignment
+                    <a href="./html/indexH7Oef.html" target="_blank" class="secondary-content"><i class="material-icons">edit</i></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>
+                    Sample exam solution
+                    <a href="./html/indexH7Oef.html" target="_blank" class="secondary-content"><i class="material-icons">school</i></a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
 
         <footer>
             <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
@@ -309,7 +472,5 @@
     
     <!--JavaScript at end of body for optimized loading-->
     <script type="text/javascript" src="js/materialize.min.js"></script>
-
-
 
 </body>

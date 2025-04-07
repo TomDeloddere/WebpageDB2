@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB2 Mainframe DBA - Chapter 2: SQL and Application Programming</title>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <title>DB2 Chapter 2: SQL and Application Programming</title>
     <style>
-        /* General styles */
+        /* General styles - Mainframe inspired but optimized for learning */
         body {
             background-color: #0a0a14;
             color: #b3ffb3;
@@ -50,9 +49,10 @@
             margin: 0;
             display: flex;
             justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
         }
         nav li {
-            margin: 0 15px;
+            margin: 5px 15px; /* Add vertical margin for wrapped items */
         }
         nav a {
             color: #33ff33;
@@ -83,6 +83,12 @@
             font-size: 1.4rem;
             margin-top: 25px;
         }
+        h4 { /* Added style for h4 */
+            color: #00e6b8; /* Slightly different color */
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
         p {
             margin-bottom: 20px;
             font-size: 1.1rem;
@@ -96,6 +102,7 @@
             overflow-x: auto;
             font-family: 'Courier New', monospace;
             color: #33ff33;
+            white-space: pre; /* Preserve whitespace and line breaks */
         }
         table {
             width: 100%;
@@ -161,6 +168,7 @@
             padding: 20px;
             margin: 20px 0;
             text-align: center;
+            font-style: italic;
         }
         footer {
             text-align: center;
@@ -187,179 +195,1137 @@
             h2 {
                 font-size: 1.5rem;
             }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>DB2 Mainframe DBA</h1>
-            <p>Chapter 2: SQL and Application Programming</p>
+            <h1>DB2 Chapter 2: SQL and Application Programming</h1>
         </header>
+
         <nav>
-            <ul>
-                <li><a href="#introduction">Introduction</a></li>
-                <li><a href="#sql_queries">Writing and Optimizing SQL Queries</a></li>
-                <li><a href="#stored_procedures">Developing and Managing Stored Procedures</a></li>
-                <li><a href="#application_interaction">Understanding Application Interaction with DB2</a></li>
-            </ul>
-        </nav>
+             <ul>
+                 <li><a href="#intro">Intro to SQL</a></li>
+                 <li><a href="#writing">Writing SQL</a></li>
+                 <li><a href="#procedures">Stored Procedures</a></li>
+                 <li><a href="#interaction">App Interaction</a></li>
+                 <li><a href="#performance">Performance</a></li>
+                 <li><a href="#security">Security</a></li>
+             </ul>
+         </nav>
 
-        <section id="introduction">
-            <h2>Introduction</h2>
-            <p>
-                This chapter delves into SQL and application programming within the DB2 Mainframe environment.  A strong command of SQL is fundamental for any DB2 DBA, and understanding application interaction is essential for data integrity, performance, and security.
-            </p>
-            <p>
-                We'll cover writing and optimizing SQL queries, developing and managing stored procedures, and exploring application interaction with DB2.
-            </p>
+        <section id="intro">
+            <h2>Introduction to SQL in DB2 for z/OS</h2>
+            <p>Structured Query Language (SQL) is the standardized language for interacting with relational databases like DB2. In the mainframe environment, SQL provides a powerful interface for data manipulation, definition, and control. DB2 for z/OS implements SQL with specific extensions and optimizations suited for enterprise-scale workloads.</p>
+            <p>SQL in DB2 has evolved significantly since its inception, with each version adding capabilities that enhance developer productivity, query performance, and application integration. Understanding both standard SQL functionality and DB2-specific extensions is essential for developing efficient mainframe applications.</p>
+            <p>The key SQL categories in DB2 include:</p>
+            <ul>
+                <li><strong>Data Manipulation Language (DML):</strong> Statements for retrieving, inserting, updating, and deleting data (SELECT, INSERT, UPDATE, DELETE).</li>
+                <li><strong>Data Definition Language (DDL):</strong> Statements for defining database structures (CREATE, ALTER, DROP).</li>
+                <li><strong>Data Control Language (DCL):</strong> Statements for controlling access to data (GRANT, REVOKE).</li>
+                <li><strong>Transaction Control Language (TCL):</strong> Statements for managing transactions (COMMIT, ROLLBACK).</li>
+                <li><strong>Procedural Language:</strong> Extensions for procedural programming (SQL PL) used in stored procedures and user-defined functions.</li>
+            </ul>
         </section>
 
-        <section id="sql_queries">
+        <section id="writing">
             <h2>Writing and Optimizing SQL Queries</h2>
-            <p>
-                SQL (Structured Query Language) is the standard language for interacting with relational databases.  This section explores writing effective SQL queries in DB2 and optimizing them for performance.
-            </p>
 
-            <h3>Basic SQL Query Structure</h3>
-            <p>
-                The foundation of any SQL query is the <code>SELECT</code> statement.
-            </p>
-            <div class="code-block">
-                <pre><code>
-SELECT column1, column2, ...
-FROM table_name
-WHERE condition;
-                </code></pre>
-            </div>
-            <ul>
-                <li><code>SELECT</code>: Specifies columns to retrieve.</li>
-                <li><code>FROM</code>: Indicates the table.</li>
-                <li><code>WHERE</code>: Filters rows.</li>
-            </ul>
+            <h3>SQL Query Fundamentals</h3>
+            <p>The foundation of DB2 data access is the SELECT statement, which provides powerful data retrieval capabilities:</p>
 
-            <h3>Essential SQL Statements</h3>
-            <p>
-                DB2 supports a rich set of SQL statements:
-            </p>
-            <ul>
-                <li><code>INSERT</code>: Adds rows.</li>
-                <li><code>UPDATE</code>: Modifies rows.</li>
-                <li><code>DELETE</code>: Removes rows.</li>
-                <li><code>JOIN</code>: Combines rows from tables.</li>
-                <li><code>GROUP BY</code>: Groups rows.</li>
-                <li><code>ORDER BY</code>: Sorts results.</li>
-            </ul>
+            <h4>Basic Query Structure</h4>
+            <pre class="code-block">
+SELECT [DISTINCT] column1, column2, ...
+  FROM table_name
+ [WHERE condition]
+ [GROUP BY column1, column2, ...]
+ [HAVING group_condition]
+ [ORDER BY column1 [ASC|DESC], column2 [ASC|DESC], ...]
+ [FETCH FIRST n ROWS ONLY];
+            </pre>
 
-            <h3>Data Definition Language (DDL)</h3>
-            <p>
-                DDL statements define the database structure:
-            </p>
+            <h4>Data Retrieval Techniques</h4>
             <ul>
-                <li><code>CREATE TABLE</code>: Creates a table.</li>
-                <li><code>ALTER TABLE</code>: Modifies a table.</li>
-                <li><code>DROP TABLE</code>: Deletes a table.</li>
-                <li><code>CREATE INDEX</code>: Creates an index.</li>
-                <li><code>CREATE VIEW</code>: Creates a virtual table.</li>
-            </ul>
-
-            <h3>Optimizing SQL Queries</h3>
-            <p>
-                Efficient SQL is crucial for performance.  Key optimization techniques:
-            </p>
-            <ul>
-                <li><strong>Using Indexes:</strong> Speed up data retrieval.
-                    <p class="important">
-                        Red Flag: Avoid too many indexes.
-                    </p>
+                <li><strong>Column Selection:</strong>
+                    <ul>
+                        <li>Specific columns: <code class="code-block">SELECT EMPNO, LASTNAME, SALARY FROM EMPLOYEE</code></li>
+                        <li>All columns: <code class="code-block">SELECT * FROM EMPLOYEE</code></li>
+                        <li>Calculated columns: <code class="code-block">SELECT EMPNO, SALARY, SALARY * 1.10 AS NEW_SALARY FROM EMPLOYEE</code></li>
+                        <li>CASE expressions:
+<pre class="code-block">
+SELECT EMPNO,
+       CASE WHEN SALARY > 50000 THEN 'High'
+            WHEN SALARY > 30000 THEN 'Medium'
+            ELSE 'Low'
+       END AS SALARY_CATEGORY
+FROM EMPLOYEE
+</pre>
+                        </li>
+                    </ul>
                 </li>
-                <li><strong>Efficient WHERE Clauses:</strong> Optimize filtering.</li>
-                <li><strong>Using Joins Wisely:</strong> Use appropriate join types and index join columns.</li>
-                <li><strong>Limiting Result Sets:</strong> Use <code>FETCH FIRST n ROWS ONLY</code>.</li>
-                <li><strong>Using EXPLAIN:</strong> Analyze query access paths.
-                     <p class="note">
-                        Fun Fact: <code>EXPLAIN</code> is invaluable for tuning.
-                     </p>
+                <li><strong>Filtering Data with WHERE:</strong>
+                    <ul>
+                        <li>Comparison operators: <code class="code-block">WHERE SALARY > 50000</code></li>
+                        <li>BETWEEN: <code class="code-block">WHERE HIRE_DATE BETWEEN '2010-01-01' AND '2020-12-31'</code></li>
+                        <li>IN list: <code class="code-block">WHERE DEPTNO IN (10, 20, 30)</code></li>
+                        <li>Pattern matching: <code class="code-block">WHERE LASTNAME LIKE 'S%'</code></li>
+                        <li>NULL handling: <code class="code-block">WHERE COMMISSION IS NULL</code></li>
+                        <li>Combined conditions: <code class="code-block">WHERE DEPTNO = 10 AND SALARY > 50000</code></li>
+                    </ul>
                 </li>
-                <li><strong>Statistics:</strong>  Use <code>RUNSTATS</code> for up-to-date statistics.</li>
+                <li><strong>Sorting Results:</strong>
+                    <ul>
+                        <li>Single column: <code class="code-block">ORDER BY LASTNAME</code></li>
+                        <li>Multiple columns: <code class="code-block">ORDER BY DEPTNO, SALARY DESC</code></li>
+                        <li>Expression: <code class="code-block">ORDER BY SALARY * 1.10 DESC</code></li>
+                    </ul>
+                </li>
+                <li><strong>Limiting Results:</strong>
+                    <ul>
+                        <li>FETCH FIRST: <code class="code-block">FETCH FIRST 10 ROWS ONLY</code></li>
+                        <li>FETCH FIRST with ties: <code class="code-block">FETCH FIRST 10 ROWS WITH TIES</code></li>
+                        <li>OFFSET: <code class="code-block">OFFSET 20 ROWS FETCH FIRST 10 ROWS ONLY</code></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Advanced Query Techniques</h3>
+
+            <h4>Table Joins</h4>
+            <p>Joining tables is fundamental to relational databases, allowing data to be combined from multiple sources:</p>
+            <ul>
+                <li><strong>Inner Join:</strong>
+<pre class="code-block">
+SELECT E.EMPNO, E.LASTNAME, D.DEPTNAME
+  FROM EMPLOYEE E
+  INNER JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+</pre>
+                </li>
+                <li><strong>Left Outer Join:</strong>
+<pre class="code-block">
+SELECT E.EMPNO, E.LASTNAME, D.DEPTNAME
+  FROM EMPLOYEE E
+  LEFT OUTER JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+</pre>
+                </li>
+                <li><strong>Right Outer Join:</strong>
+<pre class="code-block">
+SELECT E.EMPNO, E.LASTNAME, D.DEPTNAME
+  FROM EMPLOYEE E
+  RIGHT OUTER JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+</pre>
+                </li>
+                <li><strong>Full Outer Join:</strong>
+<pre class="code-block">
+SELECT E.EMPNO, E.LASTNAME, D.DEPTNAME
+  FROM EMPLOYEE E
+  FULL OUTER JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+</pre>
+                </li>
+                <li><strong>Multiple Joins:</strong>
+<pre class="code-block">
+SELECT E.EMPNO, E.LASTNAME, D.DEPTNAME, L.CITY
+  FROM EMPLOYEE E
+  JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+  JOIN LOCATION L ON D.LOCID = L.LOCID
+</pre>
+                </li>
+                <li><strong>Self Join:</strong>
+<pre class="code-block">
+SELECT E.EMPNO, E.LASTNAME, M.LASTNAME AS MANAGER
+  FROM EMPLOYEE E
+  LEFT JOIN EMPLOYEE M ON E.MANAGER_ID = M.EMPNO
+</pre>
+                </li>
+            </ul>
+
+            <h4>Subqueries</h4>
+            <p>Subqueries (nested queries) provide powerful ways to use the results of one query within another:</p>
+            <ul>
+                <li><strong>Scalar Subquery</strong> (returns a single value):
+<pre class="code-block">
+SELECT EMPNO, LASTNAME, SALARY,
+       (SELECT AVG(SALARY) FROM EMPLOYEE) AS AVG_SALARY
+  FROM EMPLOYEE
+  WHERE DEPTNO = 10
+</pre>
+                </li>
+                <li><strong>Row Subquery</strong> (returns a single row):
+<pre class="code-block">
+SELECT EMPNO, LASTNAME, SALARY
+  FROM EMPLOYEE
+  WHERE (DEPTNO, SALARY) = (SELECT DEPTNO, MAX(SALARY)
+                              FROM EMPLOYEE
+                              WHERE DEPTNO = 20
+                              GROUP BY DEPTNO)
+</pre>
+                </li>
+                <li><strong>Table Subquery</strong> (returns multiple rows):
+<pre class="code-block">
+SELECT EMPNO, LASTNAME, SALARY
+  FROM EMPLOYEE
+  WHERE DEPTNO IN (SELECT DEPTNO
+                     FROM DEPARTMENT
+                     WHERE DIVISION = 'SALES')
+</pre>
+                </li>
+                <li><strong>Correlated Subquery</strong> (references the outer query):
+<pre class="code-block">
+SELECT D.DEPTNO, D.DEPTNAME
+  FROM DEPARTMENT D
+  WHERE EXISTS (SELECT 1
+                  FROM EMPLOYEE E
+                  WHERE E.DEPTNO = D.DEPTNO
+                  AND E.SALARY > 60000)
+</pre>
+                </li>
+            </ul>
+
+            <h4>Aggregate Functions and Grouping</h4>
+            <p>Aggregate functions perform calculations across sets of rows:</p>
+            <ul>
+                <li><strong>Basic Aggregates:</strong>
+                    <ul>
+                        <li>COUNT: <code class="code-block">SELECT COUNT(*) FROM EMPLOYEE WHERE DEPTNO = 10</code></li>
+                        <li>SUM: <code class="code-block">SELECT SUM(SALARY) FROM EMPLOYEE</code></li>
+                        <li>AVG: <code class="code-block">SELECT AVG(SALARY) FROM EMPLOYEE</code></li>
+                        <li>MIN/MAX: <code class="code-block">SELECT MIN(SALARY), MAX(SALARY) FROM EMPLOYEE</code></li>
+                    </ul>
+                </li>
+                <li><strong>Grouping:</strong>
+<pre class="code-block">
+SELECT DEPTNO, COUNT(*) AS EMP_COUNT, AVG(SALARY) AS AVG_SALARY
+  FROM EMPLOYEE
+  GROUP BY DEPTNO
+</pre>
+                </li>
+                <li><strong>Filtering Groups with HAVING:</strong>
+<pre class="code-block">
+SELECT DEPTNO, COUNT(*) AS EMP_COUNT, AVG(SALARY) AS AVG_SALARY
+  FROM EMPLOYEE
+  GROUP BY DEPTNO
+  HAVING COUNT(*) > 5 AND AVG(SALARY) > 50000
+</pre>
+                </li>
+                <li><strong>ROLLUP for Subtotals:</strong>
+<pre class="code-block">
+SELECT DIVISION, DEPTNO, SUM(SALARY) AS TOTAL_SALARY
+  FROM EMPLOYEE E
+  JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+  GROUP BY ROLLUP(DIVISION, DEPTNO)
+</pre>
+                </li>
+                <li><strong>CUBE for Multi-dimensional Analysis:</strong>
+<pre class="code-block">
+SELECT DIVISION, JOB_CODE, SUM(SALARY) AS TOTAL_SALARY
+  FROM EMPLOYEE E
+  JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+  GROUP BY CUBE(DIVISION, JOB_CODE)
+</pre>
+                </li>
+            </ul>
+
+            <h4>Common Table Expressions (CTEs)</h4>
+            <p>CTEs provide a way to define temporary result sets that can be referenced within a SELECT, INSERT, UPDATE, or DELETE statement:</p>
+            <ul>
+                <li><strong>Basic CTE:</strong>
+<pre class="code-block">
+WITH DEPT_SALARY AS (
+    SELECT DEPTNO, SUM(SALARY) AS TOTAL_SALARY
+    FROM EMPLOYEE
+    GROUP BY DEPTNO
+)
+SELECT D.DEPTNAME, DS.TOTAL_SALARY
+FROM DEPT_SALARY DS
+JOIN DEPARTMENT D ON DS.DEPTNO = D.DEPTNO
+ORDER BY TOTAL_SALARY DESC
+</pre>
+                </li>
+                <li><strong>Recursive CTE</strong> (for hierarchical data):
+<pre class="code-block">
+WITH RECURSIVE EMP_HIERARCHY (EMPNO, LASTNAME, MANAGER_ID, LEVEL) AS (
+    SELECT EMPNO, LASTNAME, MANAGER_ID, 1
+    FROM EMPLOYEE
+    WHERE MANAGER_ID IS NULL
+    UNION ALL
+    SELECT E.EMPNO, E.LASTNAME, E.MANAGER_ID, H.LEVEL + 1
+    FROM EMPLOYEE E
+    JOIN EMP_HIERARCHY H ON E.MANAGER_ID = H.EMPNO
+)
+SELECT EMPNO, LASTNAME, LEVEL
+FROM EMP_HIERARCHY
+ORDER BY LEVEL, LASTNAME
+</pre>
+                </li>
+            </ul>
+
+            <h3>DB2-Specific SQL Extensions</h3>
+            <p>DB2 for z/OS provides several extensions to standard SQL that enhance functionality:</p>
+            <ul>
+                <li><strong>FETCH FIRST ROW ONLY</strong> (DB2's earlier version of LIMIT):
+<pre class="code-block">
+SELECT EMPNO, LASTNAME
+  FROM EMPLOYEE
+  ORDER BY SALARY DESC
+  FETCH FIRST ROW ONLY
+</pre>
+                </li>
+                <li><strong>WITH UR</strong> (Uncommitted Read isolation):
+<pre class="code-block">
+SELECT EMPNO, LASTNAME, SALARY
+  FROM EMPLOYEE
+  WITH UR
+</pre>
+                </li>
+                <li><strong>Special Registers:</strong>
+<pre class="code-block">
+SELECT CURRENT DATE, CURRENT TIME, CURRENT TIMESTAMP,
+       CURRENT SERVER, USER, SESSION_USER
+  FROM SYSIBM.SYSDUMMY1
+</pre>
+                </li>
+                <li><strong>Table Functions:</strong>
+<pre class="code-block">
+SELECT *
+  FROM TABLE(ADMIN_GET_TAB_INFO('DBADMIN', 'EMPLOYEE')) AS T
+</pre>
+                </li>
+                <li><strong>EXPLAIN Statement</strong> (for query analysis):
+<pre class="code-block">
+EXPLAIN PLAN FOR
+  SELECT E.LASTNAME, D.DEPTNAME
+  FROM EMPLOYEE E
+  JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+  WHERE E.SALARY > 50000
+</pre>
+                </li>
+            </ul>
+
+            <h3>Query Optimization Techniques</h3>
+
+            <h4>Understanding the DB2 Optimizer</h4>
+            <p>The DB2 Optimizer determines the most efficient access path for executing SQL statements:</p>
+            <ul>
+                <li><strong>Key Optimizer Concepts:</strong>
+                    <ul>
+                        <li>Cost-based optimization: Evaluates multiple access paths and selects the least costly</li>
+                        <li>Statistics-based decisions: Uses catalog statistics about tables and indexes</li>
+                        <li>Join order selection: Determines the optimal order to join tables</li>
+                        <li>Index selection: Decides which indexes to use for access</li>
+                        <li>Predicate evaluation: Determines when and how to apply filtering conditions</li>
+                    </ul>
+                </li>
+                <li><strong>Influencing the Optimizer:</strong>
+                    <ul>
+                        <li>OPTIMIZE FOR n ROWS: Hints that application needs only n rows</li>
+                        <li>FETCH FIRST n ROWS ONLY: Limits result set size</li>
+                        <li>Optimizer hints: Special comments that influence decisions</li>
+                        <li>REOPT bind option: Causes reoptimization with actual parameter values</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>Index Design for Query Performance</h4>
+            <p>Proper index design is critical for SQL performance:</p>
+            <ul>
+                <li><strong>Index Types:</strong>
+                    <ul>
+                        <li>Regular index: <code class="code-block">CREATE INDEX IX_EMP_DEPT ON EMPLOYEE(DEPTNO)</code></li>
+                        <li>Unique index: <code class="code-block">CREATE UNIQUE INDEX IX_EMP_ID ON EMPLOYEE(EMPNO)</code></li>
+                        <li>Clustering index: <code class="code-block">CREATE INDEX IX_EMP_DEPT_CLUST ON EMPLOYEE(DEPTNO) CLUSTER</code></li>
+                        <li>Partitioned index: Aligns with table partitioning</li>
+                        <li>Non-partitioned index: Spans all partitions</li>
+                        <li>Data-partitioned secondary index (DPSI): Partitioned like the table</li>
+                        <li>Non-partitioned secondary index (NPSI): Global index across partitions</li>
+                    </ul>
+                </li>
+                <li><strong>Index Key Selection Strategies:</strong>
+                    <ul>
+                        <li>High cardinality columns first (more unique values)</li>
+                        <li>Match common query patterns</li>
+                        <li>Index for both filtering and sorting needs</li>
+                        <li>Consider covering indexes for frequently used columns</li>
+                        <li>Balance maintenance overhead with query benefit</li>
+                    </ul>
+                </li>
+                <li><strong>Indexing for Common Queries:</strong>
+                    <ul>
+                        <li>Equality predicates: Single-column index</li>
+                        <li>Range predicates: Index with range column first</li>
+                        <li>ORDER BY: Index matching sort order</li>
+                        <li>GROUP BY: Index on grouping columns</li>
+                        <li>Joins: Index on join columns</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>Statistics Management</h4>
+            <p>DB2 uses statistics to make optimization decisions:</p>
+            <ul>
+                <li><strong>Key Statistics:</strong>
+                    <ul>
+                        <li>CARDF: Number of rows in a table</li>
+                        <li>COLCARDF: Number of distinct values in a column</li>
+                        <li>HIGHKEY/LOWKEY: Highest and lowest values in a column</li>
+                        <li>QUANTILES: Distribution statistics</li>
+                        <li>FREQUENCY: Occurrence statistics for common values</li>
+                    </ul>
+                </li>
+                <li><strong>Gathering Statistics:</strong>
+<pre class="code-block">
+RUNSTATS TABLESPACE DBASE.TSPACE
+         TABLE(ALL)
+         INDEX(ALL)
+         SHRLEVEL CHANGE
+         UPDATE ALL
+</pre>
+                </li>
+                <li><strong>Monitoring Statistics Currency:</strong>
+<pre class="code-block">
+SELECT TABNAME, STATS_TIME
+  FROM SYSIBM.SYSTABSTATS
+  WHERE DBNAME = 'PRODDB'
+  ORDER BY STATS_TIME
+</pre>
+                </li>
+                <li><strong>Custom Statistics Profiles:</strong>
+<pre class="code-block">
+RUNSTATS TABLESPACE DBASE.TSPACE
+         TABLE(EMPLOYEE)
+         COLUMN(DEPTNO, SALARY)
+         INDEX(ALL)
+         SHRLEVEL REFERENCE
+         PROFILE SET
+</pre>
+                </li>
+            </ul>
+
+            <h4>Query Monitoring and Tuning</h4>
+            <p>Tools and techniques for identifying and resolving query performance issues:</p>
+            <ul>
+                <li><strong>Explain Plan Analysis:</strong>
+                    <ul>
+                        <li>EXPLAIN table structure</li>
+                        <li>Access path interpretation</li>
+                        <li>Join method analysis (nested loop, merge scan, hybrid)</li>
+                        <li>Table access methods (tablespace scan, index scan, etc.)</li>
+                        <li>Sort operations and temporary tables</li>
+                    </ul>
+                </li>
+                <li><strong>Dynamic Statement Cache Analysis:</strong>
+<pre class="code-block">
+SELECT SUBSTR(STMT_TEXT,1,50) AS SQL_TEXT,
+       NUM_EXECUTIONS,
+       TOTAL_CPU_TIME,
+       ROWS_FETCHED
+  FROM TABLE(DSN_STATEMENT_CACHE_TABLE()) AS T
+  ORDER BY TOTAL_CPU_TIME DESC
+  FETCH FIRST 20 ROWS ONLY
+</pre>
+                </li>
+                <li><strong>Using DB2 Traces:</strong>
+                    <ul>
+                        <li>Starting performance traces</li>
+                        <li>Accounting trace for thread-level statistics</li>
+                        <li>Statistics trace for system-level metrics</li>
+                        <li>Performance trace for detailed diagnostics</li>
+                        <li>Analyzing trace output with standard tools</li>
+                    </ul>
+                </li>
+                <li><strong>Query Rewrite Techniques:</strong>
+                    <ul>
+                        <li>Breaking complex queries into simpler ones</li>
+                        <li>Using temporary tables for intermediate results</li>
+                        <li>Rewriting subqueries as joins when appropriate</li>
+                        <li>Avoiding unnecessary DISTINCT operations</li>
+                        <li>Minimizing the use of functions on indexed columns</li>
+                    </ul>
+                </li>
             </ul>
         </section>
 
-        <section id="stored_procedures">
+        <section id="procedures">
             <h2>Developing and Managing Stored Procedures</h2>
-            <p>
-                Stored procedures are pre-compiled SQL code stored in the database, offering advantages for application development and management.
-            </p>
 
-            <h3>Benefits of Stored Procedures</h3>
+            <h3>Stored Procedure Fundamentals</h3>
+            <p>Stored procedures are precompiled SQL and procedural code that execute on the database server:</p>
             <ul>
-                <li><strong>Improved Performance:</strong> Reduced compilation overhead.</li>
-                <li><strong>Encapsulation:</strong>  Encapsulate complex logic.</li>
-                <li><strong>Enhanced Security:</strong> Control access to data.</li>
-                <li><strong>Reduced Network Traffic:</strong> Reduce communication overhead.</li>
-            </ul>
-
-            <h3>Creating Stored Procedures</h3>
-            <p>
-                Use <code>CREATE PROCEDURE</code>.
-            </p>
-            <div class="code-block">
-                <pre><code>
-CREATE PROCEDURE procedure_name (IN parameter1 data_type, OUT parameter2 data_type, ...)
+                <li><strong>Types of Stored Procedures in DB2:</strong>
+                    <ul>
+                        <li>External stored procedures (written in languages like COBOL, C, Java)</li>
+                        <li>Native SQL procedures (written entirely in SQL PL)</li>
+                        <li>External SQL procedures (SQL PL executed via generated C program)</li>
+                    </ul>
+                </li>
+                <li><strong>Basic Structure of an SQL Procedure:</strong>
+<pre class="code-block">
+CREATE PROCEDURE UPDATE_EMPLOYEE_SALARY
+    (IN EMP_ID CHAR(6),
+     IN SALARY_INCREASE DECIMAL(9,2))
+    LANGUAGE SQL
+    MODIFIES SQL DATA
+    WLM ENVIRONMENT WLMENV1
+    COMMIT ON RETURN YES
 BEGIN
-  -- SQL statements and procedural logic here
-END;
-                </code></pre>
-            </div>
-            <ul>
-                <li><code>IN</code>: Passes data in.</li>
-                <li><code>OUT</code>: Returns data.</li>
+    UPDATE EMPLOYEE
+    SET SALARY = SALARY + SALARY_INCREASE
+    WHERE EMPNO = EMP_ID;
+END
+</pre>
+                </li>
+                <li><strong>Procedure Parameters:</strong>
+                    <ul>
+                        <li>IN parameters: Input only, cannot be modified</li>
+                        <li>OUT parameters: Output only, for returning results</li>
+                        <li>INOUT parameters: Both input and output</li>
+                    </ul>
+                </li>
+                <li><strong>Execution Context Options:</strong>
+                    <ul>
+                        <li>WLM ENVIRONMENT: Execution environment</li>
+                        <li>STAY RESIDENT: Memory management option</li>
+                        <li>COMMIT ON RETURN: Transaction behavior</li>
+                        <li>PARAMETER STYLE: How parameters are passed</li>
+                        <li>DYNAMIC RESULT SETS: Number of result sets allowed</li>
+                    </ul>
+                </li>
             </ul>
 
-            <h3>Managing Stored Procedures</h3>
-            <p>
-                DB2 provides statements for management:
-            </p>
+            <h3>SQL Procedure Language (SQL PL)</h3>
+            <p>SQL PL extends basic SQL with procedural constructs:</p>
             <ul>
-                <li><code>CALL</code>: Executes.</li>
-                <li><code>ALTER PROCEDURE</code>: Modifies.</li>
-                <li><code>DROP PROCEDURE</code>: Deletes.</li>
-                <li><code>GRANT</code>/<code>REVOKE</code>: Controls access.</li>
+                <li><strong>Variable Declaration and Assignment:</strong>
+<pre class="code-block">
+DECLARE SALARY_SUM DECIMAL(15,2);
+DECLARE DEPT_ID CHAR(3) DEFAULT '100';
+SET SALARY_SUM = 0;
+</pre>
+                </li>
+                <li><strong>Control Flow Statements:</strong>
+                    <ul>
+                        <li>IF-THEN-ELSE:
+<pre class="code-block">
+IF SALARY > 50000 THEN
+    SET BONUS = SALARY * 0.10;
+ELSEIF SALARY > 30000 THEN
+    SET BONUS = SALARY * 0.05;
+ELSE
+    SET BONUS = 1000;
+END IF;
+</pre>
+                        </li>
+                        <li>CASE Statement:
+<pre class="code-block">
+CASE DEPT_ID
+    WHEN '100' THEN SET LOCATION = 'HQ';
+    WHEN '200' THEN SET LOCATION = 'BRANCH';
+    ELSE SET LOCATION = 'REMOTE';
+END CASE;
+</pre>
+                        </li>
+                        <li>Loops:
+<pre class="code-block">
+-- Simple LOOP
+LOOP
+    FETCH employee_cursor INTO v_empno, v_lastname;
+    IF sqlstate = '02000' THEN
+        LEAVE;
+    END IF;
+    -- Process row
+END LOOP;
+
+-- WHILE LOOP
+WHILE counter < 10 DO
+    SET counter = counter + 1;
+    -- Process iteration
+END WHILE;
+
+-- FOR LOOP
+FOR v_counter FROM 1 TO 10 DO
+    -- Process iteration
+END FOR;
+</pre>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Error Handling:</strong>
+<pre class="code-block">
+DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+BEGIN
+    -- Error handling logic
+    GET DIAGNOSTICS CONDITION 1
+        v_sqlcode = DB2_RETURNED_SQLCODE,
+        v_sqlstate = RETURNED_SQLSTATE,
+        v_message = MESSAGE_TEXT;
+END;
+</pre>
+                </li>
+                <li><strong>Dynamic SQL:</strong>
+<pre class="code-block">
+DECLARE stmt VARCHAR(1000);
+SET stmt = 'UPDATE EMPLOYEE SET SALARY = SALARY * 1.05 WHERE DEPTNO = ?';
+PREPARE s1 FROM stmt;
+EXECUTE s1 USING dept_id;
+</pre>
+                </li>
+            </ul>
+
+            <h3>Cursor Management</h3>
+            <p>Cursors allow row-by-row processing of result sets:</p>
+            <ul>
+                <li><strong>Declaring and Using Cursors:</strong>
+<pre class="code-block">
+DECLARE employee_cursor CURSOR FOR
+    SELECT EMPNO, LASTNAME, SALARY
+    FROM EMPLOYEE
+    WHERE DEPTNO = dept_id
+    ORDER BY SALARY DESC;
+
+OPEN employee_cursor;
+
+fetch_loop: LOOP
+    FETCH employee_cursor INTO v_empno, v_lastname, v_salary;
+    IF sqlstate = '02000' THEN
+        LEAVE fetch_loop;
+    END IF;
+
+    -- Process row data
+
+END LOOP;
+
+CLOSE employee_cursor;
+</pre>
+                </li>
+                <li><strong>Cursor Attributes:</strong>
+                    <ul>
+                        <li>SENSITIVE/INSENSITIVE: Whether cursor reflects data changes</li>
+                        <li>SCROLL/NO SCROLL: Whether cursor can move backwards</li>
+                        <li>WITH HOLD/WITHOUT HOLD: Whether cursor stays open across commits</li>
+                        <li>FOR UPDATE: Whether positioned updates are allowed</li>
+                    </ul>
+                </li>
+                <li><strong>Advanced Cursor Operations:</strong>
+<pre class="code-block">
+-- Scrollable cursor
+DECLARE scroll_cursor SCROLL CURSOR FOR
+    SELECT * FROM EMPLOYEE
+    WHERE DEPTNO = dept_id;
+
+OPEN scroll_cursor;
+
+-- Various positioning options
+FETCH FIRST FROM scroll_cursor INTO cursor_vars;
+FETCH LAST FROM scroll_cursor INTO cursor_vars;
+FETCH ABSOLUTE 5 FROM scroll_cursor INTO cursor_vars;
+FETCH RELATIVE -2 FROM scroll_cursor INTO cursor_vars;
+FETCH PRIOR FROM scroll_cursor INTO cursor_vars;
+
+CLOSE scroll_cursor;
+</pre>
+                </li>
+            </ul>
+
+            <h3>Stored Procedure Best Practices</h3>
+            <ul>
+                <li><strong>Performance Considerations:</strong>
+                    <ul>
+                        <li>Minimize network round trips</li>
+                        <li>Use appropriate isolation levels</li>
+                        <li>Manage transactions carefully</li>
+                        <li>Consider caching frequently accessed data</li>
+                        <li>Limit dynamic SQL when possible</li>
+                        <li>Use FETCH FIRST to limit result sets</li>
+                        <li>Return only necessary columns</li>
+                    </ul>
+                </li>
+                <li><strong>Security Practices:</strong>
+                    <ul>
+                        <li>Run with minimal required privileges</li>
+                        <li>Validate input parameters</li>
+                        <li>Use parameter markers to prevent SQL injection</li>
+                        <li>Consider using SECURITY DEFINER for controlled privilege escalation</li>
+                        <li>Audit sensitive procedure executions</li>
+                    </ul>
+                </li>
+                <li><strong>Error Handling Strategies:</strong>
+                    <ul>
+                        <li>Consistent error handling pattern</li>
+                        <li>Proper use of HANDLER declarations</li>
+                        <li>Meaningful error messages</li>
+                        <li>Transaction management on error</li>
+                        <li>Logging errors for troubleshooting</li>
+                    </ul>
+                </li>
+                <li><strong>Maintenance and Versioning:</strong>
+                    <ul>
+                        <li>Version numbering in procedure names</li>
+                        <li>Documentation in procedure comments</li>
+                        <li>Change control processes</li>
+                        <li>Testing procedures for backward compatibility</li>
+                        <li>Managing dependent objects</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Deploying and Managing Stored Procedures</h3>
+            <ul>
+                <li><strong>Procedure Deployment Process:</strong>
+                    <ul>
+                        <li>Development environment creation</li>
+                        <li>Code reviews and testing</li>
+                        <li>Migration to test/QA environments</li>
+                        <li>Performance testing</li>
+                        <li>Production deployment planning</li>
+                        <li>Implementation during maintenance windows</li>
+                        <li>Post-implementation verification</li>
+                    </ul>
+                </li>
+                <li><strong>WLM Configuration for Procedure Execution:</strong>
+                    <ul>
+                        <li>Creating WLM application environments</li>
+                        <li>Setting resource limits and priorities</li>
+                        <li>Configuring address space management</li>
+                        <li>Monitoring and tuning WLM environments</li>
+                        <li>Managing server classes for different procedure types</li>
+                    </ul>
+                </li>
+                <li><strong>Administration Tasks:</strong>
+                    <ul>
+                        <li>START/STOP PROCEDURE commands</li>
+                        <li>Refreshing procedure definitions</li>
+                        <li>Monitoring procedure executions</li>
+                        <li>Analyzing resource consumption</li>
+                        <li>Identifying long-running procedures</li>
+                        <li>Handling procedure failures</li>
+                    </ul>
+                </li>
+                <li><strong>Troubleshooting Common Issues:</strong>
+                    <ul>
+                        <li>WLM environment problems</li>
+                        <li>Parameter passing errors</li>
+                        <li>Authorization failures</li>
+                        <li>Memory constraints</li>
+                        <li>Deadlocks and timeouts</li>
+                        <li>Procedure versioning conflicts</li>
+                    </ul>
+                </li>
             </ul>
         </section>
 
-        <section id="application_interaction">
+        <section id="interaction">
             <h2>Understanding Application Interaction with DB2</h2>
-            <p>
-                Applications interact with DB2 in various ways.
-            </p>
 
-            <h3>Common Application Interaction Methods</h3>
+            <h3>DB2 Application Architecture</h3>
+            <p>Understanding how applications interact with DB2 is essential for effective development:</p>
             <ul>
-                <li><strong>Embedded SQL:</strong> SQL embedded in application code.
-                     <p class="note">
-                        Fun Fact: Embedded SQL was an early method.
-                     </p>
+                <li><strong>Key Components:</strong>
+                    <ul>
+                        <li>Application program (COBOL, PL/I, C, Java, etc.)</li>
+                        <li>SQL statements embedded in application code</li>
+                        <li>Precompiler/compiler for language-specific processing</li>
+                        <li>DB2 bind process for package creation</li>
+                        <li>Runtime execution environment</li>
+                        <li>DB2 attachment facilities for connectivity</li>
+                    </ul>
                 </li>
-                <li><strong>Call Level Interface (CLI):</strong> Function calls (e.g., ODBC).</li>
-                <li><strong>JDBC (Java Database Connectivity):</strong> Java interaction.</li>
-                 <li><strong>Web Services:</strong> Access through web services.</li>
+                <li><strong>Program Preparation Process:</strong>
+                    <ol>
+                        <li>Create source program with embedded SQL</li>
+                        <li>Precompile to convert SQL to language calls</li>
+                        <li>Compile and link the program</li>
+                        <li>Bind the resulting DBRM to create packages</li>
+                        <li>Execute the program</li>
+                    </ol>
+                </li>
+                <li><strong>Package and Plan Concepts:</strong>
+                    <ul>
+                        <li>Package: Compiled form of SQL statements from a single source</li>
+                        <li>Plan: Collection of packages executed as a unit</li>
+                        <li>Collection: Group of related packages</li>
+                        <li>Version: Different iterations of the same package</li>
+                    </ul>
+                </li>
+                <li><strong>Bind Process Options:</strong>
+                    <ul>
+                        <li>ISOLATION: Concurrency control level</li>
+                        <li>CURRENTDATA: Data currency requirements</li>
+                        <li>REOPT: When to optimize with parameter values</li>
+                        <li>RELEASE: When to release locks</li>
+                        <li>VALIDATE: When to check authorization</li>
+                        <li>EXPLAIN: Whether to generate EXPLAIN information</li>
+                        <li>DYNAMICRULES: How dynamic SQL behaves</li>
+                    </ul>
+                </li>
             </ul>
 
-            <h3>Connection Management</h3>
-            <p>
-                Crucial for application development. Connection pooling improves performance.
-            </p>
+            <h3>DB2 Connection Methods</h3>
+            <p>Applications connect to DB2 through various attachment facilities:</p>
+            <ul>
+                <li><strong>TSO Attachment Facility (TSO/E):</strong>
+                    <ul>
+                        <li>Interactive usage via DSN command</li>
+                        <li>SPUFI for ad-hoc SQL queries</li>
+                        <li>QMF interface for reporting</li>
+                        <li>DSN commands in batch TSO</li>
+                    </ul>
+                </li>
+                <li><strong>Call Attachment Facility (CAF):</strong>
+                    <ul>
+                        <li>Direct API for DB2 connection</li>
+                        <li>Provides maximum control over connection</li>
+                        <li>Requires explicit connect/disconnect calls</li>
+                        <li>Used primarily in batch environments</li>
+                        <li>Supports multiple simultaneous connections</li>
+                    </ul>
+                </li>
+                <li><strong>Resource Recovery Services Attachment Facility (RRSAF):</strong>
+                    <ul>
+                        <li>Enhanced connection facility</li>
+                        <li>Supports z/OS Resource Recovery Services</li>
+                        <li>Better transaction control than CAF</li>
+                        <li>Allows thread management operations</li>
+                        <li>Used for complex batch processing</li>
+                    </ul>
+                </li>
+                <li><strong>CICS Attachment Facility:</strong>
+                    <ul>
+                        <li>Manages DB2 connections from CICS regions</li>
+                        <li>Supports transaction-level thread assignment</li>
+                        <li>Provides connection pooling</li>
+                        <li>Handles two-phase commit coordination</li>
+                        <li>DSNC commands for administration</li>
+                    </ul>
+                </li>
+                <li><strong>IMS Attachment Facility:</strong>
+                    <ul>
+                        <li>Connects IMS applications to DB2</li>
+                        <li>Coordinates transactions across subsystems</li>
+                        <li>Handles recovery synchronization</li>
+                        <li>Manages resource scheduling</li>
+                        <li>Supports dependent and BMPs regions</li>
+                    </ul>
+                </li>
+                <li><strong>Distributed Data Facility (DDF):</strong>
+                    <ul>
+                        <li>DRDA protocol for distributed access</li>
+                        <li>Java applications via JDBC drivers</li>
+                        <li>.NET applications via ADO.NET providers</li>
+                        <li>ODBC connections for various clients</li>
+                        <li>REST API access for web applications</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Application Programming Interfaces (APIs)</h3>
+            <ul>
+                <li><strong>Embedded SQL Interface:</strong>
+                    <ul>
+                        <li>SQL statements directly in program source</li>
+                        <li>Host variables for data exchange</li>
+                        <li>SQLCA structure for status information</li>
+                        <li>WHENEVER statements for error handling</li>
+                        <li>INCLUDE statements for common structures</li>
+                    </ul>
+                </li>
+                <li><strong>Dynamic SQL Interface:</strong>
+                    <ul>
+                        <li>PREPARE statement for dynamic SQL</li>
+                        <li>EXECUTE for running prepared statements</li>
+                        <li>EXECUTE IMMEDIATE for one-time execution</li>
+                        <li>Parameter markers for variable data</li>
+                        <li>DESCRIBE for metadata retrieval</li>
+                    </ul>
+                </li>
+                <li><strong>Java Database Connectivity (JDBC):</strong>
+                    <ul>
+                        <li>Type 2 driver for local connections</li>
+                        <li>Type 4 driver for network connections</li>
+                        <li>Connection pooling capabilities</li>
+                        <li>Prepared statements for efficiency</li>
+                        <li>ResultSet processing for data retrieval</li>
+                        <li>Batch updates for performance</li>
+                    </ul>
+                </li>
+                <li><strong>ODBC Interface:</strong>
+                    <ul>
+                        <li>Standard API for database access</li>
+                        <li>Connection attributes configuration</li>
+                        <li>Statement preparation and execution</li>
+                        <li>Result set processing</li>
+                        <li>Metadata functions</li>
+                        <li>Transaction management</li>
+                    </ul>
+                </li>
+                <li><strong>REST API Services:</strong>
+                    <ul>
+                        <li>HTTP-based access to DB2 data</li>
+                        <li>JSON data format for exchange</li>
+                        <li>Authentication via standard mechanisms</li>
+                        <li>Resource-oriented design</li>
+                        <li>Integration with web applications</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Data Types and Data Conversion</h3>
+            <p>Understanding data types and conversions is critical for application development:</p>
+            <ul>
+                <li><strong>DB2 Data Types Mapping:</strong>
+                    <ul>
+                        <li>SMALLINT → 16-bit integer</li>
+                        <li>INTEGER → 32-bit integer</li>
+                        <li>BIGINT → 64-bit integer</li>
+                        <li>DECIMAL → Packed decimal</li>
+                        <li>REAL/FLOAT → Single/double precision floating point</li>
+                        <li>CHAR → Fixed-length character string</li>
+                        <li>VARCHAR → Variable-length character string</li>
+                        <li>GRAPHIC → Fixed-length double-byte character</li>
+                        <li>VARGRAPHIC → Variable-length double-byte character</li>
+                        <li>DATE/TIME/TIMESTAMP → Temporal types</li>
+                        <li>BLOB/CLOB/DBCLOB → Large objects</li>
+                        <li>XML → Native XML data</li>
+                    </ul>
+                </li>
+                <li><strong>Host Variable Declaration:</strong>
+<pre class="code-block">
+* COBOL host variables
+  01 HOST-VARIABLES.
+     05 HV-EMPNO       PIC X(6).
+     05 HV-LASTNAME    PIC X(15).
+     05 HV-SALARY      PIC S9(7)V99 COMP-3.
+     05 HV-HIRE-DATE   PIC X(10).
+     05 HV-COMM-NULL   PIC S9(4) COMP.
+     05 HV-COMM        PIC S9(7)V99 COMP-3.
+</pre>
+                </li>
+                <li><strong>Handling NULL Values:</strong>
+                    <ul>
+                        <li>Indicator variables for NULL detection</li>
+                        <li>Testing indicator variables in application code</li>
+                        <li>Setting NULL values with indicators</li>
+                        <li>Special NULL handling for different APIs</li>
+                    </ul>
+                </li>
+                <li><strong>Code Page and Character Conversion:</strong>
+                    <ul>
+                        <li>CCSID (Coded Character Set Identifier) concepts</li>
+                        <li>Conversion between different character sets</li>
+                        <li>Managing mixed SBCS/DBCS data</li>
+                        <li>Handling UTF-8 and other Unicode encodings</li>
+                        <li>Conversion warnings and errors</li>
+                    </ul>
+                </li>
+            </ul>
 
             <h3>Transaction Management</h3>
-            <p>
-                Ensures data consistency. Applications must manage transactions properly.
-            </p>
+            <p>Proper transaction management ensures data integrity and application consistency:</p>
+            <ul>
+                <li><strong>Basic Transaction Concepts:</strong>
+                    <ul>
+                        <li>Unit of work: Set of SQL statements treated as a unit</li>
+                        <li>Commit: Makes changes permanent</li>
+                        <li>Rollback: Undoes changes within a unit of work</li>
+                        <li>Transaction boundaries: BEGIN/COMMIT/ROLLBACK</li>
+                        <li>Savepoints: Partial rollback points</li>
+                    </ul>
+                </li>
+                <li><strong>Isolation Levels:</strong>
+                    <ul>
+                        <li>Uncommitted Read (UR): Allows dirty reads</li>
+                        <li>Cursor Stability (CS): Row-level locking</li>
+                        <li>Read Stability (RS): Range protection</li>
+                        <li>Repeatable Read (RR): Full isolation</li>
+                        <li>Choosing appropriate levels for workload</li>
+                    </ul>
+                </li>
+                <li><strong>Locking Considerations:</strong>
+                    <ul>
+                        <li>Lock modes (S, U, X, IS, IX, SIX)</li>
+                        <li>Lock escalation</li>
+                        <li>Deadlock detection and resolution</li>
+                        <li>Timeout handling</li>
+                        <li>LOCKSIZE parameter effects</li>
+                    </ul>
+                </li>
+                <li><strong>Two-Phase Commit Protocol:</strong>
+                    <ul>
+                        <li>Distributed transaction coordination</li>
+                        <li>Prepare phase</li>
+                        <li>Commit phase</li>
+                        <li>Recovery after failure</li>
+                        <li>In-doubt resolution</li>
+                    </ul>
+                </li>
+                <li><strong>Application Coding for Transactions:</strong>
+                    <ul>
+                        <li>Setting isolation levels</li>
+                        <li>Explicit LOCK TABLE statements</li>
+                        <li>Managing deadlocks</li>
+                        <li>Using WITH UR for read-only queries</li>
+                        <li>Savepoint management</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Error Handling and Diagnostics</h3>
+            <p>Robust error handling is essential for reliable applications:</p>
+            <ul>
+                <li><strong>SQLCA Structure:</strong>
+                    <ul>
+                        <li>SQLCODE field for error codes</li>
+                        <li>SQLSTATE for standardized status codes</li>
+                        <li>SQLERRM for error messages</li>
+                        <li>SQLERRD array for additional information</li>
+                        <li>SQLWARN flags for warnings</li>
+                    </ul>
+                </li>
+                <li><strong>GET DIAGNOSTICS Statement:</strong>
+<pre class="code-block">
+EXEC SQL GET DIAGNOSTICS :rc = RETURN_CODE,
+                           :rows = ROW_COUNT;
+
+EXEC SQL GET DIAGNOSTICS CONDITION 1
+                           :sqlcode = DB2_RETURNED_SQLCODE,
+                           :sqlstate = RETURNED_SQLSTATE,
+                           :message = MESSAGE_TEXT;
+</pre>
+                </li>
+                <li><strong>Error Handling Patterns:</strong>
+                    <ul>
+                        <li>Checking SQLCODE after each statement</li>
+                        <li>Using WHENEVER statements for error routing</li>
+                        <li>Implementing error recovery logic</li>
+                        <li>Graceful degradation options</li>
+                        <li>Error logging and reporting</li>
+                    </ul>
+                </li>
+                <li><strong>Diagnostic Tools:</strong>
+                    <ul>
+                        <li>DB2 traces for problem determination</li>
+                        <li>EXPLAIN for query analysis</li>
+                        <li>DSN_STATEMENT_CACHE for dynamic SQL issues</li>
+                        <li>DB2 catalog queries for object information</li>
+                        <li>System logs and console messages</li>
+                    </ul>
+                </li>
+            </ul>
         </section>
+
+        <section id="performance">
+            <h2>Performance Considerations for Applications</h2>
+            <p>Application design significantly impacts overall system performance:</p>
+            <ul>
+                <li><strong>Efficient SQL Usage:</strong>
+                    <ul>
+                        <li>Using predicates efficiently</li>
+                        <li>Minimizing sort operations</li>
+                        <li>Proper join techniques</li>
+                        <li>Appropriate subquery usage</li>
+                        <li>Limiting result set size</li>
+                    </ul>
+                </li>
+                <li><strong>Connection Management:</strong>
+                    <ul>
+                        <li>Connection pooling</li>
+                        <li>Thread reuse</li>
+                        <li>Connection concentration</li>
+                        <li>Statement caching</li>
+                        <li>Managing idle connections</li>
+                    </ul>
+                </li>
+                <li><strong>Batch Processing Techniques:</strong>
+                    <ul>
+                        <li>Multi-row inserts</li>
+                        <li>Bulk inserts with LOAD</li>
+                        <li>Commit frequency optimization</li>
+                        <li>Parallel processing</li>
+                        <li>Partitioning workloads</li>
+                    </ul>
+                </li>
+                <li><strong>Buffer Pool Interaction:</strong>
+                    <ul>
+                        <li>Sequential detection</li>
+                        <li>List prefetch</li>
+                        <li>Dynamic prefetch</li>
+                        <li>Page-range screening</li>
+                        <li>Hiperpools (where available)</li>
+                    </ul>
+                </li>
+                <li><strong>Program Design Considerations:</strong>
+                    <ul>
+                        <li>Minimizing network round trips</li>
+                        <li>Managing static vs. dynamic SQL</li>
+                        <li>Appropriate cursor usage</li>
+                        <li>Statement concentration</li>
+                        <li>Real-time vs. batch processing decisions</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section id="security">
+            <h2>Security in Application Development</h2>
+            <p>Security must be integrated into the application development lifecycle:</p>
+            <ul>
+                <li><strong>Authentication Methods:</strong>
+                    <ul>
+                        <li>Password authentication</li>
+                        <li>Kerberos authentication</li>
+                        <li>Certificate-based authentication</li>
+                        <li>Passticket authentication</li>
+                        <li>Multi-factor authentication</li>
+                    </ul>
+                </li>
+                <li><strong>Authorization Models:</strong>
+                    <ul>
+                        <li>DB2 privileges and authorities</li>
+                        <li>Role-based access control</li>
+                        <li>Row and column access control</li>
+                        <li>Dynamic SQL privilege checking</li>
+                        <li>Least privilege principles</li>
+                    </ul>
+                </li>
+                <li><strong>SQL Injection Prevention:</strong>
+                    <ul>
+                        <li>Using parameter markers</li>
+                        <li>Input validation</li>
+                        <li>Prepared statements</li>
+                        <li>Stored procedures for data access</li>
+                        <li>Avoiding dynamic SQL construction</li>
+                    </ul>
+                </li>
+                <li><strong>Encryption Options:</strong>
+                    <ul>
+                        <li>Data encryption for sensitive columns</li>
+                        <li>DRDA encryption for network traffic</li>
+                        <li>SSL/TLS for secure connections</li>
+                        <li>Key management considerations</li>
+                        <li>Performance impact of encryption</li>
+                    </ul>
+                </li>
+                <li><strong>Auditing and Compliance:</strong>
+                    <ul>
+                        <li>DB2 audit trace</li>
+                        <li>Application-level audit logging</li>
+                        <li>Separation of duties</li>
+                        <li>Regulatory compliance requirements</li>
+                        <li>Privacy considerations</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+        </footer>
     </div>
 </body>
-
-<footer>
-    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
-</footer>
 </html>
