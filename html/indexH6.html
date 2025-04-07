@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB2 Mainframe DBA - Chapter 6: Security and Compliance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <title>DB2 Security and Compliance - Mainframe Edition</title>
+
     <style>
-        /* General styles */
+        /* General styles - Mainframe inspired but optimized for learning */
         body {
             background-color: #0a0a14;
             color: #b3ffb3;
@@ -42,6 +42,7 @@
             background-color: #001a00;
             padding: 10px 0;
             margin-bottom: 30px;
+            border-top: 1px solid #33ff33; /* Added top border */
             border-bottom: 1px solid #33ff33;
         }
         nav ul {
@@ -50,9 +51,10 @@
             margin: 0;
             display: flex;
             justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
         }
         nav li {
-            margin: 0 15px;
+            margin: 5px 15px; /* Add vertical margin for wrapped items */
         }
         nav a {
             color: #33ff33;
@@ -68,108 +70,152 @@
         }
         section {
             margin-bottom: 40px;
-            padding: 20px;
-            background-color: rgba(0, 26, 0, 0.3);
-            border-left: 3px solid #33ff33;
+            padding: 25px; /* Increased padding */
+            background-color: rgba(0, 26, 0, 0.4); /* Slightly adjusted background */
+            border-left: 4px solid #33ff33; /* Increased border thickness */
+            border-radius: 5px; /* Added slight rounding */
         }
         h2 {
             color: #00ff99;
-            border-bottom: 1px solid #00ff99;
-            padding-bottom: 10px;
-            font-size: 1.8rem;
+            border-bottom: 2px solid #00ff99; /* Thicker border */
+            padding-bottom: 12px; /* Increased padding */
+            margin-bottom: 25px; /* Increased margin */
+            font-size: 1.9rem; /* Slightly larger */
+            text-transform: uppercase; /* Uppercase headings */
+            letter-spacing: 1px;
         }
         h3 {
             color: #00ffcc;
-            font-size: 1.4rem;
-            margin-top: 25px;
+            font-size: 1.5rem; /* Slightly larger */
+            margin-top: 30px; /* Increased margin */
+            margin-bottom: 15px;
+            border-left: 3px solid #00ffcc; /* Accent border */
+            padding-left: 10px;
+        }
+        h4 { /* Style for h4 */
+            color: #00e6b8; /* Slightly different color */
+            font-size: 1.3rem; /* Slightly larger */
+            margin-top: 25px; /* Increased margin */
+            margin-bottom: 10px;
+            text-decoration: underline;
+            text-decoration-color: #00e6b8;
         }
         p {
             margin-bottom: 20px;
             font-size: 1.1rem;
+            text-align: justify; /* Justify text for block appearance */
         }
         .code-block {
             background-color: #000000;
             border: 1px solid #33ff33;
             border-radius: 5px;
-            padding: 15px;
-            margin: 20px 0;
+            padding: 20px; /* Increased padding */
+            margin: 25px 0; /* Increased margin */
             overflow-x: auto;
             font-family: 'Courier New', monospace;
-            color: #33ff33;
+            font-size: 1.0rem; /* Adjusted font size */
+            color: #66ff66; /* Slightly softer green */
+            white-space: pre; /* Preserve whitespace and line breaks */
+            box-shadow: inset 0 0 8px rgba(51, 255, 51, 0.2); /* Inner glow */
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            background-color: rgba(0, 0, 0, 0.5);
+            margin: 25px 0; /* Increased margin */
+            background-color: rgba(0, 0, 0, 0.6); /* Darker background */
+            border: 1px solid #33ff33; /* Add outer border */
         }
         th, td {
-            padding: 12px 15px;
+            padding: 14px 18px; /* Increased padding */
             text-align: left;
-            border-bottom: 1px solid #33ff33;
+            border: 1px solid #228822; /* Internal cell borders */
         }
         th {
-            background-color: #001a00;
+            background-color: #002a00; /* Darker header */
             color: #00ff99;
             text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+            font-size: 1.0rem; /* Larger header font */
+            letter-spacing: 1.5px; /* Increased spacing */
+            border-bottom: 2px solid #33ff33; /* Thicker bottom border */
         }
         tr:hover {
-            background-color: rgba(51, 255, 51, 0.1);
+            background-color: rgba(51, 255, 51, 0.15); /* Slightly stronger hover */
         }
         ul, ol {
-            padding-left: 25px;
+            padding-left: 30px; /* Increased padding */
             margin-bottom: 20px;
+            list-style-type: square; /* Changed bullet style */
         }
         li {
-            margin-bottom: 10px;
+            margin-bottom: 12px; /* Increased spacing */
+        }
+        /* Custom list style for better visibility */
+        ul li::marker {
+            color: #00ff99;
+        }
+        ol {
+            list-style-type: decimal;
+        }
+        ol li::marker {
+            color: #00ffcc;
+            font-weight: bold;
         }
         .note {
-            background-color: rgba(0, 26, 51, 0.5);
-            border-left: 4px solid #3399ff;
-            padding: 15px;
-            margin: 20px 0;
-            color: #99ccff;
+            background-color: rgba(0, 26, 51, 0.6); /* Darker blue */
+            border-left: 5px solid #3399ff; /* Thicker border */
+            padding: 18px; /* Increased padding */
+            margin: 25px 0; /* Increased margin */
+            color: #ade6ff; /* Lighter blue text */
+            border-radius: 4px;
         }
         .important {
-            background-color: rgba(51, 0, 0, 0.5);
-            border-left: 4px solid #ff3333;
-            padding: 15px;
-            margin: 20px 0;
-            color: #ffb3b3;
+            background-color: rgba(51, 0, 0, 0.6); /* Darker red */
+            border-left: 5px solid #ff3333; /* Thicker border */
+            padding: 18px; /* Increased padding */
+            margin: 25px 0; /* Increased margin */
+            color: #ffcccc; /* Lighter red text */
+            border-radius: 4px;
+            font-weight: bold;
         }
         .terminal {
-            background-color: #000000;
+            background-color: #05050a; /* Slightly different black */
             border-radius: 5px;
-            padding: 15px;
-            margin: 20px 0;
+            padding: 20px; /* Increased padding */
+            margin: 25px 0; /* Increased margin */
             font-family: 'Courier New', monospace;
-            color: #33ff33;
-            border: 1px solid #33ff33;
+            color: #99ff99; /* Lighter green */
+            border: 1px dashed #33ff33; /* Dashed border */
             position: relative;
+            white-space: pre;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
         .terminal::before {
-            content: "z/OS >";
-            color: #00ff99;
+            content: "SEC_CONSOLE >"; /* Changed prompt for security context */
+            color: #ff6347; /* Tomato color prompt for emphasis */
             font-weight: bold;
             margin-right: 10px;
+            display: block; /* Make prompt appear on its own line */
+            margin-bottom: 8px;
         }
         .diagram {
-            background-color: #000000;
+            background-color: #000500; /* Very dark green */
             border: 1px solid #33ff33;
-            padding: 20px;
-            margin: 20px 0;
+            padding: 25px; /* Increased padding */
+            margin: 25px 0; /* Increased margin */
             text-align: center;
+            font-style: italic;
+            color: #99ff99;
+            border-radius: 5px;
         }
         footer {
             text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            border-top: 1px solid #33ff33;
-            font-size: 0.9rem;
+            padding: 25px; /* Increased padding */
+            margin-top: 50px; /* Increased margin */
+            border-top: 2px solid #33ff33; /* Thicker border */
+            font-size: 1.0rem; /* Larger font */
             color: #66ff66;
         }
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -187,169 +233,547 @@
             h2 {
                 font-size: 1.5rem;
             }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
+            p {
+                font-size: 1.0rem; /* Adjust paragraph font size */
+                text-align: left; /* Revert justification on small screens if needed */
+            }
+            .code-block, .terminal {
+                font-size: 0.9rem; /* Smaller code font on mobile */
+            }
         }
     </style>
 </head>
 <body>
+
     <div class="container">
+
         <header>
-            <h1>DB2 Mainframe DBA</h1>
-            <p>Chapter 6: Security and Compliance</p>
-        </header>
+            <h1>DB2 Security and Compliance</h1>
+            </header>
+
         <nav>
             <ul>
-                <li><a href="#introduction">Introduction</a></li>
-                <li><a href="#access_control">Implementing Access Control</a></li>
-                <li><a href="#user_rights">Managing User Rights</a></li>
-                <li><a href="#data_privacy">Ensuring Data Privacy and Compliance</a></li>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#authn_authz">Authentication & Authorization</a></li>
+                <li><a href="#privs_auths">Privileges & Authorities</a></li>
+                <li><a href="#rbac">Role-Based Access</a></li>
+                <li><a href="#dac">Discretionary Access</a></li>
+                <li><a href="#lbac">Label-Based Access (LBAC)</a></li>
+                <li><a href="#rcac">Row/Column Access (RCAC)</a></li>
+                <li><a href="#trusted_contexts">Trusted Contexts</a></li>
+                <li><a href="#auditing">Auditing</a></li>
+                <li><a href="#encryption">Encryption</a></li>
+                <li><a href="#compliance">Compliance</a></li>
+                <li><a href="#best_practices">Best Practices</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
             </ul>
         </nav>
 
-        <section id="introduction">
-            <h2>Introduction</h2>
+        <section id="intro">
+            <h2>Introduction to DB2 Security</h2>
             <p>
-                This chapter covers the crucial aspects of security and compliance in DB2 Mainframe environments.  Securing data and ensuring compliance with relevant regulations is of utmost importance for any DBA.
+                Security is a paramount concern in database management, especially within mainframe environments where DB2 often safeguards an organization's most critical and sensitive data assets. DB2 for z/OS offers a robust and multi-layered security framework. This framework integrates seamlessly with the underlying z/OS security mechanisms (like RACF, ACF2, or Top Secret) while providing granular, database-specific controls. This layered approach ensures comprehensive protection against unauthorized access, modification, or disclosure of data, while ensuring availability for legitimate users and applications.
             </p>
+            <h3>Core Security Principles in DB2</h3>
             <p>
-                We'll cover implementing access control, managing user rights, and ensuring data privacy and compliance to protect DB2 systems from unauthorized access and data breaches.
+                The design and implementation of DB2 security measures are guided by several fundamental principles:
             </p>
+            <ul>
+                <li><strong>Defense in Depth:</strong> Employing multiple, overlapping security controls (network, OS, DB2 authentication, authorization, auditing) so that if one layer fails, others provide backup protection. No single point of failure!</li>
+                <li><strong>Principle of Least Privilege:</strong> Granting users and applications only the minimum set of permissions required to perform their intended functions. Avoid overly broad authorities like SYSADM unless absolutely necessary.</li>
+                <li><strong>Separation of Duties:</strong> Dividing security-sensitive responsibilities among different roles or individuals. For example, separating the security administrator (SECADM) role from the system administrator (SYSADM) role.</li>
+                <li><strong>Auditability:</strong> Ensuring that all significant security-related events (logins, privilege grants/revokes, data access attempts, object modifications) can be reliably logged and reviewed. You need to know who did what, when!</li>
+                <li><strong>Regulatory Compliance:</strong> Designing and implementing security controls that meet or exceed the requirements of relevant industry regulations and data privacy laws (e.g., GDPR, HIPAA, PCI DSS, SOX).</li>
+                <li><strong>Flexible Implementation:</strong> Providing mechanisms (like Roles, Trusted Contexts, RCAC, LBAC) that allow security policies to be tailored to specific organizational structures, application needs, and risk profiles.</li>
+            </ul>
+            <div class="note">
+                Understanding these core principles is essential for designing and maintaining a truly secure DB2 environment. Security isn't just about features; it's about a mindset and a structured approach.
+            </div>
         </section>
 
-        <section id="access_control">
-            <h2>Implementing Access Control</h2>
+        <section id="authn_authz">
+            <h2>Authentication & Authorization Models</h2>
             <p>
-                Access control is the process of restricting access to DB2 data and resources.  This includes identifying and authenticating users, and authorizing their access to specific objects and functions.
+                DB2 security relies on two fundamental processes: Authentication (verifying who a user is) and Authorization (determining what an authenticated user is allowed to do).
             </p>
 
-            <h3>Access Control Mechanisms</h3>
-            <ul>
-                <li><strong>Identification and authentication:</strong>  DB2 relies on z/OS RACF (Resource Access Control Facility) or similar security products to identify users and verify their identity.  This ensures that only authorized users can access the system.</li>
-                <li><strong>Authorization:</strong>  Once a user is authenticated, DB2 determines which objects and functions the user is allowed to access.  This is done through privileges and authorizations.</li>
-            </ul>
-
-            <h3>Privileges and Authorizations</h3>
+            <h3>Authentication Methods</h3>
             <p>
-                DB2 uses privileges and authorizations to manage user access to database objects and functions.
+                Authentication confirms the identity claimed by a user, application, or system attempting to connect to DB2. DB2 leverages several methods, often integrating with the z/OS security manager (ESM - External Security Manager):
             </p>
             <ul>
-                <li><strong>Privileges:</strong>  Rights to perform specific actions, such as selecting data from a table, inserting new rows, or executing a stored procedure.</li>
-                <li><strong>Authorizations:</strong>  The ability to grant privileges to other users.</li>
+                <li><strong>ESM (RACF/ACF2/TopSecret):</strong> The most common method on z/OS. DB2 relies on the ESM to validate user IDs and passwords (or password phrases) provided during connection attempts. This centralizes user identity management.</li>
+                <li><strong>Kerberos:</strong> Provides strong, ticket-based authentication suitable for distributed environments and single sign-on (SSO) scenarios. Requires Kerberos infrastructure (Key Distribution Center - KDC).</li>
+                <li><strong>LDAP (Lightweight Directory Access Protocol):</strong> Allows DB2 to authenticate users against an external LDAP directory server. Useful for integrating with enterprise directories.</li>
+                <li><strong>Client Certificates (SSL/TLS):</strong> Uses digital certificates for mutual authentication between the client and the DB2 server over secure network connections (e.g., using AT-TLS).</li>
+                <li><strong>Password Phrases:</strong> Supported by modern ESMs, allowing longer and more complex authentication credentials than traditional 8-character passwords.</li>
+                <li><strong>Multi-Factor Authentication (MFA):</strong> Increasingly important, MFA solutions integrated with the ESM (like IBM Z Multi-Factor Authentication) can provide an additional layer of security beyond passwords or certificates.</li>
             </ul>
-
-            <h3>Object Privileges</h3>
-            <p>
-               Object privileges determine the actions a user can perform on a specific database object, such as a table, view, or index.
-            </p>
-            <div class="code-block">
-                <pre><code>
-GRANT SELECT, INSERT, UPDATE, DELETE
-ON TABLE table_name
-TO user1, user2;
-                </code></pre>
-            </div>
-            <p>
-                This example grants the users "user1" and "user2" the right to select, insert, update, and delete data from the table "table_name".
-            </p>
-
-            <h3>System Privileges</h3>
-            <p>
-                System privileges give users the ability to perform database-wide actions, such as creating tablespaces, creating new databases, or managing buffer pools.
-            </p>
-            <div class="code-block">
-                <pre><code>
-GRANT CREATE TABLESPACE
-TO user3;
-                </code></pre>
+            <div class="terminal">
+SEC_CONSOLE > /* RACF command to define a user (Conceptual) */
+SEC_CONSOLE > ADDUSER DBUSER1 DFLTGRP(DBGROUP) PASSWORD(TEMPPASS) NAME('DB2 User One')
+SEC_CONSOLE >
+SEC_CONSOLE > /* RACF command to permit connection to DB2 (Conceptual) */
+SEC_CONSOLE > PERMIT DSN.SYSADM CLASS(DSNR) ID(DBUSER1) ACCESS(READ)
             </div>
 
-            <h3>Using Roles</h3>
+            <h3>Authorization Models & IDs</h3>
             <p>
-                Roles are a collection of privileges and authorizations that can be granted to users or other roles.  Roles simplify the management of user rights, especially in complex environments with many users and objects.
-            </p>
-
-            <h3>GRANT and REVOKE Statements</h3>
-            <p>
-                The statements <code>GRANT</code> and <code>REVOKE</code> are used to assign or revoke privileges and authorizations to users and roles.
+                Once authenticated, DB2 determines what actions the user can perform based on assigned privileges and authorities. This involves several key concepts:
             </p>
             <ul>
-                <li><code>GRANT</code>: Grants privileges or authorizations.</li>
-                <li><code>REVOKE</code>: Revokes privileges or authorizations.</li>
+                <li><strong>Authorization IDs:</strong> Identifiers used by DB2 for privilege checking.
+                    <ul>
+                        <li><strong>Primary Authorization ID:</strong> Typically the user ID validated by the ESM during connection (e.g., the RACF user ID). Represents the individual user.</li>
+                        <li><strong>Secondary Authorization IDs:</strong> Additional group identifiers (e.g., RACF groups) associated with the primary ID. Privileges granted to these groups are inherited by the user. Allows for group-based privilege management.</li>
+                        <li><strong>SQL Authorization ID (SQL ID):</strong> An ID specifically used for dynamic SQL privilege checking and object ownership. Can be set explicitly (`SET CURRENT SQLID = ...`) or defaults based on context (often the Primary Auth ID or Role).</li>
+                        <li><strong>Role:</strong> A named collection of privileges that can be granted to users or other roles. Acts as a functional authorization ID.</li>
+                    </ul>
+                </li>
+                <li><strong>Authorization Hierarchy:</strong> DB2 privileges operate at different levels:
+                    <ul>
+                        <li>System Level (e.g., SYSADM, SYSCTRL)</li>
+                        <li>Database Level (e.g., DBADM, DBCTRL, DBMAINT on a specific database)</li>
+                        <li>Schema Level (e.g., CREATEIN, DROPIN on a schema)</li>
+                        <li>Object Level (e.g., SELECT, INSERT, UPDATE, DELETE on a table/view)</li>
+                        <li>Column Level (e.g., UPDATE(column_name) on a table)</li>
+                        <li>Row Level (via RCAC Row Permissions)</li>
+                    </ul>
+                </li>
             </ul>
+            <div class="important">
+                <strong>Understanding IDs:</strong> The distinction between Primary, Secondary, SQL IDs, and Roles is crucial for understanding how DB2 checks permissions, especially for dynamic SQL and object creation ownership.
+            </div>
         </section>
 
-        <section id="user_rights">
-            <h2>Managing User Rights</h2>
+        <section id="privs_auths">
+            <h2>DB2 Privileges & Authorities</h2>
             <p>
-                Effective management of user rights is essential to prevent unauthorized access to DB2 data.  This includes creating user accounts, assigning appropriate privileges and authorizations, and regularly reviewing and updating user rights.
+                DB2 employs a rich set of authorities (broad administrative powers) and privileges (specific rights on objects or actions) to control access.
             </p>
 
-            <h3>User Accounts</h3>
-            <p>
-                In DB2, user accounts are managed by z/OS RACF or a similar security product.  Every user who needs access to DB2 must have a valid RACF profile.
-            </p>
+            <h3>System-Level Authorities</h3>
+            <p>These grant extensive control over the DB2 subsystem.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Authority</th>
+                        <th>Description</th>
+                        <th>Key Responsibilities</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>SYSADM</code></td>
+                        <td>Highest level of authority. Can perform almost any action within DB2.</td>
+                        <td>Installation, migration, system tuning, granting/revoking all other authorities/privileges, full data access.</td>
+                    </tr>
+                    <tr>
+                        <td><code>SYSCTRL</code></td>
+                        <td>High-level system control, but *cannot* access user data directly (unless explicitly granted).</td>
+                        <td>Starting/stopping DB2, managing storage, running most utilities, creating databases.</td>
+                    </tr>
+                    <tr>
+                        <td><code>SYSOPR</code></td>
+                        <td>Operational authority. Can issue DISPLAY/START/STOP commands, manage traces.</td>
+                        <td>System monitoring, basic operational tasks.</td>
+                    </tr>
+                    <tr>
+                        <td><code>SECADM</code></td>
+                        <td>Security Administrator. Manages security policies (RCAC, LBAC), audit policies, trusted contexts. Cannot grant data access privileges directly.</td>
+                        <td>Defining and managing advanced security features, auditing configuration.</td>
+                    </tr>
+                    <tr>
+                        <td><code>ACCESSCTRL</code></td>
+                        <td>Grants/revokes most object privileges and database authorities.</td>
+                        <td>Managing data access permissions.</td>
+                    </tr>
+                    <tr>
+                        <td><code>DATAACCESS</code></td>
+                        <td>Provides access to user data across the subsystem (SELECT, INSERT, UPDATE, DELETE, LOAD, UNLOAD).</td>
+                        <td>Data analysis, support roles requiring broad data visibility.</td>
+                    </tr>
+                    <tr>
+                        <td><code>SQLADM</code></td>
+                        <td>Monitors and tunes SQL performance. Can EXPLAIN, manage query optimization hints.</td>
+                        <td>Performance analysis, SQL tuning.</td>
+                    </tr>
+                    <tr>
+                        <td><code>SYSTEMDBADM</code></td>
+                        <td>Equivalent to DBADM across *all* user databases.</td>
+                        <td>Centralized database administration without full SYSADM power.</td>
+                    </tr>
+                    </tbody>
+            </table>
+            <div class="important">
+                <strong>Limit High Authorities:</strong> Grant powerful authorities like SYSADM, SYSCTRL, SECADM, DATAACCESS, and ACCESSCTRL sparingly, following the principle of least privilege and separation of duties.
+            </div>
 
-            <h3>Principle of Least Privilege</h3>
-            <p>
-                The principle of Least Privilege states that users should only be given the privileges they need to perform their job.  This minimizes the risk of accidental or malicious data corruption.
-            </p>
-             <p class="important">
-                    Red Flag: Granting excessive privileges to users is a significant security risk.
-             </p>
+            <h3>Database-Level Authorities</h3>
+            <p>These authorities are specific to a particular database.</p>
+            <ul>
+                <li><strong>DBADM:</strong> Full control over a specific database, including data access and granting privileges within that database.</li>
+                <li><strong>DBCTRL:</strong> Control over a database (e.g., run utilities) but no inherent data access privileges.</li>
+                <li><strong>DBMAINT:</strong> Operational control (e.g., run utilities like COPY, REORG) but no data access or privilege granting.</li>
+                <li><strong>LOAD:</strong> Authority to run the LOAD utility within the database.</li>
+            </ul>
 
-            <h3>Role-Based Access Control (RBAC)</h3>
-            <p>
-                Using Role-Based Access Control (RBAC) simplifies the management of user rights by grouping privileges and assigning them to roles, which are then assigned to users.
-            </p>
+            <h3>Object-Level Privileges</h3>
+            <p>These grant specific permissions on individual DB2 objects.</p>
+            <ul>
+                <li><strong>Table/View Privileges:</strong> SELECT, INSERT, UPDATE (can be column-specific), DELETE, ALTER, INDEX, REFERENCES.</li>
+                <li><strong>Package/Plan Privileges:</strong> BIND, EXECUTE.</li>
+                <li><strong>Stored Procedure/Function Privileges:</strong> EXECUTE.</li>
+                <li><strong>Schema Privileges:</strong> CREATEIN, DROPIN, ALTERIN.</li>
+                <li><strong>Sequence Privileges:</strong> USAGE, ALTER.</li>
+                <li><strong>Bufferpool/Storage Group Privileges:</strong> USE.</li>
+                </ul>
+            <pre class="code-block">
+-- Example: Granting SELECT privilege on a table
+GRANT SELECT ON TABLE MYSCHEMA.EMPLOYEES TO ROLE DPT_ANALYST;
 
-            <h3>Password Management</h3>
-            <p>
-               Strong password policies are crucial for protecting DB2 data.  This includes enforcing password complexity, requiring regular password changes, and locking accounts after multiple failed login attempts.
-            </p>
-
-            <h3>Auditing</h3>
-            <p>
-                DB2 provides extensive auditing capabilities to track database activities.  Auditing can help detect security breaches, demonstrate compliance with regulations, and diagnose problems.
-            </p>
-
-            <h3>Reviewing and Updating User Rights</h3>
-            <p>
-                User rights should be reviewed and updated regularly to ensure they are still relevant and in accordance with the principle of Least Privilege.  This includes revoking privileges from users who no longer need them and adjusting roles as users' job functions change.
-            </p>
+-- Example: Granting authority to run utilities on a database
+GRANT DBMAINT ON DATABASE PAYROLLDB TO USER DBA01;
+            </pre>
         </section>
 
-        <section id="data_privacy">
-            <h2>Ensuring Data Privacy and Compliance</h2>
+        <section id="rbac">
+            <h2>Role-Based Access Control (RBAC)</h2>
             <p>
-                In addition to securing data against unauthorized access, DB2 DBAs must also ensure that the data complies with relevant data privacy laws and regulations.
+                Roles provide a powerful mechanism for managing permissions based on job functions or responsibilities, rather than granting privileges directly to individual users or groups. This simplifies administration and improves consistency.
             </p>
-
-            <h3>Relevant Laws and Regulations</h3>
+            <h3>Key Concepts:</h3>
             <ul>
-                <li><strong>General Data Protection Regulation (GDPR):</strong>  A European Union regulation governing the processing of personal data.</li>
-                <li><strong>Health Insurance Portability and Accountability Act (HIPAA):</strong>  A United States law that regulates the privacy and security of health information.</li>
-                <li><strong>Payment Card Industry Data Security Standard (PCI DSS):</strong>  A set of security standards for handling credit card information.</li>
+                <li><strong>Role Definition:</strong> A role is created using `CREATE ROLE`. It acts as a container for privileges and authorities.</li>
+                <li><strong>Granting to Roles:</strong> Privileges (SELECT, INSERT, etc.) and authorities (DBADM, ACCESSCTRL, etc.) can be granted TO the role.</li>
+                <li><strong>Granting Roles:</strong> Roles can be granted TO users (Primary Auth IDs), groups (Secondary Auth IDs), or even other roles (creating a role hierarchy).</li>
+                <li><strong>Role Activation:</strong> When a user connects, their granted roles become active, and the associated privileges are available for authorization checks.</li>
+                <li><strong>Context-Sensitivity:</strong> Roles can be associated with Trusted Contexts, allowing roles (and their privileges) to become active only when specific connection criteria are met.</li>
+                <li><strong>Separation of Duties:</strong> Roles facilitate separation of duties by grouping privileges related to specific functions (e.g., 'Auditor_Role', 'Developer_Role', 'DBA_Role').</li>
             </ul>
+            <pre class="code-block">
+-- Example: Creating and using a Role
+-- 1. Create the role
+CREATE ROLE HR_MANAGER;
 
-            <h3>Techniques for Data Privacy</h3>
-            <p>
-                DB2 offers several techniques to help ensure data privacy:
-            </p>
-            <ul>
-                <li><strong>Access control:</strong>  Restrict access to sensitive data to only authorized users.</li>
-                <li><strong>Data masking:</strong>  Obscure sensitive data by replacing it with fictitious, but realistic-looking data.</li>
-                 <li><strong>Data encryption:</strong>  Encrypt sensitive data so that it is unreadable to unauthorized individuals.</li>
-                <li><strong>Row and Column Access Control (RCAC):</strong>  Provides fine-grained control over access to data at the row and column level.</li>
-                <li><strong>Auditing:</strong>  Track access to sensitive data to detect breaches and demonstrate compliance.</li>
-            </ul>
+-- 2. Grant necessary privileges to the role
+GRANT SELECT, UPDATE(SALARY, BONUS) ON TABLE EMPLOYEES_PRIVATE TO ROLE HR_MANAGER;
+GRANT EXECUTE ON PROCEDURE UPDATE_SALARY_PROC TO ROLE HR_MANAGER;
 
-            <h3>Compliance Considerations</h3>
-            <ul>
-                <li><strong>Data retention:</strong>  Establish a data retention policy to define how long data should be kept and when it should be deleted.</li>
-                <li><strong>Logging and auditing:</strong>  Implement logging and auditing to record all relevant database activity.</li>
-                <li><strong>Reporting:</strong>  Generate reports to demonstrate compliance with relevant regulations.</li>
-                <li><strong>Training:</strong>  Provide training to DBAs and other personnel on data privacy and compliance requirements.</li>
-            </ul>
+-- 3. Grant the role to a user or group
+GRANT ROLE HR_MANAGER TO USER MGR01;
+-- or GRANT ROLE HR_MANAGER TO GROUP HRDEPT; (Assuming HRDEPT is a RACF group)
+
+-- User MGR01 now inherits privileges granted to HR_MANAGER
+            </pre>
+            <div class="note">
+                RBAC is generally preferred over granting privileges directly to individual users, especially in larger environments. It significantly simplifies administration when users change roles or leave the organization.
+            </div>
         </section>
-    </div>
-</body>
+
+        <section id="dac">
+            <h2>Discretionary Access Control (DAC)</h2>
+            <p>
+                DAC is the traditional model where object owners or users with specific administrative authority (like ACCESSCTRL or DBADM) can grant or revoke access to objects at their discretion. It's based on the `GRANT` and `REVOKE` SQL statements.
+            </p>
+            <h3>GRANT Statement:</h3>
+            <ul>
+                <li>Assigns specific privileges or authorities to users, groups, or roles.</li>
+                <li>Syntax: `GRANT <privilege|authority> ON <object_type> <object_name> TO <auth_id|ROLE role_name|PUBLIC> [WITH GRANT OPTION];`</li>
+                <li><strong>`PUBLIC` Keyword:</strong> Grants the privilege to all DB2 users (use with extreme caution!).</li>
+                <li><strong>`WITH GRANT OPTION` Clause:</strong> Allows the grantee to further grant the received privilege (but not authorities) to others. This can create complex grant chains.</li>
+            </ul>
+            <h3>REVOKE Statement:</h3>
+            <ul>
+                <li>Removes previously granted privileges or authorities.</li>
+                <li>Syntax: `REVOKE [GRANT OPTION FOR] <privilege|authority> ON <object_type> <object_name> FROM <auth_id|ROLE role_name|PUBLIC> [BY <grantor>|ALL];`</li>
+                <li><strong>Cascading Revokes:</strong> If a privilege granted `WITH GRANT OPTION` is revoked, DB2 may also revoke the privilege from anyone who received it indirectly from the original grantee (depending on how the revoke is performed and dependencies). This can have wide-ranging impacts.</li>
+                <li><strong>`BY` Clause:</strong> Specifies revoking only grants made by a specific grantor. `BY ALL` revokes all grants regardless of grantor.</li>
+                <li><strong>`GRANT OPTION FOR` Clause:</strong> Revokes only the ability to grant the privilege further, leaving the underlying privilege intact for the user.</li>
+            </ul>
+            <pre class="code-block">
+-- Example: GRANT and REVOKE
+-- User DBA01 grants SELECT to MGR01 with grant option
+GRANT SELECT ON TABLE SALES_DATA TO USER MGR01 WITH GRANT OPTION;
+
+-- MGR01 grants SELECT to ANALYST1
+GRANT SELECT ON TABLE SALES_DATA TO USER ANALYST1;
+
+-- Later, DBA01 revokes the privilege from MGR01
+REVOKE SELECT ON TABLE SALES_DATA FROM USER MGR01;
+-- Depending on DB2 version and specific revoke behavior,
+-- the grant to ANALYST1 might also be implicitly revoked (cascading).
+
+-- Revoke only the grant option from MGR01
+REVOKE GRANT OPTION FOR SELECT ON TABLE SALES_DATA FROM USER MGR01;
+-- MGR01 can still SELECT, but can no longer grant SELECT to others.
+            </pre>
+            <div class="important">
+                <strong>Cascading Revokes:</strong> Be extremely careful with `REVOKE` when `WITH GRANT OPTION` has been used. Understand the potential cascading effects before executing the revoke. Querying catalog tables (like SYSIBM.SYSTABAUTH) can help identify dependencies.
+            </div>
+        </section>
+
+        <section id="lbac">
+            <h2>Label-Based Access Control (LBAC)</h2>
+            <p>
+                LBAC provides a mandatory access control mechanism, often used in environments with strict multi-level security requirements (e.g., government, military). Access decisions are based on security labels assigned to users and data, rather than discretionary grants.
+            </p>
+            <h3>Key Concepts:</h3>
+            <ul>
+                <li><strong>Security Policy:</strong> Defines the rules and components (levels, compartments, groups) used for access control. Created using `CREATE SECURITY POLICY`.</li>
+                <li><strong>Security Label Components:</strong> Building blocks of security labels. Types include:
+                    <ul>
+                        <li>LEVEL (e.g., TOP_SECRET, SECRET, UNCLASSIFIED)</li>
+                        <li>COMPARTMENT (e.g., NATO, PROJECT_X)</li>
+                        <li>GROUP (Hierarchical groups, similar to RACF groups)</li>
+                    </ul>
+                </li>
+                <li><strong>Security Labels:</strong> Combinations of components assigned to data (rows) and users. Define the sensitivity of data and the clearance of users. Created using `CREATE SECURITY LABEL`.</li>
+                <li><strong>LBAC Rules:</strong> The security policy defines rules for access (e.g., user's level must dominate row's level, user must have all compartments present in the row's label).</li>
+                <li><strong>Data Partitioning (Implicit):</strong> LBAC effectively partitions data based on security labels. Users only see data for which their security label grants access according to the policy rules.</li>
+                <li><strong>SECADM Authority:</strong> Required to define and manage security policies, components, and labels.</li>
+            </ul>
+            <pre class="code-block">
+-- Example: LBAC Concepts (Illustrative SQL)
+
+-- 1. Create Security Policy Components
+CREATE SECURITY POLICY SENSITIVITY_POLICY COMPONENTS LEVEL, COMPARTMENT;
+CREATE SECURITY LABEL COMPONENT LEVEL ('TOP_SECRET', 'SECRET', 'UNCLASSIFIED');
+CREATE SECURITY LABEL COMPONENT COMPARTMENT ('ALPHA', 'BETA', 'GAMMA');
+
+-- 2. Create Security Labels
+CREATE SECURITY LABEL SENSITIVITY_POLICY.TS_ALPHA_BETA COMPONENT LEVEL 'TOP_SECRET', COMPONENT COMPARTMENT 'ALPHA', 'BETA';
+CREATE SECURITY LABEL SENSITIVITY_POLICY.S_GAMMA COMPONENT LEVEL 'SECRET', COMPONENT COMPARTMENT 'GAMMA';
+
+-- 3. Add Security Label Column to Table
+ALTER TABLE PROJECT_FILES ADD COLUMN DATA_LABEL SECPOLICYNAME SENSITIVITY_POLICY;
+
+-- 4. Assign Labels to Users (Managed via SECADM and potentially ESM)
+-- GRANT SECURITY LABEL SENSITIVITY_POLICY.TS_ALPHA_BETA TO USER AGENT007;
+
+-- 5. Assign Labels to Rows during INSERT/UPDATE
+-- INSERT INTO PROJECT_FILES (..., DATA_LABEL) VALUES (..., SECLABEL_BY_NAME('SENSITIVITY_POLICY', 'S_GAMMA'));
+
+-- Access is automatically enforced by DB2 based on user's label vs. row's label and policy rules.
+            </pre>
+            <div class="note">
+                LBAC provides strong, non-discretionary control but requires careful planning and administration. It's typically used in specialized high-security environments.
+            </div>
+        </section>
+
+        <section id="rcac">
+            <h2>Row and Column Access Control (RCAC)</h2>
+            <p>
+                RCAC provides fine-grained control over data access *within* tables, allowing administrators to define rules that filter rows or mask column values based on user identity, role, or context.
+            </p>
+            <h3>Row Permissions:</h3>
+            <ul>
+                <li>Define rules (predicates) that determine which rows a user is allowed to access for SELECT, INSERT, UPDATE, or DELETE operations.</li>
+                <li>Created using `CREATE PERMISSION ... ON <table_name> FOR ROWS WHERE <search_condition> ENFORCED FOR ALL ACCESS ENABLE;`</li>
+                <li>The `<search_condition>` often references session variables (like `SESSION_USER`), roles (`VERIFY_ROLE_FOR_USER`), or other contextual information to filter rows dynamically.</li>
+                <li>Effectively adds an implicit `WHERE` clause to user queries based on the defined permission rules.</li>
+            </ul>
+            <h3>Column Masks:</h3>
+            <ul>
+                <li>Define rules (CASE expressions) that determine how data in specific columns is presented to users. Allows masking sensitive data (e.g., showing only last 4 digits of SSN) or returning different values based on user context.</li>
+                <li>Created using `CREATE MASK ... ON <table_name> FOR COLUMN <column_name> RETURN <case_expression> ENABLE;`</li>
+                <li>The `<case_expression>` typically uses session variables or roles to decide whether to return the original column value or a masked/transformed value.</li>
+                <li>Applies primarily to SELECT operations.</li>
+            </ul>
+            <pre class="code-block">
+-- Example: Row Permission (Only allow managers to see their own department's employees)
+CREATE PERMISSION MGR_DEPT_ACCESS ON EMPLOYEE_DATA
+  FOR ROWS WHERE DEPARTMENT_ID = (SELECT DEPT_ID FROM MANAGERS WHERE MGR_USERID = SESSION_USER)
+  ENFORCED FOR ALL ACCESS ENABLE;
+
+-- Example: Column Mask (Mask SSN for non-HR users)
+CREATE MASK SSN_MASK ON EMPLOYEE_DATA
+  FOR COLUMN SSN RETURN
+    CASE WHEN VERIFY_ROLE_FOR_USER(SESSION_USER, 'HR_ROLE') = 1
+         THEN SSN -- HR Role sees full SSN
+         ELSE 'XXX-XX-' || SUBSTR(SSN, 8, 4) -- Others see masked SSN
+    END
+  ENABLE;
+            </pre>
+            <div class="important">
+                <strong>SECADM Required:</strong> Defining and activating RCAC permissions and masks requires the SECADM authority. RCAC rules are enforced by DB2 automatically and transparently to the application.
+            </div>
+        </section>
+
+        <section id="trusted_contexts">
+            <h2>Trusted Contexts</h2>
+            <p>
+                Trusted Contexts provide a mechanism to define secure relationships between DB2 and specific applications or middleware servers. They allow connections established under the context to potentially switch user identities or gain specific roles/privileges without requiring re-authentication for each switch, while maintaining security and auditability.
+            </p>
+            <h3>Key Features:</h3>
+            <ul>
+                <li><strong>Definition:</strong> Created using `CREATE TRUSTED CONTEXT`. Defines attributes that identify the trusted connection source (e.g., IP address, Server Auth ID, Job Name).</li>
+                <li><strong>User Switching:</strong> Allows connections established under the context to switch to a different user ID (`WITH USE FOR <auth_id>`) without providing a password, provided the switch is permitted by the context definition.</li>
+                <li><strong>Role Association:</strong> Can automatically assign a specific ROLE to connections established under the context.</li>
+                <li><strong>Attribute-Based Access:</strong> Can define specific system authorization IDs or connection attributes required for the context to be established.</li>
+                <li><strong>Connection Reuse:</strong> Facilitates secure connection pooling by middleware servers, allowing connections to be reused for different end-users while maintaining appropriate security context switching.</li>
+            </ul>
+            <pre class="code-block">
+-- Example: Creating a Trusted Context (Illustrative)
+CREATE TRUSTED CONTEXT APP_SERVER_CTX
+  BASED UPON CONNECTION USING SYSTEM AUTHID APPSRV1  -- Trusted Server ID
+  ATTRIBUTES (ADDRESS '192.168.1.100')             -- Optional: Specific IP
+  DEFAULT ROLE APP_USER_ROLE                       -- Assign default role
+  ENABLE
+  WITH USE FOR USER_A, USER_B, ROLE END_USER_GRP    -- Allow switching to these IDs/Roles
+    WITHOUT AUTHENTICATION;                         -- No password needed for switch
+</pre>
+            <div class="note">
+                Trusted Contexts are powerful for multi-tier application architectures, enabling secure identity propagation and connection management between application servers and DB2. They require careful planning and SECADM authority to define.
+            </div>
+        </section>
+
+        <section id="auditing">
+            <h2>Auditing</h2>
+            <p>
+                Auditing involves recording security-relevant events within DB2 for later review, analysis, compliance verification, and forensic investigation. DB2 provides extensive auditing capabilities through its trace facility.
+            </p>
+            <h3>Audit Trace:</h3>
+            <ul>
+                <li>Activated using the `START TRACE` command with specific trace classes and IFCIDs (Instrumentation Facility Component IDs).</li>
+                <li>Common Audit Trace Classes: 1 (System Events), 2 (Data Access), 3 (Data Definition), 4 (Security Events), 5 (Utility Events). Multiple classes can be active.</li>
+                <li>Audit events are typically written to SMF (System Management Facilities) datasets or GTF (Generalized Trace Facility).</li>
+                <li>Requires careful planning regarding which events to audit, as excessive auditing can impact performance and generate large volumes of data.</li>
+            </ul>
+            <h3>Audit Policies:</h3>
+            <ul>
+                <li>Provide a more granular way to control auditing for specific objects (tables).</li>
+                <li>Created using `CREATE AUDIT POLICY`.</li>
+                <li>Define which actions (SELECT, INSERT, UPDATE, DELETE, EXECUTE) on specific tables should be audited, and whether to audit successes, failures, or both.</li>
+                <li>Associated with tables using `AUDIT POLICY <policy_name>` on `CREATE TABLE` or `ALTER TABLE`.</li>
+                <li>Requires SECADM authority to manage policies.</li>
+            </ul>
+            <pre class="code-block">
+-- Example: Starting an Audit Trace (Conceptual Command)
+-DB2X START TRACE(AUDIT) CLASS(4) IFCID(83, 87) DEST(SMF)
+
+-- Example: Creating an Audit Policy (Illustrative SQL)
+CREATE AUDIT POLICY SENSITIVE_DATA_ACCESS_POLICY
+  CATEGORIES ALL STATUS BOTH ERROR TYPE NORMAL; -- Audit all actions, successes/failures
+
+-- Example: Associating Policy with a Table
+ALTER TABLE CUSTOMER_CREDIT_INFO AUDIT POLICY SENSITIVE_DATA_ACCESS_POLICY;
+            </pre>
+            <h3>Audit Reporting:</h3>
+            <ul>
+                <li>Audit data (usually in SMF records) needs to be processed by reporting tools or security information and event management (SIEM) systems.</li>
+                <li>Tools can format the raw trace data into readable reports, identify suspicious patterns, and generate alerts.</li>
+                <li>Regular review of audit logs is crucial for detecting potential security breaches or policy violations.</li>
+            </ul>
+            <div class="important">
+                <strong>Balance Auditing Needs:</strong> Audit what is necessary for security and compliance, but be mindful of the performance overhead and data volume generated by extensive auditing. Use audit policies for targeted object auditing.
+            </div>
+        </section>
+
+        <section id="encryption">
+            <h2>Encryption</h2>
+            <p>
+                Encryption protects data confidentiality by rendering it unreadable without the appropriate decryption key. DB2 supports encryption for data both at rest (stored on disk) and in transit (moving over the network).
+            </p>
+            <h3>Data at Rest Encryption:</h3>
+            <ul>
+                <li><strong>DB2 Native Encryption:</strong> Allows encrypting entire tablespaces. Managed within DB2 using encryption keys stored in a z/OS keystore (ICSF/CCA). Relatively transparent to applications once configured. Requires appropriate hardware crypto support.</li>
+                <li><strong>Dataset Level Encryption (z/OS):</strong> Using z/OS features (like DFSMS data set encryption), DB2 datasets (tablespaces, logs, backups) can be encrypted at the operating system level. Managed outside of DB2.</li>
+                <li><strong>Column-Level Encryption:</strong> Using DB2's built-in `ENCRYPT_TDES` or `ENCRYPT_AES` functions, or application-level logic, to encrypt data within specific columns before storing it. Requires application changes to handle encryption/decryption.</li>
+            </ul>
+            <h3>Data in Transit Encryption:</h3>
+            <ul>
+                <li><strong>SSL/TLS:</strong> The standard method for encrypting network traffic between DB2 clients/drivers and the DB2 server (DDF). Requires configuring DB2's secure port (SECPORT) and managing digital certificates. Often implemented using z/OS AT-TLS (Application Transparent TLS).</li>
+                <li><strong>DRDA Encryption:</strong> Older, built-in DRDA encryption options (DES) exist but are generally considered less secure than SSL/TLS and are often disabled.</li>
+            </ul>
+            <h3>Key Management:</h3>
+            <ul>
+                <li>Crucial for all encryption methods. Losing encryption keys means losing access to the encrypted data.</li>
+                <li>Often involves using z/OS Integrated Cryptographic Service Facility (ICSF) and potentially Hardware Security Modules (HSMs) for secure key generation, storage, and lifecycle management.</li>
+            </ul>
+            <pre class="code-block">
+-- Example: Enabling Native Tablespace Encryption (Conceptual DDL)
+ALTER TABLESPACE MYDB.SENSITIVE_TS USING STOGROUP SGSECURE
+  DEFINE YES
+  ENCRYPTION KEY LABEL MY_ENCR_KEY_LABEL; -- Label points to key in ICSF
+            </pre>
+            <div class="note">
+                Implementing encryption requires careful planning regarding key management, performance impact (especially for software-based encryption), and operational procedures (backup/recovery of encrypted data and keys).
+            </div>
+        </section>
+
+        <section id="compliance">
+            <h2>Compliance Considerations</h2>
+            <p>
+                Many organizations must adhere to specific industry regulations or data privacy laws. DB2 security features play a vital role in meeting these compliance requirements.
+            </p>
+            <h3>Common Regulations & DB2 Relevance:</h3>
+            <ul>
+                <li><strong>GDPR (General Data Protection Regulation):</strong> Requires strong controls over personal data processing, including access control (RBAC, RCAC), auditing, encryption, and data minimization. DB2 features help enforce these controls.</li>
+                <li><strong>HIPAA (Health Insurance Portability and Accountability Act):</strong> Mandates protection of sensitive patient health information (PHI). DB2's access controls, auditing, and encryption are critical for compliance.</li>
+                <li><strong>PCI DSS (Payment Card Industry Data Security Standard):</strong> Requires protection of cardholder data. DB2 security features help secure the database environment where such data might be stored or processed.</li>
+                <li><strong>SOX (Sarbanes-Oxley Act):</strong> Focuses on financial reporting integrity. DB2's auditing and access controls help ensure data accuracy and prevent unauthorized modifications.</li>
+            </ul>
+            <h3>Mapping DB2 Features to Compliance:</h3>
+            <ul>
+                <li><strong>Access Control:</strong> RACF integration, RBAC, DAC, LBAC, RCAC help enforce authorized access.</li>
+                <li><strong>Auditing:</strong> DB2 audit trace and audit policies provide evidence of data access and system changes.</li>
+                <li><strong>Encryption:</strong> Data-at-rest and data-in-transit encryption help protect data confidentiality.</li>
+                <li><strong>Data Masking:</strong> RCAC column masks help limit exposure of sensitive data.</li>
+                <li><strong>Separation of Duties:</strong> Defined roles and authorities (SYSADM vs. SECADM) support compliance requirements.</li>
+            </ul>
+            <div class="important">
+                <strong>Not Automatic:</strong> DB2 provides the *tools* for compliance, but achieving compliance requires proper configuration, implementation of policies and procedures, regular auditing, and documentation aligned with the specific regulatory requirements.
+            </div>
+        </section>
+
+        <section id="best_practices">
+            <h2>Security Best Practices</h2>
+            <p>
+                Implementing robust DB2 security involves adhering to established best practices beyond just enabling features.
+            </p>
+            <ul>
+                <li><strong>Follow Least Privilege:</strong> Consistently apply the principle of least privilege for all users, applications, and administrative roles. Avoid granting SYSADM unnecessarily.</li>
+                <li><strong>Use Roles Extensively:</strong> Manage permissions primarily through roles rather than direct grants to users/groups.</li>
+                <li><strong>Implement Strong Authentication:</strong> Use password phrases, MFA, certificates, or Kerberos instead of just basic passwords. Enforce password complexity and expiration rules via the ESM.</li>
+                <li><strong>Secure Network Connections:</strong> Encrypt data in transit using SSL/TLS (AT-TLS). Configure DB2 SECPORT and restrict access via firewalls.</li>
+                <li><strong>Regularly Apply Patches:</strong> Keep DB2 and z/OS up-to-date with the latest security patches (PTFs) from IBM.</li>
+                <li><strong>Audit Strategically:</strong> Enable auditing for critical security events and sensitive data access, but avoid excessive auditing that impacts performance. Regularly review audit logs.</li>
+                <li><strong>Use RCAC/LBAC Where Appropriate:</strong> Implement fine-grained access control (RCAC) or multi-level security (LBAC) when required by sensitivity or regulations.</li>
+                <li><strong>Protect System Objects:</strong> Secure access to DB2 catalog tables, directory, logs, and utility datasets.</li>
+                <li><strong>Regularly Review Permissions:</strong> Periodically review granted privileges and authorities to remove unnecessary access (prevent privilege creep).</li>
+                <li><strong>Secure Utility Execution:</strong> Control who can run powerful DB2 utilities.</li>
+                <li><strong>Develop Incident Response Plan:</strong> Have a documented plan for how to respond to suspected security breaches.</li>
+                <li><strong>Maintain Documentation:</strong> Keep security policies, configurations, and procedures well-documented and up-to-date.</li>
+                <li><strong>Provide Security Training:</strong> Educate DBAs, developers, and users about security policies and their responsibilities.</li>
+            </ul>
+            <div class="note">
+                Security is an ongoing process, not a one-time setup. Continuous monitoring, regular reviews, and adaptation to new threats are essential.
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>
+                DB2 for z/OS, combined with the security capabilities of the underlying z/OS platform, provides a powerful and comprehensive framework for securing critical enterprise data. By leveraging its rich set of features for authentication, authorization (including DAC, RBAC, LBAC, RCAC), auditing, and encryption, organizations can build multi-layered defenses tailored to their specific needs and compliance requirements.
+            </p>
+            <p>
+                The key to success lies not just in the features themselves, but in the strategic application of security principles like defense in depth, least privilege, and separation of duties. Effective security requires ongoing vigilance, regular reviews, consistent application of best practices, and adaptation to the evolving threat landscape. By taking a proactive and structured approach, organizations can confidently protect their valuable DB2 data assets on the mainframe.
+            </p>
+            <div class="diagram">
+                Secure Foundation (z/OS + DB2) + Policies + Procedures + Vigilance = Protected Data
+            </div>
+        </section>
+
+        <footer>
+            DB2 Security and Compliance Documentation - Mainframe Edition &copy; 2025
+            </footer>
+
+    </div> </body>
 </html>

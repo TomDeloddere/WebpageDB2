@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB2 Mainframe DBA - Chapter 3: Databaseontwerp en -implementatie</title>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <title>Database Design and Implementation</title>
     <style>
-        /* General styles */
+        /* General styles - Mainframe inspired but optimized for learning */
         body {
             background-color: #0a0a14;
             color: #b3ffb3;
@@ -50,9 +49,10 @@
             margin: 0;
             display: flex;
             justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
         }
         nav li {
-            margin: 0 15px;
+            margin: 5px 15px; /* Add vertical margin for wrapped items */
         }
         nav a {
             color: #33ff33;
@@ -83,6 +83,12 @@
             font-size: 1.4rem;
             margin-top: 25px;
         }
+        h4 { /* Style for h4 */
+            color: #00e6b8; /* Slightly different color */
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
         p {
             margin-bottom: 20px;
             font-size: 1.1rem;
@@ -96,6 +102,7 @@
             overflow-x: auto;
             font-family: 'Courier New', monospace;
             color: #33ff33;
+            white-space: pre; /* Preserve whitespace and line breaks */
         }
         table {
             width: 100%;
@@ -161,6 +168,7 @@
             padding: 20px;
             margin: 20px 0;
             text-align: center;
+            font-style: italic;
         }
         footer {
             text-align: center;
@@ -187,217 +195,993 @@
             h2 {
                 font-size: 1.5rem;
             }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>DB2 Mainframe DBA</h1>
-            <p>Chapter 3: Databaseontwerp en -implementatie</p>
+            <h1>Database Design and Implementation</h1>
         </header>
+
         <nav>
-            <ul>
-                <li><a href="#introduction">Introduction</a></li>
-                <li><a href="#efficient_database_schemas">Designing Efficient Database Schemas</a></li>
-                <li><a href="#tables_indexes_views">Creating and Managing Tables, Indexes, and Views</a></li>
-                <li><a href="#referential_integrity">Implementing Referential Integrity</a></li>
-            </ul>
-        </nav>
+             <ul>
+                 <li><a href="#principles">Principles</a></li>
+                 <li><a href="#objects">Objects</a></li>
+                 <li><a href="#integrity">Integrity</a></li>
+                 <li><a href="#advanced">Advanced</a></li>
+                 <li><a href="#practices">Practices</a></li>
+                 <li><a href="#conclusion">Conclusion</a></li>
+             </ul>
+         </nav>
 
-        <section id="introduction">
-            <h2>Introduction</h2>
-            <p>
-                This chapter covers the essential aspects of database design and implementation within the DB2 Mainframe environment.  Effective database design is crucial for ensuring data integrity, optimizing performance, and simplifying data management.
-            </p>
-            <p>
-                We'll explore the principles of designing efficient database schemas, creating and managing database objects like tables, indexes, and views, and implementing referential integrity to maintain data consistency.
-            </p>
+        <section id="principles">
+            <h2>Principles of Efficient Database Schema Design</h2>
+
+            <h3>Requirements Analysis and Conceptual Design</h3>
+            <p>Database design begins with a thorough understanding of business requirements. This initial phase is critical as it establishes the foundation for all subsequent design decisions. The process includes:</p>
+            <h4>Business Requirements Gathering:</h4>
+            <ul>
+                <li>Interviewing stakeholders to identify:</li>
+                <ul>
+                    <li>Data entities and their relationships</li>
+                    <li>Business rules and constraints</li>
+                    <li>Current and future transaction volumes</li>
+                    <li>Performance expectations</li>
+                    <li>Security and compliance requirements</li>
+                </ul>
+            </ul>
+            <h4>Entity-Relationship Modeling:</h4>
+            <ul>
+                <li>Developing a conceptual data model that represents:</li>
+                <ul>
+                    <li>Entities (business objects)</li>
+                    <li>Attributes (properties of those objects)</li>
+                    <li>Relationships (connections between entities)</li>
+                    <li>Cardinality (one-to-one, one-to-many, many-to-many)</li>
+                    <li>Optionality (mandatory or optional relationships)</li>
+                </ul>
+            </ul>
+            <h4>Data Flow Analysis:</h4>
+            <ul>
+                <li>Understanding how data moves through the organization:</li>
+                <ul>
+                    <li>Source systems and data origins</li>
+                    <li>Processing requirements</li>
+                    <li>Reporting and analytics needs</li>
+                    <li>Data retention policies</li>
+                    <li>Archival requirements</li>
+                </ul>
+            </ul>
+            <p>The conceptual design phase should be platform-independent, focusing on business concepts rather than DB2-specific implementation details.</p>
+
+            <h3>Logical Database Design</h3>
+            <p>Logical database design translates the conceptual model into a structure closer to implementation while remaining DBMS-independent:</p>
+            <h4>Entity Mapping:</h4>
+            <ul>
+                <li>Converting entities to tables and attributes to columns.</li>
+            </ul>
+            <h4>Primary Key Selection:</h4>
+            <ul>
+                <li>Identifying columns that uniquely identify each row, considering:</li>
+                <ul>
+                    <li>Natural keys (business identifiers)</li>
+                    <li>Surrogate keys (system-generated identifiers)</li>
+                    <li>Composite keys (multiple columns)</li>
+                </ul>
+            </ul>
+            <h4>Foreign Key Identification:</h4>
+            <ul>
+                <li>Establishing relationships between tables through shared keys.</li>
+            </ul>
+            <h4>Normalization:</h4>
+            <ul>
+                <li>Applying normal forms to reduce redundancy:</li>
+                <ul>
+                    <li>First Normal Form (1NF): Eliminating repeating groups</li>
+                    <li>Second Normal Form (2NF): Removing partial dependencies</li>
+                    <li>Third Normal Form (3NF): Eliminating transitive dependencies</li>
+                    <li>Boyce-Codd Normal Form (BCNF): Addressing anomalies not fixed by 3NF</li>
+                    <li>Fourth Normal Form (4NF): Handling multi-valued dependencies</li>
+                    <li>Fifth Normal Form (5NF): Addressing join dependencies</li>
+                </ul>
+            </ul>
+            <h4>Denormalization Considerations:</h4>
+            <ul>
+                <li>Identifying where controlled redundancy might improve performance:</li>
+                <ul>
+                    <li>Frequently joined tables</li>
+                    <li>Common aggregation calculations</li>
+                    <li>Read-intensive workloads</li>
+                </ul>
+            </ul>
+            <h4>Data Integrity Rules:</h4>
+            <ul>
+                <li>Defining constraints:</li>
+                <ul>
+                    <li>Domain constraints (data types, valid values)</li>
+                    <li>Entity integrity constraints (primary keys)</li>
+                    <li>Referential integrity constraints (foreign keys)</li>
+                    <li>Business-specific constraints</li>
+                </ul>
+            </ul>
+
+            <h3>Physical Database Design for DB2</h3>
+            <p>Physical design optimizes the logical model for DB2's architecture and the specific workload:</p>
+            <h4>Tablespace Strategy:</h4>
+            <ul>
+                <li>Selecting appropriate tablespace types (simple, segmented, partitioned, universal)</li>
+                <li>Determining page sizes (4K, 8K, 16K, 32K)</li>
+                <li>Planning for growth (PRIQTY and SECQTY)</li>
+                <li>Deciding on compression options</li>
+            </ul>
+            <h4>Indexing Strategy:</h4>
+            <ul>
+                <li>Identifying columns for indexing based on access patterns</li>
+                <li>Choosing appropriate index types (unique, non-unique, clustering)</li>
+                <li>Considering partitioned indexes for large tables</li>
+                <li>Planning for index maintenance overhead</li>
+            </ul>
+            <h4>Partitioning Strategy:</h4>
+            <ul>
+                <li>Evaluating table partitioning needs</li>
+                <li>Selecting partition keys based on workload</li>
+                <li>Aligning with business processes (e.g., time-based partitioning)</li>
+                <li>Planning for partition maintenance</li>
+            </ul>
+            <h4>Storage Management:</h4>
+            <ul>
+                <li>STOGROUP selection and volume distribution</li>
+                <li>Dataset placement for I/O balance</li>
+                <li>Buffer pool assignments</li>
+                <li>SMS integration considerations</li>
+            </ul>
+            <h4>Performance Considerations:</h4>
+            <ul>
+                <li>Clustering sequence for physical data organization</li>
+                <li>Free space parameters (PCTFREE, FREEPAGE)</li>
+                <li>Prefetch optimization</li>
+                <li>Impact of locking strategies</li>
+            </ul>
+
+            <h3>Workload-Based Optimization</h3>
+            <p>Different workloads require different design approaches:</p>
+            <h4>OLTP Optimization:</h4>
+            <ul>
+                <li>Highly normalized design</li>
+                <li>Strategic denormalization for performance</li>
+                <li>Focused indexes on transaction paths</li>
+                <li>Smaller page sizes</li>
+                <li>Fine-grained locking</li>
+            </ul>
+            <h4>Data Warehouse Optimization:</h4>
+            <ul>
+                <li>Star or snowflake schema designs</li>
+                <li>Dimensional modeling techniques</li>
+                <li>Aggregate tables for reporting</li>
+                <li>Larger page sizes</li>
+                <li>Bulk data loading considerations</li>
+            </ul>
+            <h4>Mixed Workload Strategies:</h4>
+            <ul>
+                <li>Isolation of OLTP and analytical workloads</li>
+                <li>Time-of-day considerations</li>
+                <li>Workload-specific buffer pools</li>
+                <li>Application-level query routing</li>
+            </ul>
+            <h4>Temporal Data Management:</h4>
+            <ul>
+                <li>Effective dating strategies</li>
+                <li>History tracking approaches</li>
+                <li>System time versus business time</li>
+                <li>Purge and archive strategies</li>
+            </ul>
         </section>
 
-        <section id="efficient_database_schemas">
-            <h2>Designing Efficient Database Schemas</h2>
-            <p>
-                A database schema is the blueprint of a database, defining how data is organized and related.  Designing an efficient schema is a critical step in the database development process.
-            </p>
+        <section id="objects">
+            <h2>Creating and Managing Database Objects</h2>
 
-            <h3>Key Principles of Schema Design</h3>
+            <h3>Database Object Hierarchy</h3>
+            <p>DB2 organizes objects in a hierarchical structure:</p>
+            <h4>Subsystem:</h4>
             <ul>
-                <li><strong>Normalization:</strong>  Organizing data to reduce redundancy and improve data integrity.  Different normal forms (1NF, 2NF, 3NF, etc.) provide guidelines for achieving this.
-                    <p class="important">
-                        Red Flag:  Failing to normalize can lead to update anomalies and data inconsistencies.
-                    </p>
-                </li>
-                <li><strong>Data Types:</strong>  Choosing the appropriate data types for each column is essential for efficient storage and retrieval.  DB2 supports a wide range of data types, including character, numeric, and date/time types.</li>
-                <li><strong>Constraints:</strong>  Constraints enforce rules on the data in a table, ensuring data integrity.  Common types of constraints include:
-                    <ul>
-                        <li><strong>Primary Key:</strong>  Uniquely identifies each row in a table.</li>
-                        <li><strong>Foreign Key:</strong>  Establishes relationships between tables.</li>
-                        <li><strong>Unique:</strong>  Ensures that the values in a column are unique.</li>
-                        <li><strong>Not Null:</strong>  Ensures that a column cannot contain null values.</li>
-                        <li><strong>Check:</strong>  Ensures that the values in a column satisfy a specific condition.</li>
-                    </ul>
-                </li>
+                <li>The DB2 instance itself</li>
+                <li>Contains one or more databases</li>
+                <li>Managed by system administrators</li>
+            </ul>
+            <h4>Database:</h4>
+            <ul>
+                <li>A collection of related objects</li>
+                <li>Container for tables, views, and other objects</li>
+                <li>Provides namespace separation</li>
+                <li>Facilitates administrative control</li>
+                <li>Created with the CREATE DATABASE statement</li>
+            </ul>
+            <h4>Schema:</h4>
+            <ul>
+                <li>Logical grouping of objects within a database</li>
+                <li>Often aligned with application or owner</li>
+                <li>Provides additional namespace qualification</li>
+                <li>Controls security boundaries</li>
+                <li>Created implicitly through object creation</li>
+            </ul>
+            <h4>Tablespace:</h4>
+            <ul>
+                <li>Physical storage for tables</li>
+                <li>Maps logical tables to physical storage</li>
+                <li>Multiple types available for different needs</li>
+                <li>Created with the CREATE TABLESPACE statement</li>
+            </ul>
+            <h4>Table:</h4>
+            <ul>
+                <li>Structure for storing data</li>
+                <li>Foundation of relational database</li>
+                <li>Contains rows (records) and columns (fields)</li>
+                <li>Created with the CREATE TABLE statement</li>
+            </ul>
+            <h4>Index:</h4>
+            <ul>
+                <li>Access path to improve retrieval</li>
+                <li>Optimizes query performance</li>
+                <li>Multiple types for different access patterns</li>
+                <li>Created with the CREATE INDEX statement</li>
+            </ul>
+            <h4>View:</h4>
+            <ul>
+                <li>Virtual table derived from other tables</li>
+                <li>Provides logical data abstraction</li>
+                <li>Can simplify complex queries</li>
+                <li>Enables data security control</li>
+                <li>Created with the CREATE VIEW statement</li>
             </ul>
 
-            <h3>Entity-Relationship (E-R) Modeling</h3>
-            <p>
-                E-R modeling is a popular technique for designing database schemas.  It involves identifying the entities (objects or concepts) in the system and the relationships between those entities.  E-R diagrams provide a visual representation of the database schema.
-            </p>
-            <p class="note">
-                Fun Fact:  E-R diagrams use symbols like rectangles (entities), ellipses (attributes), and diamonds (relationships).
-            </p>
-
-            <h3>Denormalization</h3>
-            <p>
-                While normalization is generally desirable, there are cases where denormalization (intentionally introducing redundancy) can improve performance.  This is often done in data warehousing scenarios where query performance is paramount.
-            </p>
-            <p class="important">
-                 Red Flag:  Denormalization should be done carefully, as it can increase the risk of data inconsistencies.
-            </p>
-        </section>
-
-        <section id="tables_indexes_views">
-            <h2>Creating and Managing Tables, Indexes, and Views</h2>
-            <p>
-                Once the database schema is designed, you need to create the database objects that will store and organize the data.  The primary database objects in DB2 are tables, indexes, and views.
-            </p>
-
-            <h3>Tables</h3>
-            <p>
-                Tables are the fundamental building blocks of a relational database.  They consist of rows and columns, where each row represents a single instance of the entity and each column represents an attribute of the entity.
-            </p>
-            <h4>Creating Tables</h4>
-            <p>
-                Tables are created using the <code>CREATE TABLE</code> statement.
-            </p>
-            <div class="code-block">
-                <pre><code>
-CREATE TABLE table_name (
-    column1 data_type constraint1,
-    column2 data_type constraint2,
+            <h3>Table Creation and Management</h3>
+            <p>Tables are the primary storage structures in DB2:</p>
+            <h4>Table Creation Syntax:</h4>
+<pre class="code-block">
+CREATE TABLE schema.table_name (
+    column1 datatype constraints,
+    column2 datatype constraints,
     ...
-    PRIMARY KEY (column_name(s))
-);
-                </code></pre>
-            </div>
-            <p>
-                This statement specifies the name of the table, the names and data types of the columns, and any constraints that apply to the columns.
-            </p>
+    PRIMARY KEY (column),
+    FOREIGN KEY (column) REFERENCES parent_table(column),
+    CHECK (condition)
+ ) IN database.tablespace
+   AUDIT NONE|CHANGES|ALL
+   DATA CAPTURE NONE|CHANGES
+   CCSID ASCII|EBCDIC|UNICODE;
+</pre>
+            <h4>Column Definition Considerations:</h4>
+            <ul>
+                <li>Data types selection based on content and usage</li>
+                <li>CHAR vs. VARCHAR tradeoffs</li>
+                <li>Numeric precision and scale</li>
+                <li>Date and time formats</li>
+                <li>LOB and XML handling</li>
+                <li>Default values</li>
+                <li>NULL or NOT NULL constraints</li>
+            </ul>
+            <h4>Table Partitioning Options:</h4>
+            <ul>
+                <li>Range partitioning based on column values</li>
+                <li>Growth management</li>
+                <li>Data lifecycle planning</li>
+                <li>Partition independence for maintenance</li>
+            </ul>
+            <h4>Auditing and Tracking Options:</h4>
+            <ul>
+                <li>AUDIT clause for security monitoring</li>
+                <li>DATA CAPTURE for replication or audit trails</li>
+                <li>CCSID for character encoding</li>
+            </ul>
+            <h4>Table Alteration:</h4>
+            <ul>
+                <li>Adding, modifying, or dropping columns</li>
+                <li>Adding or removing constraints</li>
+                <li>Activating row permissions or column masks</li>
+                <li>Reorganizing physical storage</li>
+                <li>Rotating partitions</li>
+            </ul>
+            <h4>Table Management Commands:</h4>
+            <ul>
+                <li>ALTER TABLE for structure changes</li>
+                <li>COMMENT ON for documentation</li>
+                <li>LABEL ON for providing column labels</li>
+                <li>RENAME TABLE for changing names</li>
+                <li>DROP TABLE for removal</li>
+            </ul>
 
-            <h4>Altering Tables</h4>
-            <p>
-                Tables can be modified using the <code>ALTER TABLE</code> statement.  This statement allows you to add, modify, or delete columns, and add or drop constraints.
-            </p>
+            <h3>Index Design and Implementation</h3>
+            <p>Indexes are critical for performance optimization:</p>
+            <h4>Index Types:</h4>
+            <ul>
+                <li>Unique vs. Non-unique</li>
+                <li>Clustering vs. Non-clustering</li>
+                <li>Partitioned vs. Non-partitioned</li>
+                <li>Padded vs. Non-padded</li>
+                <li>Type 1 vs. Type 2 (older versions)</li>
+                <li>Expression-based indexes</li>
+            </ul>
+            <h4>Index Creation Syntax:</h4>
+<pre class="code-block">
+CREATE [UNIQUE] INDEX schema.index_name
+   ON table_name (column1 [ASC|DESC], column2 [ASC|DESC], ...)
+   [INCLUDE (column3, column4, ...)]
+   [CLUSTER]
+   [PADDED|NOT PADDED]
+   [USING VCAT catalog_name | STOGROUP stogroup_name]
+   [BUFFERPOOL bp_name]
+   [CLOSE YES|NO]
+   [PIECESIZE integer [K|M|G]];
+</pre>
+            <h4>Index Column Selection Strategies:</h4>
+            <ul>
+                <li>High-cardinality columns</li>
+                <li>Commonly used WHERE clause columns</li>
+                <li>JOIN columns</li>
+                <li>ORDER BY and GROUP BY columns</li>
+                <li>Foreign key columns</li>
+            </ul>
+            <h4>Clustering Considerations:</h4>
+            <ul>
+                <li>Only one clustering index per table</li>
+                <li>Determines physical data organization</li>
+                <li>Critical for range scans</li>
+                <li>Impacts load and reorganization operations</li>
+            </ul>
+            <h4>Index Management:</h4>
+            <ul>
+                <li>Monitoring index usage</li>
+                <li>Dropping unused indexes</li>
+                <li>Rebuilding for efficiency</li>
+                <li>Managing free space</li>
+                <li>Compression options</li>
+            </ul>
+            <h4>Index Design Best Practices:</h4>
+            <ul>
+                <li>Minimize index width</li>
+                <li>Balance number of indexes against maintenance overhead</li>
+                <li>Consider including columns for index-only access</li>
+                <li>Evaluate partitioning alignment with table partitions</li>
+                <li>Prioritize indexes based on workload characteristics</li>
+            </ul>
 
-            <h4>Dropping Tables</h4>
-            <p>
-                Tables can be deleted using the <code>DROP TABLE</code> statement.
-            </p>
-            <p class="important">
-                Red Flag:  Dropping a table deletes all of its data, so this should be done with caution.
-            </p>
+            <h3>View Creation and Usage</h3>
+            <p>Views provide logical abstractions of underlying tables:</p>
+            <h4>View Creation Syntax:</h4>
+<pre class="code-block">
+CREATE VIEW schema.view_name [(column_names)]
+   AS SELECT columns
+   FROM tables
+   WHERE conditions
+   WITH [CASCADED|LOCAL] CHECK OPTION;
+</pre>
+            <h4>View Types and Characteristics:</h4>
+            <ul>
+                <li>Simple views (single table)</li>
+                <li>Complex views (joins, functions, expressions)</li>
+                <li>Updateable vs. read-only views</li>
+                <li>WITH CHECK OPTION enforcement</li>
+            </ul>
+            <h4>View Usage Scenarios:</h4>
+            <ul>
+                <li>Simplifying complex queries</li>
+                <li>Implementing row and column access control</li>
+                <li>Providing logical data independence</li>
+                <li>Supporting legacy applications</li>
+                <li>Presenting denormalized views of normalized data</li>
+            </ul>
+            <h4>View Management:</h4>
+            <ul>
+                <li>Altering view definitions</li>
+                <li>Dropping dependent views</li>
+                <li>Managing authorizations</li>
+                <li>Checking view status with catalog queries</li>
+            </ul>
+            <h4>View Performance Considerations:</h4>
+            <ul>
+                <li>Materialized query tables (MQTs) for expensive views</li>
+                <li>View merge optimization</li>
+                <li>View resolution process</li>
+                <li>Impact on access paths</li>
+            </ul>
 
-            <h3>Indexes</h3>
-            <p>
-                Indexes are optional data structures that improve the speed of data retrieval.  They provide a quick lookup path to specific data in a table.
-            </p>
-            <h4>Creating Indexes</h4>
-             <p>
-                Indexes are created using the <code>CREATE INDEX</code> statement.
-            </p>
-            <div class="code-block">
-                <pre><code>
-CREATE INDEX index_name
-ON table_name (column_name(s));
-                </code></pre>
-            </div>
-            <p>
-                This statement specifies the name of the index, the table on which the index is created, and the column(s) that the index is based on.
-            </p>
-            <p class="note">
-                Fun Fact:  DB2 supports different types of indexes, including B-tree indexes and hash indexes.
-            </p>
-
-            <h4>Managing Indexes</h4>
-            <p>
-                Indexes can be altered using the <code>ALTER INDEX</code> statement and deleted using the <code>DROP INDEX</code> statement.
-            </p>
-
-            <h3>Views</h3>
-            <p>
-                Views are virtual tables that are based on the result of a SQL query.  They provide a simplified or customized view of the data in one or more tables.
-            </p>
-
-            <h4>Creating Views</h4>
-            <p>
-                Views are created using the <code>CREATE VIEW</code> statement.
-            </p>
-            <div class="code-block">
-                <pre><code>
-CREATE VIEW view_name AS
-SELECT column1, column2, ...
-FROM table_name
-WHERE condition;
-                </code></pre>
-            </div>
-            <p>
-                This statement specifies the name of the view and the SQL query that defines the view.
-            </p>
-
-            <h4>Using Views</h4>
-            <p>
-                Views can be queried like regular tables, but they do not store data themselves.  Instead, the data is retrieved from the underlying tables when the view is queried.
-            </p>
-             <p class="note">
-                Fun Fact:  Views can be used to simplify complex queries and to restrict access to sensitive data.
-            </p>
-
-            <h4>Managing Views</h4>
-            <p>
-                Views can be altered using the <code>ALTER VIEW</code> statement and deleted using the <code>DROP VIEW</code> statement.
-            </p>
+            <h3>Other Database Objects</h3>
+            <p>Beyond tables, indexes, and views, DB2 supports several specialized objects:</p>
+            <h4>Materialized Query Tables (MQTs):</h4>
+            <ul>
+                <li>Physical tables containing pre-computed query results</li>
+                <li>Refresh options (immediate or deferred)</li>
+                <li>Query rewrite capabilities</li>
+                <li>Maintenance considerations</li>
+            </ul>
+            <h4>Sequences:</h4>
+            <ul>
+                <li>Generated unique values</li>
+                <li>Configured with increment, min/max values, and cycling options</li>
+                <li>Used for surrogate key generation</li>
+                <li>Created with CREATE SEQUENCE</li>
+            </ul>
+            <h4>Aliases:</h4>
+            <ul>
+                <li>Alternative names for tables or views</li>
+                <li>Simplify access across databases</li>
+                <li>Support for unqualified references</li>
+                <li>Created with CREATE ALIAS</li>
+            </ul>
+            <h4>Synonyms (legacy):</h4>
+            <ul>
+                <li>Similar to aliases but with limitations</li>
+                <li>Maintained for backward compatibility</li>
+                <li>Created with CREATE SYNONYM</li>
+            </ul>
+            <h4>Global Temporary Tables:</h4>
+            <ul>
+                <li>Session-specific data storage</li>
+                <li>Defined once, used by multiple sessions</li>
+                <li>No logging overhead</li>
+                <li>Created with DECLARE GLOBAL TEMPORARY TABLE</li>
+            </ul>
+            <h4>Declared Temporary Tables:</h4>
+            <ul>
+                <li>Application process-specific tables</li>
+                <li>Implicitly created and dropped</li>
+                <li>Used for temporary result sets</li>
+                <li>Declared with DECLARE TEMPORARY TABLE</li>
+            </ul>
+            <h4>Triggers:</h4>
+            <ul>
+                <li>Procedural logic executed on data changes</li>
+                <li>BEFORE, AFTER, or INSTEAD OF events</li>
+                <li>Row or statement level activation</li>
+                <li>Created with CREATE TRIGGER</li>
+            </ul>
+            <h4>User-Defined Types:</h4>
+            <ul>
+                <li>Custom data types</li>
+                <li>Distinct types for strong typing</li>
+                <li>Structured types for complex data</li>
+                <li>Created with CREATE TYPE</li>
+            </ul>
         </section>
 
-        <section id="referential_integrity">
+        <section id="integrity">
             <h2>Implementing Referential Integrity</h2>
-            <p>
-                Referential integrity (RI) is a database concept that ensures the consistency of data across related tables.  It is based on the concept of foreign keys.
-            </p>
 
-            <h3>Foreign Keys</h3>
-            <p>
-                A foreign key is a column (or set of columns) in one table that references the primary key in another table.  The table containing the foreign key is called the dependent table or child table, and the table containing the primary key is called the parent table or referenced table.
-            </p>
-            <p class="diagram">
-                [Diagram of Parent and Child Tables with Foreign Key Relationship]
-            </p>
+            <h3>Referential Integrity Concepts</h3>
+            <p>Referential integrity ensures that relationships between tables remain consistent:</p>
+            <h4>Key Components:</h4>
+            <ul>
+                <li>Parent table (referenced table)</li>
+                <li>Child table (referencing table)</li>
+                <li>Foreign key (referencing columns)</li>
+                <li>Primary or unique key (referenced columns)</li>
+                <li>Delete rules (CASCADE, SET NULL, RESTRICT, NO ACTION)</li>
+                <li>Insert rules (matching values required)</li>
+                <li>Update rules (CASCADE, RESTRICT, NO ACTION)</li>
+            </ul>
+            <h4>Integrity States:</h4>
+            <ul>
+                <li>Complete referential integrity (all references valid)</li>
+                <li>Partial referential integrity (some checking deferred)</li>
+                <li>No referential integrity (checking disabled)</li>
+            </ul>
+            <h4>Implementation Approaches:</h4>
+            <ul>
+                <li>DB2 declarative referential integrity (DRI)</li>
+                <li>Application-enforced referential integrity</li>
+                <li>Trigger-based referential integrity</li>
+                <li>Combined approaches</li>
+            </ul>
 
-            <h3>Referential Integrity Constraints</h3>
-            <p>
-                Referential integrity constraints are rules that enforce referential integrity.  These constraints are defined when the table is created or altered.
-            </p>
+            <h3>Declarative Referential Integrity</h3>
+            <p>DRI is implemented through DDL statements:</p>
+            <h4>Foreign Key Definition:</h4>
+<pre class="code-block">
+CREATE TABLE child_table (
+    ...
+    FOREIGN KEY (fk_column1, fk_column2)
+    REFERENCES parent_table (pk_column1, pk_column2)
+    ON DELETE CASCADE|SET NULL|RESTRICT|NO ACTION
+    ON UPDATE RESTRICT|NO ACTION
+    ENFORCED|NOT ENFORCED
+    ENABLE QUERY OPTIMIZATION
+ );
+</pre>
+            <h4>Delete Rules:</h4>
+            <ul>
+                <li>CASCADE: Delete child rows when parent is deleted</li>
+                <li>SET NULL: Set foreign key to NULL when parent is deleted</li>
+                <li>RESTRICT: Prevent deletion of parent if child rows exist</li>
+                <li>NO ACTION: Similar to RESTRICT but checked later in transaction</li>
+            </ul>
+            <h4>Update Rules:</h4>
+            <ul>
+                <li>RESTRICT: Prevent updates to parent key if child rows reference it</li>
+                <li>NO ACTION: Similar to RESTRICT but checked later in transaction</li>
+                <li>CASCADE: Not directly supported in DB2 (requires triggers)</li>
+            </ul>
+            <h4>Implementation Considerations:</h4>
+            <ul>
+                <li>Impact on performance (insert, update, delete)</li>
+                <li>Locking implications</li>
+                <li>Activation sequence for multiple relationships</li>
+                <li>Circular or complex relationship handling</li>
+            </ul>
+            <h4>Constraints on Foreign Keys:</h4>
+            <ul>
+                <li>Must match parent key in number and compatible data types</li>
+                <li>NULL handling in partially NULL foreign keys</li>
+                <li>Index requirements</li>
+            </ul>
 
-            <h3>Enforcing Referential Integrity</h3>
-            <p>
-                When a row is inserted, updated, or deleted in a table, DB2 checks the referential integrity constraints to ensure that the operation does not violate the relationships between tables.
-            </p>
-            <p class="important">
-                Red Flag:  Violations of referential integrity can lead to data inconsistencies and application errors.
-            </p>
+            <h3>Trigger-Based Referential Integrity</h3>
+            <p>When declarative RI is insufficient, triggers provide an alternative:</p>
+            <h4>Trigger Approach:</h4>
+            <ul>
+                <li>BEFORE or AFTER triggers on parent and child tables</li>
+                <li>Logic to enforce relationship rules</li>
+                <li>Custom error handling</li>
+                <li>Complex business rules integration</li>
+            </ul>
+            <h4>Implementing Update CASCADE with Triggers:</h4>
+<pre class="code-block">
+CREATE TRIGGER parent_update
+ AFTER UPDATE OF pk_column ON parent_table
+ REFERENCING OLD AS o NEW AS n
+ FOR EACH ROW MODE DB2SQL
+ BEGIN ATOMIC
+   UPDATE child_table
+   SET fk_column = n.pk_column
+   WHERE fk_column = o.pk_column;
+ END;
+</pre>
+            <h4>Custom Referential Actions:</h4>
+            <ul>
+                <li>Conditional cascading based on data values</li>
+                <li>Logging referential actions to audit tables</li>
+                <li>Implementing business-specific behaviors</li>
+                <li>Handling multiple relationship paths</li>
+            </ul>
+            <h4>Performance Considerations:</h4>
+            <ul>
+                <li>Overhead compared to declarative RI</li>
+                <li>Transaction isolation implications</li>
+                <li>Error handling complexity</li>
+                <li>Maintenance challenges</li>
+            </ul>
 
-            <h3>Cascade Delete</h3>
-            <p>
-                A key aspect of referential integrity is how the database handles the deletion of a parent record that has related child records.  One option is to use a "cascade delete" rule.  This means that when a row is deleted from the parent table, DB2 automatically deletes the corresponding rows in the child table.
-            </p>
-             <p class="note">
-                Fun Fact:  Cascade deletes can simplify application logic but require careful consideration.
-            </p>
+            <h3>Referential Constraint Management</h3>
+            <p>Managing referential integrity over time requires specific techniques:</p>
+            <h4>Adding Constraints to Existing Tables:</h4>
+            <ul>
+                <li>Verifying data compliance before adding constraints</li>
+                <li>CHECK DATA utility for validation</li>
+                <li>Handling existing violations</li>
+                <li>Incremental implementation strategies</li>
+            </ul>
+            <h4>Temporarily Disabling Constraints:</h4>
+            <ul>
+                <li>Using NOT ENFORCED option</li>
+                <li>SET INTEGRITY options</li>
+                <li>Impact on query optimization</li>
+                <li>Re-enabling and verification</li>
+            </ul>
+            <h4>Identifying and Resolving Violations:</h4>
+            <ul>
+                <li>CHECK DATA utility</li>
+                <li>REPORT option to identify violations</li>
+                <li>EXCEPTION tables for capturing violations</li>
+                <li>Correction strategies</li>
+            </ul>
+            <h4>Monitoring Referential Integrity:</h4>
+            <ul>
+                <li>Catalog queries for constraint definitions</li>
+                <li>Performance monitoring</li>
+                <li>Lock contention analysis</li>
+                <li>Identifying constraint-related issues</li>
+            </ul>
+            <h4>Referential Constraint Cycles:</h4>
+            <ul>
+                <li>Identifying and managing circular references</li>
+                <li>INSERT, UPDATE, and DELETE ordering</li>
+                <li>Transaction design implications</li>
+                <li>Breaking cycles for maintenance</li>
+            </ul>
+
+            <h3>Referential Integrity Best Practices</h3>
+            <p>Decades of DB2 implementation experience has established key best practices:</p>
+            <h4>Design Phase:</h4>
+            <ul>
+                <li>Fully document all relationships</li>
+                <li>Consider performance implications early</li>
+                <li>Balance integrity and performance requirements</li>
+                <li>Evaluate alternatives for complex relationships</li>
+            </ul>
+            <h4>Implementation Phase:</h4>
+            <ul>
+                <li>Create parent tables before child tables</li>
+                <li>Load parent data before child data</li>
+                <li>Create indexes on foreign keys</li>
+                <li>Test constraint behavior thoroughly</li>
+            </ul>
+            <h4>Operational Phase:</h4>
+            <ul>
+                <li>Monitor constraint-related performance</li>
+                <li>Coordinate maintenance activities</li>
+                <li>Consider integrity implications of recoveries</li>
+                <li>Manage constraints during schema evolution</li>
+            </ul>
+            <h4>Common Pitfalls:</h4>
+            <ul>
+                <li>Excessive cascading delete chains</li>
+                <li>Lock escalation during referential operations</li>
+                <li>Overlooking index requirements</li>
+                <li>Inconsistent NULL handling</li>
+            </ul>
         </section>
+
+        <section id="advanced">
+            <h2>Advanced Implementation Techniques</h2>
+
+            <h3>Partitioning Strategies</h3>
+            <p>Table partitioning divides large tables into smaller, more manageable pieces:</p>
+            <h4>Range Partitioning:</h4>
+            <ul>
+                <li>Division based on column value ranges</li>
+                <li>Typically date-based or numeric ranges</li>
+                <li>Supports efficient partition elimination</li>
+                <li>Enables partition-level operations</li>
+            </ul>
+            <h4>Partition-By-Growth:</h4>
+            <ul>
+                <li>Automatic creation of new partitions as table grows</li>
+                <li>Simplifies capacity management</li>
+                <li>Reduces need for manual intervention</li>
+            </ul>
+            <h4>Partition Implementation:</h4>
+<pre class="code-block">
+CREATE TABLE sales (
+    sale_date DATE NOT NULL,
+    product_id INTEGER NOT NULL,
+    amount DECIMAL(15,2),
+    ...
+ ) PARTITION BY RANGE(sale_date) (
+    PARTITION 1 ENDING AT ('2023-01-31'),
+    PARTITION 2 ENDING AT ('2023-02-28'),
+    ...
+    PARTITION 12 ENDING AT ('2023-12-31')
+ );
+</pre>
+            <h4>Partition Management:</h4>
+            <ul>
+                <li>Adding new partitions with ALTER TABLE</li>
+                <li>Rotating partitions for rolling window scenarios</li>
+                <li>Detaching and attaching partitions</li>
+                <li>Reorganizing individual partitions</li>
+            </ul>
+            <h4>Partitioned Indexes:</h4>
+            <ul>
+                <li>Partitioning index aligned with table partitioning</li>
+                <li>Non-partitioning indexes across all partitions</li>
+                <li>Data-partitioned secondary indexes (DPSI)</li>
+                <li>Choosing appropriate indexing strategy</li>
+            </ul>
+
+            <h3>Constraints and Validation</h3>
+            <p>DB2 provides multiple constraint types to ensure data integrity:</p>
+            <h4>Primary Key Constraints:</h4>
+            <ul>
+                <li>Ensuring uniqueness and non-nullability</li>
+                <li>Implicitly creating unique indexes</li>
+                <li>Impact on insertion and update performance</li>
+                <li>Considerations for clustered organization</li>
+            </ul>
+            <h4>Unique Constraints:</h4>
+            <ul>
+                <li>Ensuring value uniqueness</li>
+                <li>Allowing NULL values (unlike primary keys)</li>
+                <li>Multiple unique constraints per table</li>
+                <li>Implicit index creation</li>
+            </ul>
+            <h4>Check Constraints:</h4>
+            <ul>
+                <li>Validating column values against conditions</li>
+                <li>Simple validation rules</li>
+                <li>Complex expressions and functions</li>
+                <li>Performance implications</li>
+            </ul>
+            <h4>Default Values:</h4>
+            <ul>
+                <li>Constant values</li>
+                <li>Special registers (CURRENT DATE, etc.)</li>
+                <li>Session variables</li>
+                <li>DEFAULT with NULL</li>
+            </ul>
+            <h4>Identity Columns:</h4>
+            <ul>
+                <li>Auto-generated sequential values</li>
+                <li>Configuration options (START, INCREMENT, CACHE)</li>
+                <li>RESTART capabilities</li>
+                <li>Performance considerations</li>
+            </ul>
+            <h4>Row and Column Access Control:</h4>
+            <ul>
+                <li>Fine-grained security at data level</li>
+                <li>Row permissions for horizontal filtering</li>
+                <li>Column masks for vertical filtering</li>
+                <li>Integration with application security</li>
+            </ul>
+
+            <h3>Schema Evolution Techniques</h3>
+            <p>Changing database structures in production environments requires careful planning:</p>
+            <h4>Online Schema Change Approaches:</h4>
+            <ul>
+                <li>ALTER TABLE capabilities and limitations</li>
+                <li>REORG with SHRLEVEL CHANGE</li>
+                <li>Using versioning for zero-downtime changes</li>
+                <li>Managing dependent objects</li>
+            </ul>
+            <h4>Table Replacement Strategies:</h4>
+            <ul>
+                <li>CREATE new table with desired structure</li>
+                <li>Load or INSERT data with transformations</li>
+                <li>Swap tables with minimal downtime</li>
+                <li>Managing authorizations and dependencies</li>
+            </ul>
+            <h4>Index Evolution:</h4>
+            <ul>
+                <li>Adding indexes online</li>
+                <li>Rebuilding indexes for efficiency</li>
+                <li>Redefining indexes with minimal impact</li>
+                <li>Managing free space during index evolution</li>
+            </ul>
+            <h4>View-Based Abstraction:</h4>
+            <ul>
+                <li>Providing logical stability through views</li>
+                <li>Changing underlying structures transparently</li>
+                <li>Managing view dependencies</li>
+                <li>Performance implications of view layers</li>
+            </ul>
+            <h4>Handling Legacy Applications:</h4>
+            <ul>
+                <li>Maintaining backward compatibility</li>
+                <li>Using triggers for transparent data mapping</li>
+                <li>Synonym and alias strategies</li>
+                <li>Application version management</li>
+            </ul>
+
+            <h3>Performance-Oriented Implementation</h3>
+            <p>Database design must balance correctness with performance:</p>
+            <h4>I/O Optimization Techniques:</h4>
+            <ul>
+                <li>Clustering for sequential access</li>
+                <li>Page size selection</li>
+                <li>FREEPAGE and PCTFREE settings</li>
+                <li>MEMBER CLUSTER considerations</li>
+            </ul>
+            <h4>Memory Optimization:</h4>
+            <ul>
+                <li>Buffer pool assignments</li>
+                <li>KEEPDYNAMIC behavior</li>
+                <li>EDM pool management</li>
+                <li>Sort pool sizing</li>
+            </ul>
+            <h4>Concurrency Strategies:</h4>
+            <ul>
+                <li>LOCKSIZE options (ANY, TABLE, PAGE, ROW)</li>
+                <li>ISOLATION levels (CS, RS, RR, UR)</li>
+                <li>MAXROWS limitation for query results</li>
+                <li>RELEASE options (COMMIT, DEALLOCATE)</li>
+            </ul>
+            <h4>Utility Performance:</h4>
+            <ul>
+                <li>SORTKEYS parameter for LOAD</li>
+                <li>Parallelism options</li>
+                <li>REORG with SHRLEVEL</li>
+                <li>RUNSTATS frequency and detail</li>
+            </ul>
+            <h4>Monitoring and Tuning:</h4>
+            <ul>
+                <li>Using EXPLAIN for access path analysis</li>
+                <li>Catalog statistics for design validation</li>
+                <li>Identifying hot spots and bottlenecks</li>
+                <li>Incremental design improvements</li>
+            </ul>
+
+            <h3>Temporal Data Implementation</h3>
+            <p>DB2 provides built-in support for time-based data:</p>
+            <h4>System Time (Transaction Time):</h4>
+            <ul>
+                <li>Automatic tracking of when data changes</li>
+                <li>History tables for maintaining previous states</li>
+                <li>Transparency for applications</li>
+                <li>Point-in-time queries</li>
+            </ul>
+            <h4>Business Time (Valid Time):</h4>
+            <ul>
+                <li>Application-controlled effective dating</li>
+                <li>Period definition with start/end columns</li>
+                <li>Business time temporal queries</li>
+                <li>Period constraints for avoiding overlaps</li>
+            </ul>
+            <h4>Bi-Temporal Tables:</h4>
+            <ul>
+                <li>Combined system and business time</li>
+                <li>Complete historical and time-state representation</li>
+                <li>Complex temporal query capabilities</li>
+                <li>Compliance and auditing support</li>
+            </ul>
+            <h4>Implementation Syntax:</h4>
+<pre class="code-block">
+CREATE TABLE employee (
+    emp_id INTEGER NOT NULL,
+    name VARCHAR(100),
+    department VARCHAR(30),
+    salary DECIMAL(10,2),
+    sys_start TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN,
+    sys_end TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW END,
+    trans_id TIMESTAMP(12) GENERATED ALWAYS AS TRANSACTION START ID,
+    PERIOD SYSTEM_TIME (sys_start, sys_end)
+ ) WITH SYSTEM VERSIONING USE HISTORY TABLE employee_history;
+</pre>
+            <h4>Temporal Table Management:</h4>
+            <ul>
+                <li>Enabling versioning on existing tables</li>
+                <li>Managing history table space</li>
+                <li>Archiving historical data</li>
+                <li>Recovery considerations for temporal tables</li>
+            </ul>
+        </section>
+
+        <section id="practices">
+            <h2>Implementation Best Practices</h2>
+
+            <h3>Documentation Standards</h3>
+            <p>Comprehensive documentation is essential for long-term database sustainability:</p>
+            <h4>Schema Documentation:</h4>
+            <ul>
+                <li>Entity-relationship diagrams</li>
+                <li>Table and column descriptions</li>
+                <li>Constraint documentation</li>
+                <li>Indexing strategies</li>
+                <li>Partitioning schemes</li>
+            </ul>
+            <h4>Naming Conventions:</h4>
+            <ul>
+                <li>Consistent table, column, and constraint naming</li>
+                <li>Schema organization standards</li>
+                <li>Object qualification guidelines</li>
+                <li>Temporary object conventions</li>
+            </ul>
+            <h4>Data Dictionary Management:</h4>
+            <ul>
+                <li>Using COMMENT ON for metadata</li>
+                <li>Maintaining additional metadata repositories</li>
+                <li>Documentation version control</li>
+                <li>Automated documentation generation</li>
+            </ul>
+            <h4>Change Management Documentation:</h4>
+            <ul>
+                <li>Schema modification history</li>
+                <li>Rationale for design decisions</li>
+                <li>Impact analysis documentation</li>
+                <li>Rollback procedures</li>
+            </ul>
+
+            <h3>Quality Assurance Techniques</h3>
+            <p>Ensuring database design quality requires systematic validation:</p>
+            <h4>Design Reviews:</h4>
+            <ul>
+                <li>Normalization verification</li>
+                <li>Performance prediction</li>
+                <li>Security assessment</li>
+                <li>Compliance validation</li>
+                <li>Peer review processes</li>
+            </ul>
+            <h4>Testing Strategies:</h4>
+            <ul>
+                <li>Unit testing for constraints and triggers</li>
+                <li>Performance testing under representative load</li>
+                <li>Recovery testing</li>
+                <li>Concurrency and locking tests</li>
+                <li>Edge case testing</li>
+            </ul>
+            <h4>Database Verification:</h4>
+            <ul>
+                <li>CHECK DATA for integrity validation</li>
+                <li>RUNSTATS for statistical verification</li>
+                <li>EXPLAIN for access path validation</li>
+                <li>DSN1COPY with CHECK for physical validation</li>
+            </ul>
+            <h4>Continuous Improvement:</h4>
+            <ul>
+                <li>Monitoring for design-related issues</li>
+                <li>Periodic design reassessment</li>
+                <li>Incremental optimization</li>
+                <li>Technical debt management</li>
+            </ul>
+
+            <h3>Implementation Planning</h3>
+            <p>Successful implementation requires careful planning:</p>
+            <h4>Implementation Sequencing:</h4>
+            <ul>
+                <li>Schema creation order</li>
+                <li>Constraint activation timing</li>
+                <li>Data population strategy</li>
+                <li>Application cutover planning</li>
+            </ul>
+            <h4>Resource Requirements:</h4>
+            <ul>
+                <li>Storage needs (initial and growth)</li>
+                <li>Memory requirements (buffer pools, etc.)</li>
+                <li>Processing capacity (CPU, zIIP)</li>
+                <li>Backup and recovery resources</li>
+            </ul>
+            <h4>Rollout Strategies:</h4>
+            <ul>
+                <li>Phased implementation</li>
+                <li>Fallback planning</li>
+                <li>Parallel operation considerations</li>
+                <li>Cutover window management</li>
+            </ul>
+            <h4>Operational Readiness:</h4>
+            <ul>
+                <li>Backup and recovery procedures</li>
+                <li>Monitoring setup</li>
+                <li>Maintenance scheduling</li>
+                <li>Problem resolution processes</li>
+            </ul>
+
+            <h3>Ongoing Database Maintenance</h3>
+            <p>Database design implementation is not complete until maintenance processes are established:</p>
+            <h4>Routine Maintenance:</h4>
+            <ul>
+                <li>RUNSTATS frequency</li>
+                <li>REORG criteria</li>
+                <li>COPY scheduling</li>
+                <li>CHECK integrity validation</li>
+            </ul>
+            <h4>Space Management:</h4>
+            <ul>
+                <li>Free space monitoring</li>
+                <li>Extent management</li>
+                <li>Dataset allocation planning</li>
+                <li>Storage group monitoring</li>
+            </ul>
+            <h4>Performance Management:</h4>
+            <ul>
+                <li>Access path stability</li>
+                <li>Index effectiveness monitoring</li>
+                <li>Buffer pool tuning</li>
+                <li>Partition growth management</li>
+            </ul>
+            <h4>Schema Evolution Processes:</h4>
+            <ul>
+                <li>Change request procedures</li>
+                <li>Impact assessment methodology</li>
+                <li>Testing requirements</li>
+                <li>Implementation windows</li>
+            </ul>
+        </section>
+
+        <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>Effective database design and implementation in DB2 for z/OS requires balancing theoretical principles with practical mainframe considerations. A well-designed database provides a foundation for application performance, data integrity, and system maintainability.</p>
+            <p>The design process should progress methodically from requirements gathering through conceptual, logical, and physical design stages, with appropriate consideration for the unique characteristics of the mainframe environment and DB2's architecture.</p>
+            <p>Implementation should follow established best practices for object creation, constraint definition, and performance optimization, with particular attention to operational aspects such as partitioning, space management, and maintenance procedures.</p>
+            <p>By applying these principles and practices, organizations can develop DB2 databases that effectively support business requirements while providing the performance, reliability, and scalability demanded by mission-critical mainframe applications.</p>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+        </footer>
     </div>
 </body>
-
-<footer>
-    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
-</footer>
 </html>

@@ -3,45 +3,679 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work in Progress</title>
+    <title>DB2 Backup & Recovery Exercises - Mainframe Edition</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            animation: bounce 2s infinite;
-        }
-        h1 {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-        }
-        .tools {
-            font-size: 2rem;
-            margin: 1rem 0;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
+      @font-face {
+        font-family: 'LucideIcons';
+        /* Using jsdelivr CDN */
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem; /* Adjusted size */
+        line-height: 1;
+        display: inline-block; /* Ensure proper alignment */
+        vertical-align: middle;
+        margin-right: 5px; /* Space between icon and text */
+      }
+      body {
+          background-color: #0a0a14; /* Dark blue background */
+          color: #b3ffb3; /* Light green text */
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px; /* Add padding around the body */
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3); /* Subtle text glow */
+      }
+      .quiz-wrapper {
+          max-width: 900px; /* Adjusted width */
+          margin: 20px auto; /* Center the container */
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8); /* Slightly transparent dark background */
+          border: 1px solid #33ff33; /* Bright green border */
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4); /* Green glow effect */
+      }
+      header {
+          background-color: #001a00; /* Dark green background */
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+      header h1 {
+          color: #33ff33; /* Bright green title */
+          font-size: 1.8rem; /* Adjusted size */
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex; /* Use flexbox for icon alignment */
+          align-items: center;
+          justify-content: center; /* Center title and icon */
+      }
+      header h1 .lucide {
+          font-size: 1.6rem; /* Larger icon in title */
+          margin-right: 10px;
+      }
+      header p {
+          color: #99ff99; /* Lighter green for subtitle */
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+      #question-container {
+          margin-bottom: 25px;
+          padding: 20px;
+          background-color: rgba(0, 26, 0, 0.4); /* Darker green transparent background */
+          border: 1px dashed #33ff33; /* Dashed border */
+          min-height: 150px; /* Ensure minimum height */
+      }
+      #question-container p {
+          font-size: 1.2rem; /* Larger question text */
+          color: #ccffcc; /* Slightly lighter green */
+          margin-bottom: 15px;
+      }
+      .options-container label {
+          display: block; /* Change from flex to block for vertical layout */
+          margin-bottom: 10px;
+          padding: 10px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822; /* Darker green border */
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+      .options-container label:hover {
+          background-color: rgba(51, 255, 51, 0.2); /* Green highlight on hover */
+      }
+      input[type="radio"] {
+          margin-right: 10px;
+          appearance: none; /* Remove default appearance */
+          width: 14px;
+          height: 14px;
+          border: 1px solid #33ff33;
+          border-radius: 50%; /* Make it round */
+          vertical-align: middle;
+          position: relative; /* For positioning the dot */
+          cursor: pointer;
+      }
+      input[type="radio"]:checked {
+          background-color: #0a0a14; /* Match body background */
+      }
+      input[type="radio"]:checked::after {
+          content: '';
+          display: block;
+          width: 8px;
+          height: 8px;
+          background-color: #33ff33; /* Green dot */
+          border-radius: 50%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+      }
+      input[type="text"] {
+          width: calc(100% - 22px); /* Adjust width considering padding/border */
+          padding: 10px;
+          background-color: #000000; /* Black background */
+          border: 1px solid #33ff33; /* Green border */
+          color: #b3ffb3; /* Green text */
+          font-family: 'Courier New', monospace;
+          font-size: 1rem;
+          margin-top: 10px; /* Add some space above */
+      }
+      input[type="text"]:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5); /* Glow on focus */
+      }
+      #navigation-controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 25px;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+      }
+      #progress-indicator {
+          color: #00ff99; /* Cyan-green color */
+          font-weight: bold;
+      }
+      button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button:disabled {
+          background-color: #05050a; /* Darker background when disabled */
+          color: #447744; /* Dimmed green text */
+          border-color: #225522; /* Dimmed border */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
+      #next-button .lucide, #submit-button .lucide {
+         margin-left: 8px; /* Space after text */
+         margin-right: 0;
+      }
+      #results-container {
+          margin-top: 30px;
+          padding: 25px;
+          background-color: rgba(0, 10, 0, 0.6); /* Darker green background */
+          border: 1px solid #00ff99; /* Cyan-green border */
+      }
+      #results-container h2 {
+          color: #00ff99; /* Cyan-green heading */
+          font-size: 1.6rem;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          display: flex;
+          align-items: center;
+      }
+       #results-container h2 .lucide {
+          font-size: 1.5rem;
+          margin-right: 10px;
+       }
+      #results-container p {
+          font-size: 1.1rem;
+          color: #ccffcc;
+      }
+      #score {
+          font-weight: bold;
+          color: #ffffff; /* White score */
+          font-size: 1.3rem;
+      }
+      #review-area {
+          margin-top: 20px;
+          space-y: 15px; /* Use margin for spacing */
+      }
+      #review-area > div { /* Target direct children divs */
+          padding: 15px;
+          border: 1px dashed #228822; /* Dark green dashed border */
+          background-color: rgba(0, 0, 0, 0.2);
+          margin-bottom: 15px; /* Add margin bottom for spacing */
+      }
+      #review-area .font-semibold { /* Question text in review */
+          font-weight: bold; /* Ensure it's bold */
+          color: #ccffcc;
+      }
+      #review-area .text-sm { /* Answer text in review */
+          font-size: 0.95rem; /* Slightly smaller */
+      }
+      .correct-answer-text {
+          color: #33ff33; /* Bright green for correct */
+          font-weight: bold;
+      }
+      .incorrect-answer-text {
+          color: #ff6666; /* Lighter red for incorrect */
+          font-weight: bold;
+      }
+      .user-answer-text.correct {
+          color: #99ff99; /* Lighter green for user's correct answer */
+          font-weight: bold;
+      }
+       .user-answer-text.incorrect {
+          color: #ff9999; /* Lighter red for user's incorrect answer */
+          font-weight: bold;
+          text-decoration: line-through; /* Strike through incorrect answer */
+      }
+      .hidden {
+          display: none;
+      }
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .quiz-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          #navigation-controls { flex-wrap: wrap; justify-content: center; }
+          #navigation-controls button { margin: 5px; }
+          #progress-indicator { width: 100%; text-align: center; margin: 10px 0; }
+      }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Work in Progress</h1>
-        <div class="tools">🚧 👷 🔨 🚧</div>
-        <p>We're building something awesome here! Check back soon.</p>
-    </div>
+
+    <div class="quiz-wrapper">
+
+        <header>
+             <h1>
+                <span class="lucide">&#xe3de;</span> DB2 Backup & Recovery Exercises
+            </h1>
+            <p>Test your knowledge :: Mainframe Edition</p>
+        </header>
+
+        <div id="quiz-container">
+            <div id="question-container">
+                </div>
+
+            <div id="navigation-controls">
+                <button id="prev-button" disabled>
+                    <span class="lucide">&#xe03f;</span> Previous
+                </button>
+                <span id="progress-indicator">Question 1 / X</span>
+                <button id="next-button">
+                    Next
+                    <span class="lucide">&#xe044;</span> </button>
+                <button id="submit-button" class="hidden">
+                    <span class="lucide">&#xe157;</span> Submit Quiz
+                </button>
+            </div>
+
+            <div id="feedback-container" class="mt-4 space-y-2">
+                </div>
+        </div>
+
+        <div id="results-container" class="hidden">
+            <h2>
+                <span class="lucide">&#xe4d7;</span> Quiz Results
+            </h2>
+            <p>Final Score :: <strong id="score"></strong></p>
+            <div id="review-area">
+                </div>
+            <button id="retry-button">
+                <span class="lucide">&#xe3a7;</span> Retry Quiz
+            </button>
+        </div>
+
+    </div> <script>
+        // --- NEW Quiz Data: Based on DB2 Backup and Recovery ---
+        const quizData = [
+            // Introduction & Concepts
+            {
+                question: "Which objective defines the maximum acceptable amount of data loss measured in time?",
+                type: "multiple-choice",
+                options: ["RTO (Recovery Time Objective)", "RPO (Recovery Point Objective)", "Data Availability", "Data Integrity"],
+                answer: "RPO (Recovery Point Objective)"
+            },
+            {
+                question: "The DB2 dataset that tracks active and archive log information is the ________.",
+                type: "fill-in-the-blank",
+                answer: "BSDS" // or Bootstrap Data Set
+            },
+            {
+                question: "True or False: DB2's dual logging protects against failures affecting both copies of the active log simultaneously.",
+                type: "true-false",
+                answer: "False" // Protects against single copy failure.
+            },
+            {
+                question: "Which type of log record contains information needed to reapply committed changes during forward recovery?",
+                type: "multiple-choice",
+                options: ["Undo Record", "Redo Record", "Compensation Record", "Checkpoint Record"],
+                answer: "Redo Record"
+            },
+            // Recovery Scenarios & RECOVER Utility
+            {
+                question: "Which recovery scenario is automatically handled by DB2 during restart after an abnormal termination?",
+                type: "multiple-choice",
+                options: ["Media Failure", "Application Failure", "System Failure", "Disaster Recovery"],
+                answer: "System Failure"
+            },
+            {
+                question: "The DB2 utility primarily used for restoring objects from image copies and applying logs is ________.",
+                type: "fill-in-the-blank",
+                answer: "RECOVER"
+            },
+            {
+                question: "Which `RECOVER` option specifies recovery to the point in time represented by the last available image copy registered in SYSCOPY?",
+                type: "multiple-choice",
+                options: ["TORBA", "TOLOGPOINT", "TOCOPY", "TOLASTCOPY"],
+                answer: "TOLASTCOPY"
+            },
+            {
+                question: "True or False: The `REBUILD INDEX` utility always recovers index data faster than using `RECOVER INDEX` with image copies.",
+                type: "true-false",
+                answer: "False" // REBUILD is often faster, but not always guaranteed.
+            },
+            {
+                question: "The `RECOVER` option `LOGONLY` is used to apply log records without first restoring from an ________.",
+                type: "fill-in-the-blank",
+                answer: "image copy"
+            },
+            // Backup Strategies & COPY Utility
+            {
+                question: "Which DB2 utility is used to create backup copies of tablespaces and indexspaces?",
+                type: "multiple-choice",
+                options: ["RECOVER", "REORG", "COPY", "QUIESCE"],
+                answer: "COPY"
+            },
+            {
+                question: "An image copy that only records pages changed since the last full or incremental copy is called a(n) ________ image copy.",
+                type: "fill-in-the-blank",
+                answer: "Incremental"
+            },
+            {
+                question: "Which `COPY` option allows concurrent read/write access to the object being copied, resulting in a potentially 'fuzzy' copy?",
+                type: "multiple-choice",
+                options: ["SHRLEVEL NONE", "SHRLEVEL REFERENCE", "SHRLEVEL CHANGE", "CONCURRENT YES"],
+                answer: "SHRLEVEL CHANGE"
+            },
+            {
+                question: "True or False: FlashCopy requires specialized disk subsystem hardware capabilities.",
+                type: "true-false",
+                answer: "True"
+            },
+            {
+                question: "Information about image copies, such as timestamps and locations, is registered in the DB2 catalog table ________.",
+                type: "fill-in-the-blank",
+                answer: "SYSIBM.SYSCOPY" // or SYSCOPY
+            },
+            {
+                question: "Which utility can consolidate multiple incremental image copies into a new full image copy?",
+                type: "multiple-choice",
+                options: ["COPYTOCOPY", "MERGECOPY", "RECOVER", "REPORT"],
+                answer: "MERGECOPY"
+            },
+            // QUIESCE & System-Level Backup
+            {
+                question: "The primary purpose of the `QUIESCE` utility is to establish a point of ________ across related objects.",
+                type: "fill-in-the-blank",
+                answer: "consistency"
+            },
+            {
+                question: "True or False: The `QUIESCE` utility creates a physical backup copy of the specified objects.",
+                type: "true-false",
+                answer: "False" // It records a consistent RBA/LRSN point.
+            },
+            {
+                question: "Which DB2 utility creates consistent backups of entire DB2 subsystems, often leveraging hardware features like FlashCopy?",
+                type: "multiple-choice",
+                options: ["COPY", "BACKUP SYSTEM", "RECOVER SYSTEM", "QUIESCE SYSTEM"],
+                answer: "BACKUP SYSTEM"
+            },
+            {
+                question: "A major advantage of `BACKUP SYSTEM` compared to object-level image copies is significantly reduced ________ time.",
+                type: "fill-in-the-blank",
+                answer: "backup" // or outage
+            },
+            {
+                question: "True or False: `BACKUP SYSTEM` provides more granular recovery options than object-level image copies.",
+                type: "true-false",
+                answer: "False" // Object-level copies offer more granularity.
+            },
+            // Recovery Planning & Procedures
+            {
+                question: "Which DB2 utility can be used to validate the availability and usability of image copies and logs needed for recovery?",
+                type: "multiple-choice",
+                options: ["CHECK DATA", "REPORT RECOVERY", "RECOVER", "DIAGNOSE"],
+                answer: "REPORT RECOVERY"
+            },
+            {
+                question: "Regularly performing recovery drills on test systems is crucial for validating ________ and procedures.",
+                type: "fill-in-the-blank",
+                answer: "RTO" // or recovery time objectives
+            },
+            {
+                question: "True or False: Recovery documentation should primarily focus only on the technical steps, excluding contact information or escalation procedures.",
+                type: "true-false",
+                answer: "False" // Comprehensive documentation includes contacts and procedures.
+            },
+            {
+                question: "Recovering a tablespace partition requires using the `RECOVER TABLESPACE` command with the ________ option.",
+                type: "multiple-choice",
+                options: ["PARTITION", "DSNUM", "INDEX", "LOGONLY"],
+                answer: "DSNUM"
+            },
+            {
+                question: "Point-in-time recovery to a specific log record sequence number is achieved using the `RECOVER ... ________` option.",
+                type: "fill-in-the-blank",
+                answer: "TOLOGPOINT"
+            },
+            {
+                question: "Which utility is generally preferred for recovering indexes when the corresponding tablespace is also being recovered?",
+                type: "multiple-choice",
+                options: ["RECOVER INDEX separately", "REBUILD INDEX", "RECOVER TABLESPACE (indexes rebuilt automatically)", "LOAD INDEX"],
+                answer: "REBUILD INDEX" // Often faster and simpler in this context.
+            },
+            // Advanced & System Recovery
+            {
+                question: "Which type of DB2 restart might be necessary if normal restart fails due to log issues or inconsistencies?",
+                type: "multiple-choice",
+                options: ["Warm Restart", "Cold Restart", "Conditional Restart", "Emergency Restart"],
+                answer: "Conditional Restart"
+            },
+            {
+                question: "True or False: Recovering a system-period temporal table automatically handles the recovery of its associated history table.",
+                type: "true-false",
+                answer: "True" // DB2 manages the relationship.
+            },
+            {
+                question: "In a data sharing environment, recovery often involves coordination with the ________ to resolve locks and ensure consistency.",
+                type: "fill-in-the-blank",
+                answer: "IRLM" // or Coupling Facility (CF)
+            },
+            {
+                question: "The DB2 utility used to remove outdated image copy records from SYSIBM.SYSCOPY is ________.",
+                type: "multiple-choice",
+                options: ["CLEANUP", "MODIFY RECOVERY", "PURGE", "DELETE"],
+                answer: "MODIFY RECOVERY"
+            },
+            {
+                question: "Disaster recovery typically involves restoring backups and applying logs at an ________ site.",
+                type: "fill-in-the-blank",
+                answer: "alternate" // or remote
+            },
+             {
+                question: "True or False: The `RECOVER` utility can recover multiple objects in parallel to reduce overall recovery time.",
+                type: "true-false",
+                answer: "True" // Using the PARALLEL option.
+            },
+             {
+                question: "Which recovery phase during system restart involves rolling back incomplete transactions?",
+                type: "multiple-choice",
+                options: ["Log Analysis Phase", "Redo Phase", "Undo Phase", "Commit Phase"],
+                answer: "Undo Phase"
+            },
+             {
+                question: "The maximum acceptable downtime during a recovery event is defined by the ________.",
+                type: "fill-in-the-blank",
+                answer: "RTO" // or Recovery Time Objective
+            },
+             {
+                question: "True or False: It is generally recommended to exclude temporary tablespaces and work files from regular backup schedules.",
+                type: "true-false",
+                answer: "True"
+            }
+        ];
+
+        // --- Quiz Logic (DOM References) ---
+        // (This section remains identical to the previous versions)
+        const quizContainer = document.getElementById('quiz-container');
+        const questionContainer = document.getElementById('question-container');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreElement = document.getElementById('score');
+        const reviewArea = document.getElementById('review-area');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const submitButton = document.getElementById('submit-button');
+        const retryButton = document.getElementById('retry-button');
+        const progressIndicator = document.getElementById('progress-indicator');
+
+        // --- State Variables ---
+        // (This section remains identical to the previous versions)
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let score = 0;
+
+        // --- Function to display a question ---
+        // (This function remains identical to the previous versions)
+        function displayQuestion(index) {
+            questionContainer.innerHTML = '';
+            if (index < 0 || index >= quizData.length) {
+                console.error("Invalid question index:", index);
+                questionContainer.innerHTML = '<p>Error: Could not load question.</p>';
+                return;
+            }
+            const questionData = quizData[index];
+            progressIndicator.textContent = `Question ${index + 1} / ${quizData.length}`;
+            const questionTextElement = document.createElement('p');
+            questionTextElement.textContent = `${index + 1}. ${questionData.question}`;
+            questionContainer.appendChild(questionTextElement);
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            if (questionData.type === 'multiple-choice' || questionData.type === 'true-false') {
+                const options = (questionData.type === 'true-false') ? ['True', 'False'] : questionData.options;
+                options.forEach(option => {
+                    const label = document.createElement('label');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = option;
+                    if (userAnswers[index] === option) {
+                        input.checked = true;
+                    }
+                    input.addEventListener('change', () => handleAnswerChange(index, option));
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(option));
+                    optionsContainer.appendChild(label);
+                });
+            } else if (questionData.type === 'fill-in-the-blank') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = `question-${index}`;
+                input.placeholder = 'Type your answer here...';
+                input.value = userAnswers[index] || '';
+                input.addEventListener('input', (e) => handleAnswerChange(index, e.target.value.trim()));
+                optionsContainer.appendChild(input);
+            }
+            questionContainer.appendChild(optionsContainer);
+            updateNavigationButtons();
+        }
+
+        // --- Function to handle answer changes ---
+        // (This function remains identical to the previous versions)
+        function handleAnswerChange(index, value) {
+             userAnswers[index] = value;
+        }
+
+        // --- Function to update navigation buttons visibility/state ---
+        // (This function remains identical to the previous versions)
+        function updateNavigationButtons() {
+            prevButton.disabled = currentQuestionIndex === 0;
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextButton.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+            } else {
+                nextButton.classList.remove('hidden');
+                submitButton.classList.add('hidden');
+            }
+        }
+
+        // --- Function to check answers and calculate score ---
+        // (This function remains identical to the previous versions)
+        function checkAnswers() {
+            score = 0;
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let correctAnswer = question.answer;
+                let isCorrect = false;
+                if (question.type === 'fill-in-the-blank' && userAnswer) {
+                    // Allow for variations in fill-in-the-blank answers if needed by defining answer as array
+                    // Convert both to lowercase for case-insensitive comparison
+                    const userAnswerLower = userAnswer.toLowerCase();
+                    if (Array.isArray(correctAnswer)) {
+                         isCorrect = correctAnswer.map(a => a.toLowerCase()).includes(userAnswerLower);
+                    } else if (typeof correctAnswer === 'string') {
+                        // Handle potential multiple answers separated by " / " in the string
+                        const possibleAnswers = correctAnswer.split(' / ').map(a => a.trim().toLowerCase());
+                         isCorrect = possibleAnswers.includes(userAnswerLower);
+                    }
+                } else {
+                    // Direct comparison for multiple-choice and true-false (case-sensitive)
+                    isCorrect = userAnswer === correctAnswer;
+                }
+                if (isCorrect) {
+                    score++;
+                }
+            });
+        }
+
+
+        // --- Function to display results and review ---
+        // (This function remains identical to the previous versions, handles array/multi-string answers)
+        function displayResults() {
+            quizContainer.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            scoreElement.textContent = `${score} / ${quizData.length} (${((score / quizData.length) * 100).toFixed(1)}%)`;
+            reviewArea.innerHTML = '';
+            quizData.forEach((question, index) => {
+                const reviewElement = document.createElement('div');
+                const userAnswer = userAnswers[index] || '[[[ No Answer ]]]';
+                let correctAnswer = question.answer;
+                // Display multiple possible answers nicely if defined as array or " / " separated string
+                let correctAnswerDisplay = Array.isArray(correctAnswer) ? correctAnswer.join(' / ') : correctAnswer;
+
+                 let isCorrect = false;
+                 // Re-check correctness for display, case-insensitive for fill-in-the-blank
+                 const userAnswerLower = typeof userAnswer === 'string' ? userAnswer.toLowerCase() : null;
+                 if (question.type === 'fill-in-the-blank' && userAnswerLower) {
+                     if (Array.isArray(correctAnswer)) {
+                         isCorrect = correctAnswer.map(a => a.toLowerCase()).includes(userAnswerLower);
+                     } else if (typeof correctAnswer === 'string') {
+                         const possibleAnswers = correctAnswer.split(' / ').map(a => a.trim().toLowerCase());
+                         isCorrect = possibleAnswers.includes(userAnswerLower);
+                     }
+                 } else {
+                     // Case-sensitive for multiple-choice/true-false
+                     isCorrect = userAnswer === correctAnswer;
+                 }
+
+                let feedbackHTML = `<p class="font-semibold">${index + 1}. ${question.question}</p>`;
+                feedbackHTML += `<p class="text-sm">Your Answer: <span class="user-answer-text ${isCorrect ? 'correct' : 'incorrect'}">${userAnswer}</span></p>`;
+                if (!isCorrect) {
+                    feedbackHTML += `<p class="text-sm">Correct Answer: <span class="correct-answer-text">${correctAnswerDisplay}</span></p>`;
+                }
+                reviewElement.innerHTML = feedbackHTML;
+                reviewArea.appendChild(reviewElement);
+            });
+        }
+
+        // --- Event Listeners for Buttons ---
+        // (This section remains identical to the previous versions)
+        prevButton.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+        nextButton.addEventListener('click', () => {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+        submitButton.addEventListener('click', () => {
+            checkAnswers();
+            displayResults();
+        });
+        retryButton.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            score = 0;
+            resultsContainer.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            displayQuestion(currentQuestionIndex);
+        });
+
+        // --- Initial Load ---
+        // (This section remains identical to the previous versions)
+        displayQuestion(currentQuestionIndex);
+
+    </script>
+
 </body>
 </html>

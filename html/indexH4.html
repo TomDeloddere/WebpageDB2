@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DB2 Mainframe DBA - Chapter 4: Performance-optimalisatie</title>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+New&display=swap" rel="stylesheet">
+    <title>DB2 Performance Optimization</title>
     <style>
-        /* General styles */
+        /* General styles - Mainframe inspired but optimized for learning */
         body {
             background-color: #0a0a14;
             color: #b3ffb3;
@@ -50,9 +49,10 @@
             margin: 0;
             display: flex;
             justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
         }
         nav li {
-            margin: 0 15px;
+            margin: 5px 15px; /* Add vertical margin for wrapped items */
         }
         nav a {
             color: #33ff33;
@@ -83,6 +83,12 @@
             font-size: 1.4rem;
             margin-top: 25px;
         }
+        h4 { /* Style for h4 */
+            color: #00e6b8; /* Slightly different color */
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
         p {
             margin-bottom: 20px;
             font-size: 1.1rem;
@@ -96,6 +102,7 @@
             overflow-x: auto;
             font-family: 'Courier New', monospace;
             color: #33ff33;
+            white-space: pre; /* Preserve whitespace and line breaks */
         }
         table {
             width: 100%;
@@ -161,6 +168,7 @@
             padding: 20px;
             margin: 20px 0;
             text-align: center;
+            font-style: italic;
         }
         footer {
             text-align: center;
@@ -187,177 +195,799 @@
             h2 {
                 font-size: 1.5rem;
             }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>DB2 Mainframe DBA</h1>
-            <p>Chapter 4: Performance Optimization</p>
+            <h1>DB2 Performance Optimization</h1>
         </header>
-        <nav>
-            <ul>
-                <li><a href="#introduction">Introduction</a></li>
-                <li><a href="#runstats">Running RUNSTATS and Interpreting Results</a></li>
-                <li><a href="#performance_bottlenecks">Identifying and Resolving Performance Bottlenecks</a></li>
-                <li><a href="#query_optimization">Optimizing Query Execution</a></li>
-            </ul>
-        </nav>
 
-        <section id="introduction">
-            <h2>Introduction</h2>
-            <p>
-                This chapter focuses on the critical skill of performance optimization in DB2 Mainframe environments.  DB2 DBAs must be proficient in monitoring, analyzing, and optimizing database performance to ensure applications run efficiently and meet service level agreements.
-            </p>
-            <p>
-                We'll cover how to use the <code>RUNSTATS</code> utility and interpret its output, identify and resolve common performance bottlenecks, and optimize the execution of SQL queries.
-            </p>
+        <nav>
+             <ul>
+                 <li><a href="#intro">Intro</a></li>
+                 <li><a href="#tools">Tools</a></li>
+                 <li><a href="#runstats">RUNSTATS</a></li>
+                 <li><a href="#bottlenecks">Bottlenecks</a></li>
+                 <li><a href="#query">Query Opt</a></li>
+                 <li><a href="#practices">Practices</a></li>
+                 <li><a href="#advanced">Advanced</a></li>
+                 <li><a href="#conclusion">Conclusion</a></li>
+             </ul>
+         </nav>
+
+        <section id="intro">
+            <h2>Introduction to Database Performance Management</h2>
+            <p>Performance management is a critical discipline for DB2 database administrators, requiring a blend of technical knowledge, analytical skills, and experience. In mainframe environments, where DB2 often supports mission-critical applications with strict service level agreements, performance optimization directly impacts business operations and can yield significant cost savings by reducing CPU consumption and improving response times.</p>
+            <p>Effective DB2 performance management involves a comprehensive approach that includes:</p>
+            <ul>
+                <li><strong>Proactive monitoring:</strong> Continuously tracking database performance metrics to identify trends and potential issues before they impact users.</li>
+                <li><strong>Performance analysis:</strong> Using diagnostic tools and techniques to determine the root causes of performance problems.</li>
+                <li><strong>Tuning implementation:</strong> Applying appropriate optimization techniques at the database, application, or system level.</li>
+                <li><strong>Verification and measurement:</strong> Confirming that performance improvements achieve the desired results.</li>
+                <li><strong>Impact assessment:</strong> Understanding how changes in one area might affect performance in others.</li>
+            </ul>
+            <p>The performance optimization process is cyclical rather than linear, requiring ongoing attention as workloads evolve, data volumes grow, and system configurations change. The goal is to achieve optimal performance while balancing competing factors like resource utilization, response time, throughput, and availability.</p>
+        </section>
+
+        <section id="tools">
+            <h2>DB2 Performance Monitoring and Analysis Tools</h2>
+            <p>DB2 for z/OS provides a rich set of tools and utilities for monitoring and analyzing performance:</p>
+
+            <h3>System-Level Monitoring Tools</h3>
+            <h4>DB2 Instrumentation Facility:</h4>
+            <ul>
+                <li>System-level traces: Statistics, accounting, performance, audit, and monitor traces</li>
+                <li>IFCID (Instrumentation Facility Component ID): Specific events or data points that can be traced</li>
+                <li>Trace destination options: SMF, GTF, OPn, or RES buffers</li>
+            </ul>
+            <h4>SMF Records:</h4>
+            <ul>
+                <li>Type 100 (Statistics): System-wide DB2 statistics</li>
+                <li>Type 101 (Accounting): Thread-level accounting information</li>
+                <li>Type 102 (Performance): Detailed performance data</li>
+                <li>Type 199 (Specialized): Special monitoring data</li>
+            </ul>
+            <h4>DB2 Commands for Monitoring:</h4>
+            <ul>
+                <li>DISPLAY THREAD: Shows active connections and their status</li>
+                <li>DISPLAY DATABASE: Shows status of database objects</li>
+                <li>DISPLAY BUFFERPOOL: Shows buffer pool statistics</li>
+                <li>DISPLAY LOCATION: Shows distributed connections</li>
+                <li>DISPLAY DDF DETAIL: Shows DDF activity statistics</li>
+            </ul>
+
+            <h3>Object-Level Analysis Tools</h3>
+            <h4>RUNSTATS Utility:</h4>
+            <ul>
+                <li>Collects statistics about tables, indexes, and column values</li>
+            </ul>
+            <h4>EXPLAIN Facility:</h4>
+            <ul>
+                <li>PLAN_TABLE: Contains access path information</li>
+                <li>DSN_STATEMNT_TABLE: Contains statement cost information</li>
+                <li>DSN_FUNCTION_TABLE: Contains function resolution information</li>
+                <li>DSN_STATEMENT_CACHE_TABLE: Contains dynamic SQL cache information</li>
+            </ul>
+            <h4>Catalog Tables:</h4>
+            <ul>
+                <li>SYSIBM.SYSTABLES: Table statistics</li>
+                <li>SYSIBM.SYSINDEXES: Index statistics</li>
+                <li>SYSIBM.SYSCOLUMNS: Column statistics</li>
+                <li>SYSIBM.SYSKEYTARGETS: Key statistics for index expressions</li>
+            </ul>
+            <h4>DB2 Query Monitor:</h4>
+            <ul>
+                <li>Real-time monitoring of SQL statement performance</li>
+            </ul>
+
+            <h3>Performance Analysis Methodologies</h3>
+            <h4>Workload Analysis:</h4>
+            <ul>
+                <li>Identify top resource consumers (CPU, I/O, elapsed time)</li>
+                <li>Categorize by application, authorization ID, or location</li>
+                <li>Determine patterns and peak usage periods</li>
+                <li>Compare against baseline measurements</li>
+            </ul>
+            <h4>Problem Determination:</h4>
+            <ul>
+                <li>Establish scope (system-wide or specific applications)</li>
+                <li>Collect relevant diagnostic data</li>
+                <li>Analyze symptoms and identify probable causes</li>
+                <li>Develop and test potential solutions</li>
+                <li>Implement and verify fixes</li>
+            </ul>
+            <h4>Performance Trending:</h4>
+            <ul>
+                <li>Collect performance metrics over time</li>
+                <li>Establish normal operating patterns</li>
+                <li>Identify anomalies and gradual degradation</li>
+                <li>Forecast future resource requirements</li>
+            </ul>
+            <h4>Event Analysis:</h4>
+            <ul>
+                <li>Identify specific performance incidents</li>
+                <li>Correlate with system events or changes</li>
+                <li>Analyze environmental factors</li>
+                <li>Determine trigger conditions</li>
+            </ul>
         </section>
 
         <section id="runstats">
             <h2>Running RUNSTATS and Interpreting Results</h2>
-            <p>
-                The <code>RUNSTATS</code> utility is essential for collecting statistics about the data in your DB2 tables and indexes.  These statistics are used by the DB2 optimizer to determine the most efficient way to execute SQL queries.
-            </p>
+            <p>The RUNSTATS utility is a cornerstone of DB2 performance optimization, collecting statistical information that the optimizer uses to determine efficient access paths.</p>
 
-            <h3>Importance of RUNSTATS</h3>
+            <h3>RUNSTATS Execution Options</h3>
+            <h4>Basic RUNSTATS Syntax:</h4>
+<pre class="code-block">
+RUNSTATS TABLESPACE database-name.tablespace-name
+         TABLE(ALL) INDEX(ALL)
+         SHRLEVEL REFERENCE
+         UPDATE ALL;
+</pre>
+            <h4>Key Parameters:</h4>
             <ul>
-                <li><strong>Accurate Access Paths:</strong>  The DB2 optimizer relies on accurate statistics to choose the best access path for a query.  Outdated or missing statistics can lead to poor query performance.</li>
-                <li><strong>Performance Monitoring:</strong>  Changes in statistics over time can indicate changes in data volume or distribution, which may require adjustments to database design or application code.</li>
+                <li><strong>SHRLEVEL:</strong> Controls level of access during statistics collection
+                    <ul>
+                        <li>REFERENCE: Read-only access to data</li>
+                        <li>CHANGE: Allows concurrent updates</li>
+                    </ul>
+                </li>
+                <li><strong>UPDATE:</strong> Determines where statistics are stored
+                    <ul>
+                        <li>ALL: Updates both catalog and RTS tables</li>
+                        <li>ACCESSPATH: Updates statistics used for access path selection</li>
+                        <li>SPACE: Updates space-related statistics</li>
+                        <li>NONE: Collects statistics without updating catalogs</li>
+                    </ul>
+                </li>
+                <li><strong>REPORT:</strong> Generates a report without updating statistics</li>
+                <li><strong>KEYCARD:</strong> Collects cardinality statistics for index keys</li>
+                <li><strong>HISTOGRAM:</strong> Collects frequency statistics for column values</li>
+                <li><strong>COLGROUP:</strong> Collects statistics for groups of correlated columns</li>
+            </ul>
+            <h4>Statistics Collection Strategies:</h4>
+            <ul>
+                <li><strong>Comprehensive Collection:</strong>
+<pre class="code-block">
+RUNSTATS TABLESPACE dbname.tsname
+         TABLE(ALL) INDEX(ALL)
+         SHRLEVEL CHANGE
+         UPDATE ALL
+         HISTOGRAM NUMQUANTILES 100;
+</pre>
+                </li>
+                <li><strong>Focused Collection:</strong>
+<pre class="code-block">
+RUNSTATS TABLESPACE dbname.tsname
+         TABLE(schema.table)
+         COLUMN(col1,col2)
+         COLGROUP(col3,col4) FREQVAL COUNT 20
+         INDEX(schema.index1,schema.index2)
+         SHRLEVEL CHANGE
+         UPDATE ALL;
+</pre>
+                </li>
+                <li><strong>Efficient Collection for Large Tables:</strong>
+<pre class="code-block">
+RUNSTATS TABLESPACE dbname.tsname
+         TABLE(schema.table) SAMPLE 25
+         INDEX(ALL) SAMPLE 25
+         SHRLEVEL CHANGE
+         UPDATE ALL;
+</pre>
+                </li>
             </ul>
 
-            <h3>Running RUNSTATS</h3>
-            <p>
-                The <code>RUNSTATS</code> utility can be executed using the <code>RUNSTATS TABLESPACE</code> or <code>RUNSTATS TABLE</code> command.  You can specify various options to control the level of detail of the statistics collected.
-            </p>
-            <div class="code-block">
-                <pre><code>
-RUNSTATS TABLESPACE database_name.tablespace_name
-    TABLE(ALL)
-    INDEX(ALL)
-    HISTORY(ALL);
-                </code></pre>
-            </div>
-            <p>
-                This example collects statistics for all tables and indexes in the specified tablespace, and also collects historical statistics.
-            </p>
-
-            <h3>Interpreting RUNSTATS Output</h3>
-            <p>
-                The output of <code>RUNSTATS</code> provides valuable information about the characteristics of your data.  Key statistics to examine include:
-            </p>
+            <h3>Interpreting RUNSTATS Results</h3>
+            <h4>Key Table Statistics:</h4>
             <ul>
-                <li><strong>CARD:</strong>  Cardinality (number of rows) in the table.</li>
-                <li><strong>NPAGES:</strong>  Number of pages used by the table.</li>
-                <li><strong>FAROFFPOS:</strong>  A measure of how far the data is from its optimal location.</li>
-                <li><strong>COLCARD:</strong>  Cardinality of distinct values in a column.</li>
-                <li><strong>HIGH2KEY/LOW2KEY:</strong>  The second highest and lowest values in a column.</li>
+                <li>CARDF: Number of rows in the table</li>
+                <li>NPAGES: Number of pages with active rows</li>
+                <li>PCTPAGES: Percentage of space used in tablespace</li>
+                <li>PCTROWCOMP: Percentage of rows compressed</li>
+                <li>AVGROWLEN: Average row length</li>
             </ul>
-            <p class="important">
-                Red Flag:  Significant changes in these statistics may indicate a need to re-evaluate your database design or query strategy.
-            </p>
-            <p class="note">
-                Fun Fact:  You can use the <code>SYSSTAT</code> catalog views to query the statistics collected by <code>RUNSTATS</code>.
-            </p>
+            <h4>Key Index Statistics:</h4>
+            <ul>
+                <li>FIRSTKEYCARDF: Number of distinct values in first key column</li>
+                <li>FULLKEYCARDF: Number of distinct values for full key</li>
+                <li>NLEAF: Number of leaf pages</li>
+                <li>NLEVELS: Number of levels in the index</li>
+                <li>CLUSTERRATIO: Measure of data clustering according to index</li>
+            </ul>
+            <h4>Column Statistics:</h4>
+            <ul>
+                <li>COLCARDF: Number of distinct values in the column</li>
+                <li>HIGH2KEY/LOW2KEY: Second-highest/lowest values</li>
+                <li>HISTOGRAM statistics: Distribution of values across ranges</li>
+            </ul>
+            <h4>Analysis of Statistical Data:</h4>
+            <ul>
+                <li><strong>Cardinality Assessment:</strong>
+                    <ul>
+                        <li>Low COLCARDF relative to CARDF indicates low uniqueness</li>
+                        <li>High COLCARDF close to CARDF indicates high uniqueness</li>
+                        <li>Impacts index selection and join strategies</li>
+                    </ul>
+                </li>
+                <li><strong>Clustering Evaluation:</strong>
+                    <ul>
+                        <li>CLUSTERRATIO near 100 indicates excellent clustering</li>
+                        <li>Low values may indicate need for REORG</li>
+                        <li>Impacts sequential access efficiency</li>
+                    </ul>
+                </li>
+                <li><strong>Space Utilization:</strong>
+                    <ul>
+                        <li>Compare NPAGES to theoretical optimal</li>
+                        <li>High PCTROWCOMP indicates effective compression</li>
+                        <li>Low space utilization may indicate need for REORG</li>
+                    </ul>
+                </li>
+                <li><strong>Index Efficiency:</strong>
+                    <ul>
+                        <li>NLEVELS > 3 may indicate need for evaluation in large tables</li>
+                        <li>LEAFDIST shows distribution of leaf pages</li>
+                        <li>Physical design implications based on access patterns</li>
+                    </ul>
+                </li>
+                <li><strong>Histogram Analysis:</strong>
+                    <ul>
+                        <li>Identifies skewed data distributions</li>
+                        <li>Enables better predicate selectivity estimates</li>
+                        <li>Helps optimize queries with range conditions</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Scheduling and Automating RUNSTATS</h3>
+            <h4>Scheduling Considerations:</h4>
+            <ul>
+                <li>After significant data changes (typically 10-20% changes)</li>
+                <li>Following major loads or mass updates</li>
+                <li>Prior to rebinding applications</li>
+                <li>After reorganizations</li>
+                <li>On a regular maintenance schedule for critical objects</li>
+            </ul>
+            <h4>Automation Approaches:</h4>
+            <ul>
+                <li>Using REORG with inline RUNSTATS</li>
+                <li>Implementing threshold-based execution through RTS</li>
+                <li>Scheduling through system automation tools</li>
+                <li>Using DB2 utilities like DSNACCOX stored procedure</li>
+            </ul>
+            <h4>Real-Time Statistics Integration:</h4>
+            <ul>
+                <li>Monitoring TOTALROWS vs. CARDF</li>
+                <li>Tracking REORGMODIFIEDPAGES for update activity</li>
+                <li>Using STATSTIME to identify outdated statistics</li>
+                <li>Implementing automated RUNSTATS based on RTS thresholds</li>
+            </ul>
         </section>
 
-        <section id="performance_bottlenecks">
+        <section id="bottlenecks">
             <h2>Identifying and Resolving Performance Bottlenecks</h2>
-            <p>
-                DB2 performance problems can arise from various sources.  It's crucial to have a systematic approach to identify and resolve these bottlenecks.
-            </p>
+            <p>Effective performance problem resolution requires a systematic approach to identify, analyze, and address bottlenecks.</p>
 
             <h3>Common Performance Bottlenecks</h3>
+            <h4>CPU-Related Issues:</h4>
             <ul>
-                <li><strong>Poorly Performing SQL:</strong>  Inefficiently written SQL queries are a frequent cause of performance problems.</li>
-                <li><strong>Lack of Proper Indexes:</strong>  Missing or inadequate indexes can force DB2 to perform full table scans, which are very expensive.</li>
-                <li><strong>Buffer Pool Issues:</strong>  Insufficient buffer pool size or improper configuration can lead to excessive I/O.</li>
-                <li><strong>Lock Contention:</strong>  When multiple applications try to access the same data concurrently, lock contention can occur, causing delays.</li>
-                <li><strong>I/O Bottlenecks:</strong>  Slow disk I/O can limit overall DB2 performance.</li>
-                <li><strong>System Resource Constraints:</strong>  Insufficient CPU, memory, or network resources can also impact DB2.</li>
+                <li>Inefficient SQL statements consuming excessive CPU</li>
+                <li>Lack of appropriate indexes leading to tablespace scans</li>
+                <li>Excessive sorting operations</li>
+                <li>Unoptimized application code or stored procedures</li>
+                <li>Excessive RID list processing</li>
+                <li>Suboptimal query parallelism</li>
+            </ul>
+            <h4>I/O-Related Issues:</h4>
+            <ul>
+                <li>Buffer pool thrashing (high read/write ratios)</li>
+                <li>Synchronous I/O waits</li>
+                <li>Inefficient prefetch operations</li>
+                <li>Log bottlenecks during heavy update operations</li>
+                <li>Contention for I/O subsystem resources</li>
+                <li>Poorly organized data requiring excessive I/O</li>
+            </ul>
+            <h4>Lock-Related Issues:</h4>
+            <ul>
+                <li>Lock contention between transactions</li>
+                <li>Excessive lock wait times</li>
+                <li>Deadlocks and timeouts</li>
+                <li>Lock escalation impacting concurrency</li>
+                <li>Inappropriate isolation levels</li>
+                <li>Improper locking strategies in applications</li>
+            </ul>
+            <h4>Memory-Related Issues:</h4>
+            <ul>
+                <li>Insufficient buffer pool size</li>
+                <li>EDM pool constraints</li>
+                <li>RID pool overflows</li>
+                <li>Sort pool limitations</li>
+                <li>Excessive working storage requirements</li>
+                <li>Global shared memory constraints in data sharing</li>
+            </ul>
+            <h4>Network-Related Issues:</h4>
+            <ul>
+                <li>Distributed query bottlenecks</li>
+                <li>Excessive network traffic due to large result sets</li>
+                <li>Connection pooling inefficiencies</li>
+                <li>DDF thread limitations</li>
+                <li>Network latency impacts on distributed operations</li>
             </ul>
 
-            <h3>Identifying Bottlenecks</h3>
-            <p>
-                DB2 provides several tools and techniques for identifying performance bottlenecks:
-            </p>
+            <h3>Systematic Problem Resolution</h3>
+            <h4>Step 1: Identify Symptoms</h4>
             <ul>
-                <li><strong>EXPLAIN:</strong>  The <code>EXPLAIN</code> statement shows the access path that DB2 will use to execute a query.  This can help you identify inefficient query plans.</li>
-                <li><strong>DB2 Monitor:</strong>  The DB2 Monitor provides real-time information about DB2 activity, including CPU usage, I/O rates, and lock contention.</li>
-                <li><strong>Statistics Reports:</strong>  Reports based on SMF (System Management Facilities) data can provide historical information about DB2 performance.</li>
-                <li><strong>z/OS Performance Tools:</strong>  Tools like RMF (Resource Measurement Facility) can help identify system-level bottlenecks.</li>
+                <li>Analyze application response times</li>
+                <li>Review DB2 accounting reports for long-running threads</li>
+                <li>Examine resource consumption patterns</li>
+                <li>Identify specific SQL statements with performance issues</li>
+                <li>Check for lock timeouts, deadlocks, or resource constraints</li>
+            </ul>
+            <h4>Step 2: Collect Diagnostic Data</h4>
+            <ul>
+                <li>Gather relevant statistics traces</li>
+                <li>Run EXPLAIN for problematic SQL</li>
+                <li>Review buffer pool and other subsystem statistics</li>
+                <li>Analyze lock activity reports</li>
+                <li>Examine system logs for error conditions</li>
+            </ul>
+            <h4>Step 3: Analyze Root Causes</h4>
+            <ul>
+                <li>Determine if issues are application, database, or system-related</li>
+                <li>Identify resource constraints or contention points</li>
+                <li>Evaluate access path selection and join strategies</li>
+                <li>Check for data skew or statistical anomalies</li>
+                <li>Review concurrency and locking behaviors</li>
+            </ul>
+            <h4>Step 4: Develop Solutions</h4>
+            <ul>
+                <li>Design appropriate indexing strategies</li>
+                <li>Optimize SQL statements</li>
+                <li>Adjust DB2 subsystem parameters</li>
+                <li>Recommend application changes</li>
+                <li>Implement data organization improvements</li>
+            </ul>
+            <h4>Step 5: Implement and Verify</h4>
+            <ul>
+                <li>Apply changes in controlled manner</li>
+                <li>Measure before and after performance</li>
+                <li>Verify problem resolution</li>
+                <li>Document changes and outcomes</li>
+                <li>Monitor for any secondary effects</li>
             </ul>
 
-            <h3>Resolving Bottlenecks</h3>
-            <p>
-                Once you've identified the bottleneck, you can take steps to resolve it.  Here are some common solutions:
-            </p>
+            <h3>Case Study Approach to Common Bottlenecks</h3>
+            <h4>Case 1: Excessive Tablespace Scans</h4>
             <ul>
-                <li><strong>Optimize SQL:</strong>  Rewrite poorly performing SQL queries.</li>
-                <li><strong>Create Appropriate Indexes:</strong>  Add or modify indexes to improve data access.</li>
-                <li><strong>Tune Buffer Pools:</strong>  Adjust buffer pool size and configuration.</li>
-                <li><strong>Reduce Lock Contention:</strong>  Optimize application logic to minimize the duration of locks.</li>
-                <li><strong>Improve I/O Performance:</strong>  Consider using faster storage devices or optimizing disk layout.</li>
-                <li><strong>Upgrade System Resources:</strong>  Increase CPU, memory, or network capacity if necessary.</li>
+                <li>Symptom: High CPU usage, long-running queries</li>
+                <li>Diagnosis: EXPLAIN shows TABLESCAN access with high cost</li>
+                <li>Solution: Create appropriate indexes based on predicates</li>
+                <li>Verification: Reduced CPU time and elapsed time after index creation</li>
+            </ul>
+            <h4>Case 2: Buffer Pool Contention</h4>
+            <ul>
+                <li>Symptom: High synchronous read I/O, buffer pool thrashing</li>
+                <li>Diagnosis: Low buffer pool hit ratios, high read I/O rates</li>
+                <li>Solution: Increase buffer pool size, adjust thresholds, separate workloads</li>
+                <li>Verification: Improved hit ratios, reduced I/O wait times</li>
+            </ul>
+            <h4>Case 3: Lock Contention</h4>
+            <ul>
+                <li>Symptom: Timeouts, deadlocks, excessive wait times</li>
+                <li>Diagnosis: Lock activity reports show contention points</li>
+                <li>Solution: Adjust isolation levels, modify application locking strategy</li>
+                <li>Verification: Reduced lock wait times, fewer timeouts</li>
+            </ul>
+            <h4>Case 4: Sort Performance Issues</h4>
+            <ul>
+                <li>Symptom: High sort activity, spill to workfiles</li>
+                <li>Diagnosis: Sort pool statistics show excessive external sorts</li>
+                <li>Solution: Increase sort pool size, create indexes to avoid sorts</li>
+                <li>Verification: Reduced sort activity, fewer workfile sorts</li>
+            </ul>
+            <h4>Case 5: Distributed Query Performance</h4>
+            <ul>
+                <li>Symptom: Slow response for distributed applications</li>
+                <li>Diagnosis: High network traffic, excessive result set size</li>
+                <li>Solution: Implement result set blocking, reduce data transfer</li>
+                <li>Verification: Improved response time, reduced network traffic</li>
             </ul>
         </section>
 
-        <section id="query_optimization">
+        <section id="query">
             <h2>Optimizing Query Execution</h2>
-            <p>
-                Optimizing individual SQL queries is a key aspect of DB2 performance tuning.  This section delves deeper into techniques for improving query performance.
-            </p>
+            <p>Query optimization involves multiple techniques to improve the efficiency of SQL statement execution.</p>
 
-            <h3>Understanding the DB2 Optimizer</h3>
-            <p>
-                The DB2 optimizer is responsible for determining the most efficient way to execute a SQL query.  It considers various factors, including the available indexes, the size of the tables, and the distribution of the data.
-            </p>
-
-            <h3>Factors Affecting Query Performance</h3>
+            <h3>Understanding DB2 Query Optimizer</h3>
+            <h4>Optimizer Components:</h4>
             <ul>
-                 <li><strong>Access Path Selection:</strong>  The optimizer chooses an access path, which is the sequence of steps DB2 takes to retrieve the data.  This could involve a table scan, an index scan, or a combination of both.</li>
-                 <li><strong>Join Methods:</strong>  When joining multiple tables, the optimizer selects a join method, such as a nested loop join, a merge join, or a hash join.  The choice of join method can significantly impact performance.</li>
-                 <li><strong>Data Skew:</strong>  Uneven distribution of data can affect the efficiency of certain access paths.</li>
+                <li>Parser: Checks SQL syntax and semantics</li>
+                <li>Query Graph Model (QGM): Internal representation of the query</li>
+                <li>Access Path Selection: Determines the execution strategy</li>
+                <li>Cost Estimation: Calculates resource requirements</li>
+                <li>Plan Generation: Creates executable access plan</li>
+            </ul>
+            <h4>Optimization Phases:</h4>
+            <ul>
+                <li>Query rewrite: Transforms SQL into more efficient form</li>
+                <li>Access path selection: Chooses tables access methods</li>
+                <li>Join sequence determination: Orders table joins efficiently</li>
+                <li>Join method selection: Chooses appropriate join techniques</li>
+                <li>Parallelism evaluation: Determines parallel execution options</li>
+            </ul>
+            <h4>Cost-Based Optimization Factors:</h4>
+            <ul>
+                <li>Statistical information from catalog tables</li>
+                <li>Available indexes and their characteristics</li>
+                <li>Predicate selectivity estimates</li>
+                <li>Resource costs (CPU, I/O, sort work)</li>
+                <li>Parameter marker and host variable influences</li>
+                <li>Join method efficiency for the specific query</li>
             </ul>
 
-            <h3>Techniques for Optimizing Queries</h3>
+            <h3>Influencing the Optimizer</h3>
+            <h4>OPTIMIZE FOR n ROWS:</h4>
             <ul>
-                <li><strong>Use Indexes Effectively:</strong>
-                    <ul>
-                        <li>Ensure that frequently queried columns are indexed.</li>
-                        <li>Avoid using functions in the <code>WHERE</code> clause that prevent index usage.</li>
-                        <li>Consider using composite indexes for queries that involve multiple columns.</li>
-                    </ul>
+                <li>Influences retrieval strategy based on expected result size</li>
+                <li>Useful for queries returning small subsets of large tables</li>
+<pre class="code-block">
+SELECT * FROM LARGE_TABLE
+ WHERE REGION = 'EAST'
+ OPTIMIZE FOR 100 ROWS;
+</pre>
+            </ul>
+            <h4>FETCH FIRST n ROWS ONLY:</h4>
+            <ul>
+                <li>Limits result set size</li>
+                <li>Can enable optimization techniques like early termination</li>
+<pre class="code-block">
+SELECT * FROM EMPLOYEE
+ ORDER BY SALARY DESC
+ FETCH FIRST 10 ROWS ONLY;
+</pre>
+            </ul>
+            <h4>REOPT Clause:</h4>
+            <ul>
+                <li>REOPT(ALWAYS): Optimizes at execution time using actual values</li>
+                <li>REOPT(ONCE): Optimizes on first execution and reuses plan</li>
+                <li>REOPT(AUTO): DB2 determines when to reoptimize</li>
+<pre class="code-block">
+SELECT * FROM CUSTOMER
+ WHERE REGION = ?
+ WITH REOPT(ALWAYS);
+</pre>
+            </ul>
+            <h4>Optimization Hints:</h4>
+            <ul>
+                <li>APPEND: Forces append processing for inserts</li>
+                <li>CONCENTRATE STATEMENTS: Enables literal concentration</li>
+                <li>QUERYNO: Identifies specific queries for optimization</li>
+                <li>PACKAGE/COLLECTION: Associates optimization with packages</li>
+<pre class="code-block">
+SELECT /*+ QUERYNO(100) */ *
+ FROM ORDERS
+ WHERE STATUS = 'OPEN';
+</pre>
+            </ul>
+
+            <h3>SQL Query Tuning Techniques</h3>
+            <h4>Predicate Optimization:</h4>
+            <ul>
+                <li>Stage 1 vs. Stage 2 predicates</li>
+                <li>Indexable vs. non-indexable predicates</li>
+                <li>Predicate order and evaluation efficiency</li>
+                <li>Sargable predicate formulation</li>
+            </ul>
+            <h4>Join Optimization:</h4>
+            <ul>
+                <li>Nested Loop Join: Efficient for small tables or indexed access</li>
+                <li>Merge Scan Join: Effective when data is pre-sorted</li>
+                <li>Hybrid Join: Combination approach for specific scenarios</li>
+                <li>Star Join: Optimized for star schema queries</li>
+            </ul>
+            <h4>Subquery Transformation:</h4>
+            <ul>
+                <li>Subquery-to-join conversion</li>
+                <li>IN-list predicate optimization</li>
+                <li>Materialization vs. correlation techniques</li>
+                <li>EXISTS vs. IN predicate choices</li>
+            </ul>
+            <h4>Index Design Strategies:</h4>
+            <ul>
+                <li>Covering indexes to avoid data page access</li>
+                <li>Index-only access paths</li>
+                <li>Index screening for complex predicates</li>
+                <li>Matching index design to query patterns</li>
+            </ul>
+
+            <h3>Specific Optimization Techniques</h3>
+            <h4>1. Rewriting SQL for Efficiency</h4>
+            <ul>
+                <li>Original Query:
+<pre class="code-block">
+SELECT * FROM EMPLOYEE
+ WHERE SUBSTR(LASTNAME, 1, 3) = 'SMI';
+</pre>
                 </li>
-                <li><strong>Optimize Join Queries:</strong>
-                    <ul>
-                        <li>Use the most appropriate type of join (e.g., INNER JOIN, LEFT JOIN).</li>
-                        <li>Ensure that join columns are indexed.</li>
-                        <li>Consider the order in which tables are joined.</li>
-                    </ul>
+                <li>Optimized Query:
+<pre class="code-block">
+SELECT * FROM EMPLOYEE
+ WHERE LASTNAME LIKE 'SMI%';
+</pre>
                 </li>
-                <li><strong>Minimize Data Retrieval:</strong>
-                    <ul>
-                        <li>Use the <code>SELECT</code> statement to retrieve only the necessary columns.</li>
-                        <li>Use the <code>WHERE</code> clause to filter out unnecessary rows.</li>
-                        <li>Use the <code>FETCH FIRST n ROWS ONLY</code> clause to limit the number of rows returned.</li>
-                    </ul>
+            </ul>
+            <h4>2. Avoiding Functions on Indexed Columns</h4>
+            <ul>
+                <li>Original Query:
+<pre class="code-block">
+SELECT * FROM ORDERS
+ WHERE YEAR(ORDER_DATE) = 2024;
+</pre>
                 </li>
-                <li><strong>Use of Views and Stored Procedures:</strong>
-                    <ul>
-                         <li>Views can simplify complex queries and improve readability.</li>
-                         <li>Stored procedures can improve performance by precompiling SQL statements and reducing network traffic.</li>
-                     </ul>
+                <li>Optimized Query:
+<pre class="code-block">
+SELECT * FROM ORDERS
+ WHERE ORDER_DATE BETWEEN '2024-01-01' AND '2024-12-31';
+</pre>
                 </li>
-                <li><strong>Query Rewrite:</strong>  Sometimes, rewriting a query in a different way can improve its performance.</li>
-                 <li><strong>Parallel Processing:</strong> DB2 can parallelize query execution to utilize multiple processors.</li>
+            </ul>
+            <h4>3. Using Multi-Index Access</h4>
+<pre class="code-block">
+CREATE INDEX IX1 ON CUSTOMER(REGION);
+CREATE INDEX IX2 ON CUSTOMER(STATUS);
+
+SELECT * FROM CUSTOMER
+ WHERE REGION = 'EAST' AND STATUS = 'ACTIVE';
+</pre>
+            <h4>4. Optimizing IN Lists with OR Predicates</h4>
+            <ul>
+                <li>Original Query:
+<pre class="code-block">
+SELECT * FROM PRODUCT
+ WHERE CATEGORY = 'A' OR CATEGORY = 'B' OR CATEGORY = 'C';
+</pre>
+                </li>
+                <li>Optimized Query:
+<pre class="code-block">
+SELECT * FROM PRODUCT
+ WHERE CATEGORY IN ('A', 'B', 'C');
+</pre>
+                </li>
+            </ul>
+            <h4>5. Using FETCH FIRST for Limited Results</h4>
+<pre class="code-block">
+SELECT EMPNO, LASTNAME, SALARY
+ FROM EMPLOYEE
+ ORDER BY SALARY DESC
+ FETCH FIRST 10 ROWS ONLY;
+</pre>
+
+            <h3>Advanced Optimization Techniques</h3>
+            <h4>Parallelism Optimization:</h4>
+            <ul>
+                <li>I/O Parallelism: Multiple parallel I/O streams</li>
+                <li>CPU Parallelism: Parallel processing of query components</li>
+                <li>Sysplex Query Parallelism: Cross-system parallel execution</li>
+                <li>Controlling parallelism degree with PARAMDEG parameter</li>
+            </ul>
+            <h4>Materialized Query Tables (MQTs):</h4>
+            <ul>
+                <li>Pre-computed results for complex queries</li>
+                <li>Automatic query rewrites to use MQTs</li>
+                <li>Refresh strategies (REFRESH IMMEDIATE vs. DEFERRED)</li>
+                <li>System-period temporal tables for historical queries</li>
+            </ul>
+            <h4>Partition-Level Operations:</h4>
+            <ul>
+                <li>Partition elimination based on predicates</li>
+                <li>Parallel access to multiple partitions</li>
+                <li>Pruning strategies for partitioned indexes</li>
+                <li>PAGE_RANGE screening for partitioned tables</li>
+            </ul>
+            <h4>In-Memory Techniques:</h4>
+            <ul>
+                <li>Buffer pool optimization for critical objects</li>
+                <li>PGFIX option for fixed buffer pages</li>
+                <li>In-memory data caching strategies</li>
+                <li>KEEPALIVE parameters for frequently accessed data</li>
             </ul>
         </section>
+
+        <section id="practices">
+            <h2>Performance Tuning Best Practices</h2>
+            <p>Effective performance tuning requires a strategic approach that balances immediate fixes with long-term optimization.</p>
+
+            <h3>Systematic Tuning Methodology</h3>
+            <h4>1. Establish Performance Baselines</h4>
+            <ul>
+                <li>Collect comprehensive performance metrics during normal operations</li>
+                <li>Document response times, throughput, and resource utilization</li>
+                <li>Identify peak workload periods and patterns</li>
+                <li>Create baseline reports for future comparison</li>
+            </ul>
+            <h4>2. Implement Proactive Monitoring</h4>
+            <ul>
+                <li>Regular review of system performance metrics</li>
+                <li>Threshold-based alerting for performance degradation</li>
+                <li>Trend analysis to predict future performance issues</li>
+                <li>Automated collection of diagnostic information</li>
+            </ul>
+            <h4>3. Prioritize Tuning Efforts</h4>
+            <ul>
+                <li>Focus on high-impact, high-visibility applications</li>
+                <li>Address system-wide bottlenecks before specific queries</li>
+                <li>Target resources with highest utilization or contention</li>
+                <li>Weigh effort required against expected performance gain</li>
+            </ul>
+            <h4>4. Document Changes and Results</h4>
+            <ul>
+                <li>Maintain detailed records of all performance modifications</li>
+                <li>Measure performance metrics before and after changes</li>
+                <li>Document unexpected side effects or interactions</li>
+                <li>Create knowledge base of effective tuning techniques</li>
+            </ul>
+
+            <h3>Preventive Maintenance for Performance</h3>
+            <h4>Regular Database Maintenance:</h4>
+            <ul>
+                <li>Scheduled RUNSTATS to maintain current statistics</li>
+                <li>REORG to address physical disorganization</li>
+                <li>REBIND of packages to leverage current statistics</li>
+                <li>COPY for backup and recovery readiness</li>
+            </ul>
+            <h4>Capacity Planning:</h4>
+            <ul>
+                <li>Monitoring growth trends in data volumes</li>
+                <li>Forecasting future resource requirements</li>
+                <li>Planning for workload increases</li>
+                <li>Establishing performance SLAs and objectives</li>
+            </ul>
+            <h4>Change Management:</h4>
+            <ul>
+                <li>Performance impact assessment for schema changes</li>
+                <li>Query performance regression testing</li>
+                <li>Controlled implementation of parameter changes</li>
+                <li>Rollback planning for unsuccessful changes</li>
+            </ul>
+
+            <h3>Performance Tuning Checklist</h3>
+            <h4>Database Design:</h4>
+            <ul>
+                <li>[ ] Appropriate normalization level for workload type</li>
+                <li>[ ] Efficient partitioning strategy for large tables</li>
+                <li>[ ] Suitable compression options for data characteristics</li>
+                <li>[ ] Strategic use of materialized query tables</li>
+                <li>[ ] Optimal data type choices for columns</li>
+            </ul>
+            <h4>Indexing Strategy:</h4>
+            <ul>
+                <li>[ ] Index coverage for common query predicates</li>
+                <li>[ ] Avoidance of redundant or unused indexes</li>
+                <li>[ ] Consideration of index-only access paths</li>
+                <li>[ ] Clustering indexes aligned with access patterns</li>
+                <li>[ ] Regular review and tuning of index designs</li>
+            </ul>
+            <h4>Application Design:</h4>
+            <ul>
+                <li>[ ] Efficient SQL coding practices</li>
+                <li>[ ] Appropriate cursor usage and management</li>
+                <li>[ ] Batch processing optimization</li>
+                <li>[ ] Connection and thread management</li>
+                <li>[ ] Proper error handling and recovery</li>
+            </ul>
+            <h4>System Configuration:</h4>
+            <ul>
+                <li>[ ] Buffer pool sizing and allocation</li>
+                <li>[ ] Sort pool configuration</li>
+                <li>[ ] EDM pool sizing</li>
+                <li>[ ] RID pool adjustments</li>
+                <li>[ ] Thread management parameters</li>
+            </ul>
+        </section>
+
+        <section id="advanced">
+            <h2>Advanced Performance Topics</h2>
+
+            <h3>Performance in Data Sharing Environments</h3>
+            <h4>Data Sharing Considerations:</h4>
+            <ul>
+                <li>Group Buffer Pool (GBP) dependency</li>
+                <li>Cross-invalidation overhead</li>
+                <li>Coupling Facility resource management</li>
+                <li>Global lock management</li>
+                <li>XES and XCF communication costs</li>
+            </ul>
+            <h4>Optimization Techniques:</h4>
+            <ul>
+                <li>Strategic GBP usage classification</li>
+                <li>GBPCACHE settings optimization</li>
+                <li>Lock structure sizing and tuning</li>
+                <li>CF structure placement and priority</li>
+                <li>Member specialization for workload types</li>
+            </ul>
+            <h4>Monitoring Approaches:</h4>
+            <ul>
+                <li>GBP dependency and castout statistics</li>
+                <li>Global lock contention metrics</li>
+                <li>CF response time measurements</li>
+                <li>Cross-system queue monitoring</li>
+                <li>Write/read ratio optimization</li>
+            </ul>
+
+            <h3>Temporal Data Performance</h3>
+            <h4>System-Period Temporal Tables:</h4>
+            <ul>
+                <li>Query optimization with temporal predicates</li>
+                <li>History table access strategy</li>
+                <li>Partitioning strategies for history tables</li>
+                <li>Index design for temporal queries</li>
+                <li>BUSINESS_TIME period optimization</li>
+            </ul>
+            <h4>Tuning Temporal Queries:</h4>
+            <ul>
+                <li>Effective use of PERIOD specifications</li>
+                <li>Partition elimination in historical data</li>
+                <li>Optimizing FOR SYSTEM_TIME clauses</li>
+                <li>Balancing history retention with performance</li>
+                <li>Index strategies for temporal predicates</li>
+            </ul>
+
+            <h3>XML and JSON Performance</h3>
+            <h4>XML Storage Optimization:</h4>
+            <ul>
+                <li>XML storage structure considerations</li>
+                <li>XML index design and usage patterns</li>
+                <li>XML Schema validation performance</li>
+                <li>XMLTABLE function optimization</li>
+                <li>XPath expression efficiency</li>
+            </ul>
+            <h4>JSON Performance Techniques:</h4>
+            <ul>
+                <li>JSON_TABLE function usage</li>
+                <li>Storage strategies for JSON documents</li>
+                <li>Indexing JSON data</li>
+                <li>Query patterns optimization</li>
+                <li>Conversion costs management</li>
+            </ul>
+
+            <h3>Autonomous Database Features</h3>
+            <h4>AI-Enhanced Query Optimization:</h4>
+            <ul>
+                <li>Machine learning for access path selection</li>
+                <li>Adaptive query optimization</li>
+                <li>Automated statistics management</li>
+                <li>Intelligent buffer pool management</li>
+                <li>Workload pattern recognition</li>
+            </ul>
+            <h4>Automated Performance Management:</h4>
+            <ul>
+                <li>Self-tuning memory allocation</li>
+                <li>Automatic RUNSTATS based on thresholds</li>
+                <li>Dynamic parameter adjustment</li>
+                <li>Workload-aware resource allocation</li>
+                <li>Predictive performance management</li>
+            </ul>
+        </section>
+
+        <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>Performance optimization is both an art and a science, requiring deep technical knowledge, analytical skills, and experience with DB2 in mainframe environments. By mastering the tools and techniques presented in this chapter, database administrators can ensure that DB2 databases deliver optimal performance while efficiently utilizing system resources.</p>
+            <p>Effective performance management is not a one-time effort but a continuous process that evolves with changing workloads, growing data volumes, and advancing technology. The methodical approach outlined in this chapter—proactive monitoring, systematic analysis, targeted optimization, and verification of results—provides a framework for maintaining peak performance over time.</p>
+            <p>As DB2 continues to evolve with features like artificial intelligence for query optimization, advanced in-memory processing, and enhanced autonomous capabilities, the fundamental principles of performance tuning remain relevant. Understanding the core concepts of relational database performance, mastering the tools for monitoring and analysis, and developing a systematic approach to problem-solving will serve DB2 professionals well in navigating the performance challenges of present and future database environments.</p>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+        </footer>
     </div>
 </body>
-
-<footer>
-    <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
-</footer>
 </html>

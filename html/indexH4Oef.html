@@ -3,45 +3,676 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work in Progress</title>
+    <title>DB2 Performance Optimization Exercises - Mainframe Edition</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            animation: bounce 2s infinite;
-        }
-        h1 {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-        }
-        .tools {
-            font-size: 2rem;
-            margin: 1rem 0;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
+      @font-face {
+        font-family: 'LucideIcons';
+        /* Using jsdelivr CDN */
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem; /* Adjusted size */
+        line-height: 1;
+        display: inline-block; /* Ensure proper alignment */
+        vertical-align: middle;
+        margin-right: 5px; /* Space between icon and text */
+      }
+      body {
+          background-color: #0a0a14; /* Dark blue background */
+          color: #b3ffb3; /* Light green text */
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px; /* Add padding around the body */
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3); /* Subtle text glow */
+      }
+      .quiz-wrapper {
+          max-width: 900px; /* Adjusted width */
+          margin: 20px auto; /* Center the container */
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8); /* Slightly transparent dark background */
+          border: 1px solid #33ff33; /* Bright green border */
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4); /* Green glow effect */
+      }
+      header {
+          background-color: #001a00; /* Dark green background */
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+      header h1 {
+          color: #33ff33; /* Bright green title */
+          font-size: 1.8rem; /* Adjusted size */
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex; /* Use flexbox for icon alignment */
+          align-items: center;
+          justify-content: center; /* Center title and icon */
+      }
+      header h1 .lucide {
+          font-size: 1.6rem; /* Larger icon in title */
+          margin-right: 10px;
+      }
+      header p {
+          color: #99ff99; /* Lighter green for subtitle */
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+      #question-container {
+          margin-bottom: 25px;
+          padding: 20px;
+          background-color: rgba(0, 26, 0, 0.4); /* Darker green transparent background */
+          border: 1px dashed #33ff33; /* Dashed border */
+          min-height: 150px; /* Ensure minimum height */
+      }
+      #question-container p {
+          font-size: 1.2rem; /* Larger question text */
+          color: #ccffcc; /* Slightly lighter green */
+          margin-bottom: 15px;
+      }
+      .options-container label {
+          display: block; /* Change from flex to block for vertical layout */
+          margin-bottom: 10px;
+          padding: 10px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822; /* Darker green border */
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+      .options-container label:hover {
+          background-color: rgba(51, 255, 51, 0.2); /* Green highlight on hover */
+      }
+      input[type="radio"] {
+          margin-right: 10px;
+          appearance: none; /* Remove default appearance */
+          width: 14px;
+          height: 14px;
+          border: 1px solid #33ff33;
+          border-radius: 50%; /* Make it round */
+          vertical-align: middle;
+          position: relative; /* For positioning the dot */
+          cursor: pointer;
+      }
+      input[type="radio"]:checked {
+          background-color: #0a0a14; /* Match body background */
+      }
+      input[type="radio"]:checked::after {
+          content: '';
+          display: block;
+          width: 8px;
+          height: 8px;
+          background-color: #33ff33; /* Green dot */
+          border-radius: 50%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+      }
+      input[type="text"] {
+          width: calc(100% - 22px); /* Adjust width considering padding/border */
+          padding: 10px;
+          background-color: #000000; /* Black background */
+          border: 1px solid #33ff33; /* Green border */
+          color: #b3ffb3; /* Green text */
+          font-family: 'Courier New', monospace;
+          font-size: 1rem;
+          margin-top: 10px; /* Add some space above */
+      }
+      input[type="text"]:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5); /* Glow on focus */
+      }
+      #navigation-controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 25px;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+      }
+      #progress-indicator {
+          color: #00ff99; /* Cyan-green color */
+          font-weight: bold;
+      }
+      button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button:disabled {
+          background-color: #05050a; /* Darker background when disabled */
+          color: #447744; /* Dimmed green text */
+          border-color: #225522; /* Dimmed border */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
+      #next-button .lucide, #submit-button .lucide {
+         margin-left: 8px; /* Space after text */
+         margin-right: 0;
+      }
+      #results-container {
+          margin-top: 30px;
+          padding: 25px;
+          background-color: rgba(0, 10, 0, 0.6); /* Darker green background */
+          border: 1px solid #00ff99; /* Cyan-green border */
+      }
+      #results-container h2 {
+          color: #00ff99; /* Cyan-green heading */
+          font-size: 1.6rem;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          display: flex;
+          align-items: center;
+      }
+       #results-container h2 .lucide {
+          font-size: 1.5rem;
+          margin-right: 10px;
+       }
+      #results-container p {
+          font-size: 1.1rem;
+          color: #ccffcc;
+      }
+      #score {
+          font-weight: bold;
+          color: #ffffff; /* White score */
+          font-size: 1.3rem;
+      }
+      #review-area {
+          margin-top: 20px;
+          space-y: 15px; /* Use margin for spacing */
+      }
+      #review-area > div { /* Target direct children divs */
+          padding: 15px;
+          border: 1px dashed #228822; /* Dark green dashed border */
+          background-color: rgba(0, 0, 0, 0.2);
+          margin-bottom: 15px; /* Add margin bottom for spacing */
+      }
+      #review-area .font-semibold { /* Question text in review */
+          font-weight: bold; /* Ensure it's bold */
+          color: #ccffcc;
+      }
+      #review-area .text-sm { /* Answer text in review */
+          font-size: 0.95rem; /* Slightly smaller */
+      }
+      .correct-answer-text {
+          color: #33ff33; /* Bright green for correct */
+          font-weight: bold;
+      }
+      .incorrect-answer-text {
+          color: #ff6666; /* Lighter red for incorrect */
+          font-weight: bold;
+      }
+      .user-answer-text.correct {
+          color: #99ff99; /* Lighter green for user's correct answer */
+          font-weight: bold;
+      }
+       .user-answer-text.incorrect {
+          color: #ff9999; /* Lighter red for user's incorrect answer */
+          font-weight: bold;
+          text-decoration: line-through; /* Strike through incorrect answer */
+      }
+      .hidden {
+          display: none;
+      }
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .quiz-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          #navigation-controls { flex-wrap: wrap; justify-content: center; }
+          #navigation-controls button { margin: 5px; }
+          #progress-indicator { width: 100%; text-align: center; margin: 10px 0; }
+      }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Work in Progress</h1>
-        <div class="tools">🚧 👷 🔨 🚧</div>
-        <p>We're building something awesome here! Check back soon.</p>
-    </div>
+
+    <div class="quiz-wrapper">
+
+        <header>
+             <h1>
+                <span class="lucide">&#xe2c2;</span> DB2 Performance Optimization Exercises
+            </h1>
+            <p>Test your knowledge :: Mainframe Edition</p>
+        </header>
+
+        <div id="quiz-container">
+            <div id="question-container">
+                </div>
+
+            <div id="navigation-controls">
+                <button id="prev-button" disabled>
+                    <span class="lucide">&#xe03f;</span> Previous
+                </button>
+                <span id="progress-indicator">Question 1 / X</span>
+                <button id="next-button">
+                    Next
+                    <span class="lucide">&#xe044;</span> </button>
+                <button id="submit-button" class="hidden">
+                    <span class="lucide">&#xe157;</span> Submit Quiz
+                </button>
+            </div>
+
+            <div id="feedback-container" class="mt-4 space-y-2">
+                </div>
+        </div>
+
+        <div id="results-container" class="hidden">
+            <h2>
+                <span class="lucide">&#xe4d7;</span> Quiz Results
+            </h2>
+            <p>Final Score :: <strong id="score"></strong></p>
+            <div id="review-area">
+                </div>
+            <button id="retry-button">
+                <span class="lucide">&#xe3a7;</span> Retry Quiz
+            </button>
+        </div>
+
+    </div> <script>
+        // --- NEW Quiz Data: Based on DB2 Performance Optimization ---
+        const quizData = [
+            // Performance Concepts & Monitoring
+            {
+                question: "Which SMF record type primarily contains thread-level accounting information (CPU time, elapsed time, I/O counts per thread)?",
+                type: "multiple-choice",
+                options: ["Type 100 (Statistics)", "Type 101 (Accounting)", "Type 102 (Performance)", "Type 199 (Specialized)"],
+                answer: "Type 101 (Accounting)"
+            },
+            {
+                question: "The DB2 Instrumentation Facility Component ID, used to trace specific events, is commonly known as ________.",
+                type: "fill-in-the-blank",
+                answer: "IFCID"
+            },
+            {
+                question: "True or False: Effective performance management in DB2 is typically a linear process with a defined start and end.",
+                type: "true-false",
+                answer: "False" // It's cyclical and ongoing
+            },
+            {
+                question: "Which DB2 command is used to display the status and statistics of buffer pools?",
+                type: "multiple-choice",
+                options: ["DISPLAY THREAD", "DISPLAY DATABASE", "DISPLAY BUFFERPOOL", "DISPLAY DDF"],
+                answer: "DISPLAY BUFFERPOOL"
+            },
+            // RUNSTATS & Statistics
+            {
+                question: "Which utility is essential for collecting statistics used by the DB2 optimizer to determine access paths?",
+                type: "fill-in-the-blank",
+                answer: "RUNSTATS"
+            },
+            {
+                question: "The `RUNSTATS` parameter `SHRLEVEL CHANGE` allows statistics collection while permitting ________ operations on the target objects.",
+                type: "multiple-choice",
+                options: ["Read-only access", "No access", "Concurrent updates", "Only inserts"],
+                answer: "Concurrent updates"
+            },
+            {
+                question: "Which catalog table column typically stores the number of distinct values for an index's full key?",
+                type: "multiple-choice",
+                options: ["SYSTABLES.CARDF", "SYSINDEXES.CLUSTERRATIO", "SYSINDEXES.FULLKEYCARDF", "SYSCOLUMNS.COLCARDF"],
+                answer: "SYSINDEXES.FULLKEYCARDF"
+            },
+            {
+                question: "True or False: Using the `SAMPLE` option in RUNSTATS always provides the most accurate statistics for the optimizer.",
+                type: "true-false",
+                answer: "False" // Sampling is faster but less accurate than full statistics collection.
+            },
+            {
+                question: "Collecting frequency distribution statistics for specific column values is achieved using the ________ keyword in RUNSTATS.",
+                type: "fill-in-the-blank",
+                answer: "HISTOGRAM" // or FREQVAL
+            },
+             {
+                question: "A low `CLUSTERRATIO` value for an index often indicates a need for which DB2 utility?",
+                type: "multiple-choice",
+                options: ["COPY", "RUNSTATS", "REORG", "CHECK DATA"],
+                answer: "REORG"
+            },
+            // Bottlenecks & Problem Resolution
+            {
+                question: "Excessive lock wait times, deadlocks, and timeouts are typically symptoms of ________ -related performance bottlenecks.",
+                type: "multiple-choice",
+                options: ["CPU", "I/O", "Lock", "Memory"],
+                answer: "Lock"
+            },
+            {
+                question: "Buffer pool thrashing, characterized by low hit ratios and high synchronous read I/O, is primarily an ________ bottleneck.",
+                type: "fill-in-the-blank",
+                answer: "I/O" // or Memory (insufficient buffer pool size causes I/O)
+            },
+            {
+                question: "True or False: The first step in systematic performance problem resolution is usually implementing a potential fix.",
+                type: "true-false",
+                answer: "False" // First step is identifying symptoms.
+            },
+             {
+                question: "Which DB2 facility is crucial for analyzing the access path chosen by the optimizer for a specific SQL statement?",
+                type: "multiple-choice",
+                options: ["RUNSTATS", "IFCID Trace", "EXPLAIN", "SMF Records"],
+                answer: "EXPLAIN"
+            },
+             {
+                question: "A common solution for excessive tablespace scans identified via EXPLAIN is to create appropriate ________.",
+                type: "fill-in-the-blank",
+                answer: "indexes"
+            },
+            // Query Optimizer & Tuning
+            {
+                question: "Which component of the DB2 optimizer is responsible for checking SQL syntax and semantics?",
+                type: "multiple-choice",
+                options: ["Parser", "Query Graph Model (QGM)", "Access Path Selection", "Cost Estimation"],
+                answer: "Parser"
+            },
+            {
+                question: "The `OPTIMIZE FOR n ROWS` clause primarily influences the optimizer's choice of ________ strategy.",
+                type: "fill-in-the-blank",
+                answer: "retrieval" // or access path, join method
+            },
+            {
+                question: "True or False: Using functions on indexed columns in predicates generally helps the optimizer choose better access paths.",
+                type: "true-false",
+                answer: "False" // It often makes the predicate non-indexable.
+            },
+            {
+                question: "Which join method is generally efficient when joining a small table to a large table using an index on the large table?",
+                type: "multiple-choice",
+                options: ["Nested Loop Join", "Merge Scan Join", "Hybrid Join", "Star Join"],
+                answer: "Nested Loop Join"
+            },
+            {
+                question: "The `REOPT(ALWAYS)` bind option tells DB2 to re-optimize an SQL statement using actual host variable or parameter marker values at ________ time.",
+                type: "fill-in-the-blank",
+                answer: "execution"
+            },
+            {
+                question: "Rewriting `WHERE YEAR(ORDER_DATE) = 2024` to `WHERE ORDER_DATE BETWEEN '2024-01-01' AND '2024-12-31'` makes the predicate ________.",
+                type: "multiple-choice",
+                options: ["Less readable", "Sargable", "Stage 2", "Correlated"],
+                answer: "Sargable" // (Search ARGument Able - allows index usage)
+            },
+             {
+                question: "True or False: The `FETCH FIRST n ROWS ONLY` clause guarantees that only 'n' rows will be processed internally by DB2.",
+                type: "true-false",
+                answer: "False" // DB2 might process more rows internally before stopping after fetching 'n'.
+            },
+            // Advanced Optimization & Best Practices
+            {
+                question: "Which type of parallelism involves using multiple processors to execute components of a single query concurrently?",
+                type: "multiple-choice",
+                options: ["I/O Parallelism", "CPU Parallelism", "Sysplex Query Parallelism", "Utility Parallelism"],
+                answer: "CPU Parallelism"
+            },
+            {
+                question: "A pre-computed result set stored physically to speed up complex or frequent queries is known as a ________.",
+                type: "fill-in-the-blank",
+                answer: "Materialized Query Table" // or MQT
+            },
+            {
+                question: "True or False: Establishing performance baselines is primarily useful only after a performance problem occurs.",
+                type: "true-false",
+                answer: "False" // Baselines are crucial for proactive monitoring and identifying deviations.
+            },
+            {
+                question: "Which routine maintenance activity is essential for removing physical data disorganization and reclaiming space?",
+                type: "multiple-choice",
+                options: ["RUNSTATS", "REBIND", "COPY", "REORG"],
+                answer: "REORG"
+            },
+            {
+                question: "Regularly executing ________ ensures that application plans or packages leverage the latest statistics and potential new access paths.",
+                type: "fill-in-the-blank",
+                answer: "REBIND"
+            },
+            // Data Sharing, Temporal, Other
+            {
+                question: "In a data sharing environment, the component responsible for managing coherency of cached data across members is the ________.",
+                type: "multiple-choice",
+                options: ["Coupling Facility (CF)", "Group Buffer Pool (GBP)", "IRLM", "DDF"],
+                answer: "Group Buffer Pool (GBP)" // Managed within the CF
+            },
+            {
+                question: "True or False: Lock contention can potentially increase in a data sharing environment due to global lock management.",
+                type: "true-false",
+                answer: "True"
+            },
+            {
+                question: "Querying data based on application-defined effective dates typically involves tables with ________ time periods.",
+                type: "fill-in-the-blank",
+                answer: "Business"
+            },
+            {
+                question: "Which DB2 feature aims to automate performance management tasks using machine learning and dynamic adjustments?",
+                type: "multiple-choice",
+                options: ["Real-Time Statistics (RTS)", "Autonomous Database Features", "EXPLAIN Facility", "Query Monitor"],
+                answer: "Autonomous Database Features"
+            },
+            {
+                question: "Optimizing XPath expressions and using appropriate XML indexes are key performance considerations when working with ________ data.",
+                type: "fill-in-the-blank",
+                answer: "XML"
+            },
+             {
+                question: "True or False: System-period temporal tables require manual updates to the history table whenever the base table is modified.",
+                type: "true-false",
+                answer: "False" // DB2 manages the history table automatically.
+            },
+             {
+                question: "The first step listed in the 'Systematic Tuning Methodology' section is to establish performance ________.",
+                type: "fill-in-the-blank",
+                answer: "Baselines"
+            },
+             {
+                question: "Prioritizing tuning efforts often involves focusing on ________ -impact applications or system-wide bottlenecks first.",
+                type: "multiple-choice",
+                options: ["Low", "Medium", "High", "Newly Developed"],
+                answer: "High"
+            }
+        ];
+
+        // --- Quiz Logic (DOM References) ---
+        // (This section remains identical to the previous versions)
+        const quizContainer = document.getElementById('quiz-container');
+        const questionContainer = document.getElementById('question-container');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreElement = document.getElementById('score');
+        const reviewArea = document.getElementById('review-area');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const submitButton = document.getElementById('submit-button');
+        const retryButton = document.getElementById('retry-button');
+        const progressIndicator = document.getElementById('progress-indicator');
+
+        // --- State Variables ---
+        // (This section remains identical to the previous versions)
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let score = 0;
+
+        // --- Function to display a question ---
+        // (This function remains identical to the previous versions)
+        function displayQuestion(index) {
+            questionContainer.innerHTML = '';
+            if (index < 0 || index >= quizData.length) {
+                console.error("Invalid question index:", index);
+                questionContainer.innerHTML = '<p>Error: Could not load question.</p>';
+                return;
+            }
+            const questionData = quizData[index];
+            progressIndicator.textContent = `Question ${index + 1} / ${quizData.length}`;
+            const questionTextElement = document.createElement('p');
+            questionTextElement.textContent = `${index + 1}. ${questionData.question}`;
+            questionContainer.appendChild(questionTextElement);
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            if (questionData.type === 'multiple-choice' || questionData.type === 'true-false') {
+                const options = (questionData.type === 'true-false') ? ['True', 'False'] : questionData.options;
+                options.forEach(option => {
+                    const label = document.createElement('label');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = option;
+                    if (userAnswers[index] === option) {
+                        input.checked = true;
+                    }
+                    input.addEventListener('change', () => handleAnswerChange(index, option));
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(option));
+                    optionsContainer.appendChild(label);
+                });
+            } else if (questionData.type === 'fill-in-the-blank') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = `question-${index}`;
+                input.placeholder = 'Type your answer here...';
+                input.value = userAnswers[index] || '';
+                input.addEventListener('input', (e) => handleAnswerChange(index, e.target.value.trim()));
+                optionsContainer.appendChild(input);
+            }
+            questionContainer.appendChild(optionsContainer);
+            updateNavigationButtons();
+        }
+
+        // --- Function to handle answer changes ---
+        // (This function remains identical to the previous versions)
+        function handleAnswerChange(index, value) {
+             userAnswers[index] = value;
+        }
+
+        // --- Function to update navigation buttons visibility/state ---
+        // (This function remains identical to the previous versions)
+        function updateNavigationButtons() {
+            prevButton.disabled = currentQuestionIndex === 0;
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextButton.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+            } else {
+                nextButton.classList.remove('hidden');
+                submitButton.classList.add('hidden');
+            }
+        }
+
+        // --- Function to check answers and calculate score ---
+        // (This function remains identical to the previous versions)
+        function checkAnswers() {
+            score = 0;
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let correctAnswer = question.answer;
+                let isCorrect = false;
+                if (question.type === 'fill-in-the-blank' && userAnswer) {
+                    // Allow for variations in fill-in-the-blank answers if needed by defining answer as array
+                    // Convert both to lowercase for case-insensitive comparison
+                    const userAnswerLower = userAnswer.toLowerCase();
+                    if (Array.isArray(correctAnswer)) {
+                         isCorrect = correctAnswer.map(a => a.toLowerCase()).includes(userAnswerLower);
+                    } else if (typeof correctAnswer === 'string') {
+                        isCorrect = userAnswerLower === correctAnswer.toLowerCase();
+                    }
+                } else {
+                    // Direct comparison for multiple-choice and true-false (case-sensitive)
+                    isCorrect = userAnswer === correctAnswer;
+                }
+                if (isCorrect) {
+                    score++;
+                }
+            });
+        }
+
+
+        // --- Function to display results and review ---
+        // (This function remains identical to the previous versions, handles array answers)
+        function displayResults() {
+            quizContainer.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            scoreElement.textContent = `${score} / ${quizData.length} (${((score / quizData.length) * 100).toFixed(1)}%)`;
+            reviewArea.innerHTML = '';
+            quizData.forEach((question, index) => {
+                const reviewElement = document.createElement('div');
+                const userAnswer = userAnswers[index] || '[[[ No Answer ]]]';
+                let correctAnswer = question.answer;
+                let correctAnswerDisplay = Array.isArray(correctAnswer) ? correctAnswer.join(' / ') : correctAnswer;
+
+                 let isCorrect = false;
+                 // Re-check correctness for display, case-insensitive for fill-in-the-blank
+                 const userAnswerLower = typeof userAnswer === 'string' ? userAnswer.toLowerCase() : null;
+                 if (question.type === 'fill-in-the-blank' && userAnswerLower) {
+                     if (Array.isArray(correctAnswer)) {
+                         isCorrect = correctAnswer.map(a => a.toLowerCase()).includes(userAnswerLower);
+                     } else if (typeof correctAnswer === 'string') {
+                         isCorrect = userAnswerLower === correctAnswer.toLowerCase();
+                     }
+                 } else {
+                     // Case-sensitive for multiple-choice/true-false
+                     isCorrect = userAnswer === correctAnswer;
+                 }
+
+                let feedbackHTML = `<p class="font-semibold">${index + 1}. ${question.question}</p>`;
+                feedbackHTML += `<p class="text-sm">Your Answer: <span class="user-answer-text ${isCorrect ? 'correct' : 'incorrect'}">${userAnswer}</span></p>`;
+                if (!isCorrect) {
+                    feedbackHTML += `<p class="text-sm">Correct Answer: <span class="correct-answer-text">${correctAnswerDisplay}</span></p>`;
+                }
+                reviewElement.innerHTML = feedbackHTML;
+                reviewArea.appendChild(reviewElement);
+            });
+        }
+
+        // --- Event Listeners for Buttons ---
+        // (This section remains identical to the previous versions)
+        prevButton.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+        nextButton.addEventListener('click', () => {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+        submitButton.addEventListener('click', () => {
+            checkAnswers();
+            displayResults();
+        });
+        retryButton.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            score = 0;
+            resultsContainer.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            displayQuestion(currentQuestionIndex);
+        });
+
+        // --- Initial Load ---
+        // (This section remains identical to the previous versions)
+        displayQuestion(currentQuestionIndex);
+
+    </script>
+
 </body>
 </html>

@@ -3,45 +3,687 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work in Progress</title>
+    <title>DB2 Design & Implementation Exercises - Mainframe Edition</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            animation: bounce 2s infinite;
-        }
-        h1 {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-        }
-        .tools {
-            font-size: 2rem;
-            margin: 1rem 0;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
+      @font-face {
+        font-family: 'LucideIcons';
+        /* Using jsdelivr CDN */
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem; /* Adjusted size */
+        line-height: 1;
+        display: inline-block; /* Ensure proper alignment */
+        vertical-align: middle;
+        margin-right: 5px; /* Space between icon and text */
+      }
+      body {
+          background-color: #0a0a14; /* Dark blue background */
+          color: #b3ffb3; /* Light green text */
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px; /* Add padding around the body */
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3); /* Subtle text glow */
+      }
+      .quiz-wrapper {
+          max-width: 900px; /* Adjusted width */
+          margin: 20px auto; /* Center the container */
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8); /* Slightly transparent dark background */
+          border: 1px solid #33ff33; /* Bright green border */
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4); /* Green glow effect */
+      }
+      header {
+          background-color: #001a00; /* Dark green background */
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+      header h1 {
+          color: #33ff33; /* Bright green title */
+          font-size: 1.8rem; /* Adjusted size */
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex; /* Use flexbox for icon alignment */
+          align-items: center;
+          justify-content: center; /* Center title and icon */
+      }
+      header h1 .lucide {
+          font-size: 1.6rem; /* Larger icon in title */
+          margin-right: 10px;
+      }
+      header p {
+          color: #99ff99; /* Lighter green for subtitle */
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+      #question-container {
+          margin-bottom: 25px;
+          padding: 20px;
+          background-color: rgba(0, 26, 0, 0.4); /* Darker green transparent background */
+          border: 1px dashed #33ff33; /* Dashed border */
+          min-height: 150px; /* Ensure minimum height */
+      }
+      #question-container p {
+          font-size: 1.2rem; /* Larger question text */
+          color: #ccffcc; /* Slightly lighter green */
+          margin-bottom: 15px;
+      }
+      .options-container label {
+          display: block; /* Change from flex to block for vertical layout */
+          margin-bottom: 10px;
+          padding: 10px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822; /* Darker green border */
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+      .options-container label:hover {
+          background-color: rgba(51, 255, 51, 0.2); /* Green highlight on hover */
+      }
+      input[type="radio"] {
+          margin-right: 10px;
+          appearance: none; /* Remove default appearance */
+          width: 14px;
+          height: 14px;
+          border: 1px solid #33ff33;
+          border-radius: 50%; /* Make it round */
+          vertical-align: middle;
+          position: relative; /* For positioning the dot */
+          cursor: pointer;
+      }
+      input[type="radio"]:checked {
+          background-color: #0a0a14; /* Match body background */
+      }
+      input[type="radio"]:checked::after {
+          content: '';
+          display: block;
+          width: 8px;
+          height: 8px;
+          background-color: #33ff33; /* Green dot */
+          border-radius: 50%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+      }
+      input[type="text"] {
+          width: calc(100% - 22px); /* Adjust width considering padding/border */
+          padding: 10px;
+          background-color: #000000; /* Black background */
+          border: 1px solid #33ff33; /* Green border */
+          color: #b3ffb3; /* Green text */
+          font-family: 'Courier New', monospace;
+          font-size: 1rem;
+          margin-top: 10px; /* Add some space above */
+      }
+      input[type="text"]:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5); /* Glow on focus */
+      }
+      #navigation-controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 25px;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+      }
+      #progress-indicator {
+          color: #00ff99; /* Cyan-green color */
+          font-weight: bold;
+      }
+      button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button:disabled {
+          background-color: #05050a; /* Darker background when disabled */
+          color: #447744; /* Dimmed green text */
+          border-color: #225522; /* Dimmed border */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
+      #next-button .lucide, #submit-button .lucide {
+         margin-left: 8px; /* Space after text */
+         margin-right: 0;
+      }
+      #results-container {
+          margin-top: 30px;
+          padding: 25px;
+          background-color: rgba(0, 10, 0, 0.6); /* Darker green background */
+          border: 1px solid #00ff99; /* Cyan-green border */
+      }
+      #results-container h2 {
+          color: #00ff99; /* Cyan-green heading */
+          font-size: 1.6rem;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          display: flex;
+          align-items: center;
+      }
+       #results-container h2 .lucide {
+          font-size: 1.5rem;
+          margin-right: 10px;
+       }
+      #results-container p {
+          font-size: 1.1rem;
+          color: #ccffcc;
+      }
+      #score {
+          font-weight: bold;
+          color: #ffffff; /* White score */
+          font-size: 1.3rem;
+      }
+      #review-area {
+          margin-top: 20px;
+          space-y: 15px; /* Use margin for spacing */
+      }
+      #review-area > div { /* Target direct children divs */
+          padding: 15px;
+          border: 1px dashed #228822; /* Dark green dashed border */
+          background-color: rgba(0, 0, 0, 0.2);
+          margin-bottom: 15px; /* Add margin bottom for spacing */
+      }
+      #review-area .font-semibold { /* Question text in review */
+          font-weight: bold; /* Ensure it's bold */
+          color: #ccffcc;
+      }
+      #review-area .text-sm { /* Answer text in review */
+          font-size: 0.95rem; /* Slightly smaller */
+      }
+      .correct-answer-text {
+          color: #33ff33; /* Bright green for correct */
+          font-weight: bold;
+      }
+      .incorrect-answer-text {
+          color: #ff6666; /* Lighter red for incorrect */
+          font-weight: bold;
+      }
+      .user-answer-text.correct {
+          color: #99ff99; /* Lighter green for user's correct answer */
+          font-weight: bold;
+      }
+       .user-answer-text.incorrect {
+          color: #ff9999; /* Lighter red for user's incorrect answer */
+          font-weight: bold;
+          text-decoration: line-through; /* Strike through incorrect answer */
+      }
+      .hidden {
+          display: none;
+      }
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .quiz-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          #navigation-controls { flex-wrap: wrap; justify-content: center; }
+          #navigation-controls button { margin: 5px; }
+          #progress-indicator { width: 100%; text-align: center; margin: 10px 0; }
+      }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Work in Progress</h1>
-        <div class="tools">🚧 👷 🔨 🚧</div>
-        <p>We're building something awesome here! Check back soon.</p>
-    </div>
+
+    <div class="quiz-wrapper">
+
+        <header>
+             <h1>
+                <span class="lucide">&#xe341;</span> DB2 Design & Implementation Exercises
+            </h1>
+            <p>Test your knowledge :: Mainframe Edition</p>
+        </header>
+
+        <div id="quiz-container">
+            <div id="question-container">
+                </div>
+
+            <div id="navigation-controls">
+                <button id="prev-button" disabled>
+                    <span class="lucide">&#xe03f;</span> Previous
+                </button>
+                <span id="progress-indicator">Question 1 / X</span>
+                <button id="next-button">
+                    Next
+                    <span class="lucide">&#xe044;</span> </button>
+                <button id="submit-button" class="hidden">
+                    <span class="lucide">&#xe157;</span> Submit Quiz
+                </button>
+            </div>
+
+            <div id="feedback-container" class="mt-4 space-y-2">
+                </div>
+        </div>
+
+        <div id="results-container" class="hidden">
+            <h2>
+                <span class="lucide">&#xe4d7;</span> Quiz Results
+            </h2>
+            <p>Final Score :: <strong id="score"></strong></p>
+            <div id="review-area">
+                </div>
+            <button id="retry-button">
+                <span class="lucide">&#xe3a7;</span> Retry Quiz
+            </button>
+        </div>
+
+    </div> <script>
+        // --- NEW Quiz Data: Based on Database Design and Implementation ---
+        const quizData = [
+            // Requirements & Conceptual/Logical Design
+            {
+                question: "Which database design phase focuses on business concepts like entities and relationships, independent of a specific DBMS?",
+                type: "multiple-choice",
+                options: ["Physical Design", "Logical Design", "Conceptual Design", "Implementation Phase"],
+                answer: "Conceptual Design"
+            },
+            {
+                question: "The process of eliminating repeating groups and ensuring atomic values corresponds to which Normal Form?",
+                type: "fill-in-the-blank",
+                answer: "1NF" // or First Normal Form
+            },
+            {
+                question: "True or False: Denormalization involves adding controlled redundancy to improve query performance.",
+                type: "true-false",
+                answer: "True"
+            },
+            {
+                question: "Which type of integrity constraint ensures that foreign key values match existing primary key values in the referenced table?",
+                type: "multiple-choice",
+                options: ["Entity Integrity", "Domain Integrity", "Referential Integrity", "User-defined Integrity"],
+                answer: "Referential Integrity"
+            },
+            {
+                question: "Eliminating transitive dependencies (where non-key attributes depend on other non-key attributes) is the goal of ________ Normal Form.",
+                type: "fill-in-the-blank",
+                answer: "3NF" // or Third Normal Form
+            },
+            // Physical Design for DB2
+            {
+                question: "Which DB2 object maps logical tables to physical DASD storage?",
+                type: "multiple-choice",
+                options: ["Database", "Schema", "Tablespace", "Index"],
+                answer: "Tablespace"
+            },
+            {
+                question: "An index that determines the physical storage order of rows in a table is called a ________ index.",
+                type: "fill-in-the-blank",
+                answer: "Clustering"
+            },
+            {
+                question: "True or False: Range partitioning is typically based on system-generated sequence numbers.",
+                type: "true-false",
+                answer: "False" // Usually based on meaningful column values like dates or codes
+            },
+            {
+                question: "Which DB2 parameter controls the percentage of space left empty on a page during LOAD or REORG for future updates?",
+                type: "multiple-choice",
+                options: ["PRIQTY", "SECQTY", "FREEPAGE", "PCTFREE"],
+                answer: "PCTFREE"
+            },
+             {
+                question: "Optimizing a database schema specifically for reporting and analytics often involves using a ________ schema design.",
+                type: "fill-in-the-blank",
+                answer: "Star" // or Snowflake
+            },
+            // Database Objects
+            {
+                question: "Which DB2 object provides a logical grouping of related objects like tables and views within a database?",
+                type: "multiple-choice",
+                options: ["Subsystem", "Tablespace", "Schema", "STOGROUP"],
+                answer: "Schema"
+            },
+            {
+                question: "A virtual table derived from one or more base tables using a stored SELECT statement is a ________.",
+                type: "fill-in-the-blank",
+                answer: "View"
+            },
+            {
+                question: "True or False: An Alias in DB2 is primarily used to define alternative access paths for performance.",
+                type: "true-false",
+                answer: "False" // Aliases provide alternative names for objects, often for location transparency or simplification.
+            },
+            {
+                question: "Which type of temporary table is specific to a single application process and implicitly dropped?",
+                type: "multiple-choice",
+                options: ["Global Temporary Table", "Declared Temporary Table", "Materialized Query Table", "History Table"],
+                answer: "Declared Temporary Table"
+            },
+             {
+                question: "Procedural logic automatically executed by DB2 in response to INSERT, UPDATE, or DELETE operations is implemented using ________.",
+                type: "fill-in-the-blank",
+                answer: "Triggers"
+            },
+            // Indexes and Views
+            {
+                question: "Which clause in `CREATE INDEX` allows including additional columns in the index leaf pages to satisfy queries without accessing the table?",
+                type: "multiple-choice",
+                options: ["CLUSTER", "USING STOGROUP", "INCLUDE", "PADDED"],
+                answer: "INCLUDE"
+            },
+            {
+                question: "True or False: A table can have multiple clustering indexes defined.",
+                type: "true-false",
+                answer: "False" // Only one clustering index per table
+            },
+            {
+                question: "A view created with the `WITH CHECK OPTION` clause restricts ________ operations on the view.",
+                type: "fill-in-the-blank",
+                answer: "INSERT" // and UPDATE
+            },
+            {
+                question: "Which DB2 object physically stores pre-computed results of a query, often used to optimize complex views?",
+                type: "multiple-choice",
+                options: ["Sequence", "Alias", "Materialized Query Table (MQT)", "Trigger"],
+                answer: "Materialized Query Table (MQT)"
+            },
+            // Referential Integrity
+            {
+                question: "In Declarative Referential Integrity (DRI), which `ON DELETE` rule automatically deletes child rows when the corresponding parent row is deleted?",
+                type: "multiple-choice",
+                options: ["RESTRICT", "SET NULL", "NO ACTION", "CASCADE"],
+                answer: "CASCADE"
+            },
+            {
+                question: "True or False: DB2 directly supports `ON UPDATE CASCADE` using declarative foreign key constraints.",
+                type: "true-false",
+                answer: "False" // Requires triggers for ON UPDATE CASCADE logic
+            },
+            {
+                question: "The DB2 utility often used to check for and report referential integrity violations is ________.",
+                type: "fill-in-the-blank",
+                answer: "CHECK DATA"
+            },
+            {
+                question: "Setting a foreign key constraint to `NOT ENFORCED` temporarily disables RI checking but may impact ________.",
+                type: "multiple-choice",
+                options: ["Data Loading", "Query Optimization", "Backup Speed", "Security Audits"],
+                answer: "Query Optimization"
+            },
+            // Advanced Implementation & Constraints
+            {
+                question: "Which partitioning strategy automatically adds new partitions as data grows, simplifying capacity management?",
+                type: "multiple-choice",
+                options: ["Range Partitioning", "List Partitioning", "Partition-By-Growth", "Hash Partitioning"],
+                answer: "Partition-By-Growth"
+            },
+            {
+                question: "A constraint that ensures values in a column or set of columns are unique but allows NULLs is a ________ constraint.",
+                type: "fill-in-the-blank",
+                answer: "Unique"
+            },
+            {
+                question: "True or False: Check constraints can only validate conditions based on a single column's value.",
+                type: "true-false",
+                answer: "False" // Can involve complex expressions and multiple columns within the same row.
+            },
+            {
+                question: "DB2's feature for fine-grained security that filters rows based on user identity or context is called ________.",
+                type: "multiple-choice",
+                options: ["Column Masks", "Row Permissions", "AUDIT clause", "Trusted Context"],
+                answer: "Row Permissions" // Part of Row and Column Access Control (RCAC)
+            },
+            {
+                question: "A column defined to automatically generate sequential numeric values upon insertion is an ________ column.",
+                type: "fill-in-the-blank",
+                answer: "Identity"
+            },
+            // Schema Evolution & Performance
+            {
+                question: "Which DB2 utility option allows reorganization of a tablespace with minimal application outage?",
+                type: "multiple-choice",
+                options: ["REORG SHRLEVEL NONE", "REORG SHRLEVEL REFERENCE", "REORG SHRLEVEL CHANGE", "REORG LOG YES"],
+                answer: "REORG SHRLEVEL CHANGE"
+            },
+            {
+                question: "True or False: Using views can help provide logical data independence during schema evolution.",
+                type: "true-false",
+                answer: "True"
+            },
+            {
+                question: "Setting the `LOCKSIZE` option to ________ generally provides the highest level of concurrency but potentially higher overhead.",
+                type: "fill-in-the-blank",
+                answer: "ROW"
+            },
+            {
+                question: "Which DB2 command is used to analyze the access path chosen by the optimizer for an SQL statement?",
+                type: "multiple-choice",
+                options: ["RUNSTATS", "CHECK DATA", "EXPLAIN", "REORG"],
+                answer: "EXPLAIN"
+            },
+            // Temporal Data & Best Practices
+            {
+                question: "Which type of temporal table automatically tracks the period when a row was physically present in the database?",
+                type: "multiple-choice",
+                options: ["Business Time Table", "System Time Table", "Bi-Temporal Table", "History Table"],
+                answer: "System Time Table"
+            },
+            {
+                question: "True or False: Business time periods represent the application-defined effective date range for a row.",
+                type: "true-false",
+                answer: "True"
+            },
+            {
+                question: "Using the `COMMENT ON` statement helps populate the DB2 ________.",
+                type: "fill-in-the-blank",
+                answer: "Catalog" // Specifically, metadata columns like REMARKS
+            },
+            {
+                question: "Which Quality Assurance technique involves validating data integrity rules and relationships using DB2 utilities?",
+                type: "multiple-choice",
+                options: ["Design Reviews", "Performance Testing", "Database Verification", "Code Inspection"],
+                answer: "Database Verification" // e.g., using CHECK DATA
+            },
+            {
+                question: "Which routine maintenance activity is crucial for providing the DB2 optimizer with up-to-date information about data characteristics?",
+                type: "fill-in-the-blank",
+                answer: "RUNSTATS"
+            }
+        ];
+
+        // --- Quiz Logic (DOM References) ---
+        // (This section remains identical to the previous versions)
+        const quizContainer = document.getElementById('quiz-container');
+        const questionContainer = document.getElementById('question-container');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreElement = document.getElementById('score');
+        const reviewArea = document.getElementById('review-area');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const submitButton = document.getElementById('submit-button');
+        const retryButton = document.getElementById('retry-button');
+        const progressIndicator = document.getElementById('progress-indicator');
+
+        // --- State Variables ---
+        // (This section remains identical to the previous versions)
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let score = 0;
+
+        // --- Function to display a question ---
+        // (This function remains identical to the previous versions)
+        function displayQuestion(index) {
+            questionContainer.innerHTML = '';
+            if (index < 0 || index >= quizData.length) {
+                console.error("Invalid question index:", index);
+                questionContainer.innerHTML = '<p>Error: Could not load question.</p>';
+                return;
+            }
+            const questionData = quizData[index];
+            progressIndicator.textContent = `Question ${index + 1} / ${quizData.length}`;
+            const questionTextElement = document.createElement('p');
+            questionTextElement.textContent = `${index + 1}. ${questionData.question}`;
+            questionContainer.appendChild(questionTextElement);
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            if (questionData.type === 'multiple-choice' || questionData.type === 'true-false') {
+                const options = (questionData.type === 'true-false') ? ['True', 'False'] : questionData.options;
+                options.forEach(option => {
+                    const label = document.createElement('label');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = option;
+                    if (userAnswers[index] === option) {
+                        input.checked = true;
+                    }
+                    input.addEventListener('change', () => handleAnswerChange(index, option));
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(option));
+                    optionsContainer.appendChild(label);
+                });
+            } else if (questionData.type === 'fill-in-the-blank') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = `question-${index}`;
+                input.placeholder = 'Type your answer here...';
+                input.value = userAnswers[index] || '';
+                input.addEventListener('input', (e) => handleAnswerChange(index, e.target.value.trim()));
+                optionsContainer.appendChild(input);
+            }
+            questionContainer.appendChild(optionsContainer);
+            updateNavigationButtons();
+        }
+
+        // --- Function to handle answer changes ---
+        // (This function remains identical to the previous versions)
+        function handleAnswerChange(index, value) {
+             userAnswers[index] = value;
+        }
+
+        // --- Function to update navigation buttons visibility/state ---
+        // (This function remains identical to the previous versions)
+        function updateNavigationButtons() {
+            prevButton.disabled = currentQuestionIndex === 0;
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextButton.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+            } else {
+                nextButton.classList.remove('hidden');
+                submitButton.classList.add('hidden');
+            }
+        }
+
+        // --- Function to check answers and calculate score ---
+        // (This function remains identical to the previous versions)
+        function checkAnswers() {
+            score = 0;
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let correctAnswer = question.answer;
+                let isCorrect = false;
+                if (question.type === 'fill-in-the-blank' && userAnswer) {
+                    // Allow for variations in fill-in-the-blank answers if needed by defining answer as array
+                    if (Array.isArray(correctAnswer)) {
+                         if (typeof userAnswer === 'string') {
+                            isCorrect = correctAnswer.map(a => a.toLowerCase()).includes(userAnswer.toLowerCase());
+                         }
+                    } else if (typeof correctAnswer === 'string' && typeof userAnswer === 'string') {
+                        isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+                    }
+                } else {
+                    isCorrect = userAnswer === correctAnswer;
+                }
+                if (isCorrect) {
+                    score++;
+                }
+            });
+        }
+
+        // --- Function to display results and review ---
+        // (This function remains identical to the previous versions, but handles array answers for display)
+        function displayResults() {
+            quizContainer.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            scoreElement.textContent = `${score} / ${quizData.length} (${((score / quizData.length) * 100).toFixed(1)}%)`;
+            reviewArea.innerHTML = '';
+            quizData.forEach((question, index) => {
+                const reviewElement = document.createElement('div');
+                const userAnswer = userAnswers[index] || '[[[ No Answer ]]]';
+                let correctAnswer = question.answer;
+                let correctAnswerDisplay = Array.isArray(correctAnswer) ? correctAnswer.join(' / ') : correctAnswer; // Display multiple possible answers if defined
+
+                 let isCorrect = false;
+                 if (question.type === 'fill-in-the-blank' && userAnswers[index]) {
+                     if (Array.isArray(correctAnswer)) {
+                         if (typeof userAnswers[index] === 'string') {
+                            isCorrect = correctAnswer.map(a => a.toLowerCase()).includes(userAnswers[index].toLowerCase());
+                         }
+                     } else if (typeof correctAnswer === 'string' && typeof userAnswers[index] === 'string') {
+                         isCorrect = userAnswers[index].toLowerCase() === correctAnswer.toLowerCase();
+                     }
+                 } else {
+                     isCorrect = userAnswers[index] === correctAnswer;
+                 }
+
+                let feedbackHTML = `<p class="font-semibold">${index + 1}. ${question.question}</p>`;
+                feedbackHTML += `<p class="text-sm">Your Answer: <span class="user-answer-text ${isCorrect ? 'correct' : 'incorrect'}">${userAnswer}</span></p>`;
+                if (!isCorrect) {
+                    // Use correctAnswerDisplay which handles potential arrays
+                    feedbackHTML += `<p class="text-sm">Correct Answer: <span class="correct-answer-text">${correctAnswerDisplay}</span></p>`;
+                }
+                reviewElement.innerHTML = feedbackHTML;
+                reviewArea.appendChild(reviewElement);
+            });
+        }
+
+        // --- Event Listeners for Buttons ---
+        // (This section remains identical to the previous versions)
+        prevButton.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+        nextButton.addEventListener('click', () => {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+        submitButton.addEventListener('click', () => {
+            checkAnswers();
+            displayResults();
+        });
+        retryButton.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            score = 0;
+            resultsContainer.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            displayQuestion(currentQuestionIndex);
+        });
+
+        // --- Initial Load ---
+        // (This section remains identical to the previous versions)
+        displayQuestion(currentQuestionIndex);
+
+    </script>
+
 </body>
 </html>

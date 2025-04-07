@@ -3,45 +3,680 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work in Progress</title>
+    <title>DB2 Security & Compliance Exercises - Mainframe Edition</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            animation: bounce 2s infinite;
-        }
-        h1 {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-        }
-        .tools {
-            font-size: 2rem;
-            margin: 1rem 0;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
+      @font-face {
+        font-family: 'LucideIcons';
+        /* Using jsdelivr CDN */
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem; /* Adjusted size */
+        line-height: 1;
+        display: inline-block; /* Ensure proper alignment */
+        vertical-align: middle;
+        margin-right: 5px; /* Space between icon and text */
+      }
+      body {
+          background-color: #0a0a14; /* Dark blue background */
+          color: #b3ffb3; /* Light green text */
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px; /* Add padding around the body */
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3); /* Subtle text glow */
+      }
+      .quiz-wrapper {
+          max-width: 900px; /* Adjusted width */
+          margin: 20px auto; /* Center the container */
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8); /* Slightly transparent dark background */
+          border: 1px solid #33ff33; /* Bright green border */
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4); /* Green glow effect */
+      }
+      header {
+          background-color: #001a00; /* Dark green background */
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+      header h1 {
+          color: #33ff33; /* Bright green title */
+          font-size: 1.8rem; /* Adjusted size */
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex; /* Use flexbox for icon alignment */
+          align-items: center;
+          justify-content: center; /* Center title and icon */
+      }
+      header h1 .lucide {
+          font-size: 1.6rem; /* Larger icon in title */
+          margin-right: 10px;
+      }
+      header p {
+          color: #99ff99; /* Lighter green for subtitle */
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+      #question-container {
+          margin-bottom: 25px;
+          padding: 20px;
+          background-color: rgba(0, 26, 0, 0.4); /* Darker green transparent background */
+          border: 1px dashed #33ff33; /* Dashed border */
+          min-height: 150px; /* Ensure minimum height */
+      }
+      #question-container p {
+          font-size: 1.2rem; /* Larger question text */
+          color: #ccffcc; /* Slightly lighter green */
+          margin-bottom: 15px;
+      }
+      .options-container label {
+          display: block; /* Change from flex to block for vertical layout */
+          margin-bottom: 10px;
+          padding: 10px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822; /* Darker green border */
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+      .options-container label:hover {
+          background-color: rgba(51, 255, 51, 0.2); /* Green highlight on hover */
+      }
+      input[type="radio"] {
+          margin-right: 10px;
+          appearance: none; /* Remove default appearance */
+          width: 14px;
+          height: 14px;
+          border: 1px solid #33ff33;
+          border-radius: 50%; /* Make it round */
+          vertical-align: middle;
+          position: relative; /* For positioning the dot */
+          cursor: pointer;
+      }
+      input[type="radio"]:checked {
+          background-color: #0a0a14; /* Match body background */
+      }
+      input[type="radio"]:checked::after {
+          content: '';
+          display: block;
+          width: 8px;
+          height: 8px;
+          background-color: #33ff33; /* Green dot */
+          border-radius: 50%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+      }
+      input[type="text"] {
+          width: calc(100% - 22px); /* Adjust width considering padding/border */
+          padding: 10px;
+          background-color: #000000; /* Black background */
+          border: 1px solid #33ff33; /* Green border */
+          color: #b3ffb3; /* Green text */
+          font-family: 'Courier New', monospace;
+          font-size: 1rem;
+          margin-top: 10px; /* Add some space above */
+      }
+      input[type="text"]:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5); /* Glow on focus */
+      }
+      #navigation-controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 25px;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+      }
+      #progress-indicator {
+          color: #00ff99; /* Cyan-green color */
+          font-weight: bold;
+      }
+      button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button:disabled {
+          background-color: #05050a; /* Darker background when disabled */
+          color: #447744; /* Dimmed green text */
+          border-color: #225522; /* Dimmed border */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
+      #next-button .lucide, #submit-button .lucide {
+         margin-left: 8px; /* Space after text */
+         margin-right: 0;
+      }
+      #results-container {
+          margin-top: 30px;
+          padding: 25px;
+          background-color: rgba(0, 10, 0, 0.6); /* Darker green background */
+          border: 1px solid #00ff99; /* Cyan-green border */
+      }
+      #results-container h2 {
+          color: #00ff99; /* Cyan-green heading */
+          font-size: 1.6rem;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          display: flex;
+          align-items: center;
+      }
+       #results-container h2 .lucide {
+          font-size: 1.5rem;
+          margin-right: 10px;
+       }
+      #results-container p {
+          font-size: 1.1rem;
+          color: #ccffcc;
+      }
+      #score {
+          font-weight: bold;
+          color: #ffffff; /* White score */
+          font-size: 1.3rem;
+      }
+      #review-area {
+          margin-top: 20px;
+          space-y: 15px; /* Use margin for spacing */
+      }
+      #review-area > div { /* Target direct children divs */
+          padding: 15px;
+          border: 1px dashed #228822; /* Dark green dashed border */
+          background-color: rgba(0, 0, 0, 0.2);
+          margin-bottom: 15px; /* Add margin bottom for spacing */
+      }
+      #review-area .font-semibold { /* Question text in review */
+          font-weight: bold; /* Ensure it's bold */
+          color: #ccffcc;
+      }
+      #review-area .text-sm { /* Answer text in review */
+          font-size: 0.95rem; /* Slightly smaller */
+      }
+      .correct-answer-text {
+          color: #33ff33; /* Bright green for correct */
+          font-weight: bold;
+      }
+      .incorrect-answer-text {
+          color: #ff6666; /* Lighter red for incorrect */
+          font-weight: bold;
+      }
+      .user-answer-text.correct {
+          color: #99ff99; /* Lighter green for user's correct answer */
+          font-weight: bold;
+      }
+       .user-answer-text.incorrect {
+          color: #ff9999; /* Lighter red for user's incorrect answer */
+          font-weight: bold;
+          text-decoration: line-through; /* Strike through incorrect answer */
+      }
+      .hidden {
+          display: none;
+      }
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .quiz-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          #navigation-controls { flex-wrap: wrap; justify-content: center; }
+          #navigation-controls button { margin: 5px; }
+          #progress-indicator { width: 100%; text-align: center; margin: 10px 0; }
+      }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Work in Progress</h1>
-        <div class="tools">🚧 👷 🔨 🚧</div>
-        <p>We're building something awesome here! Check back soon.</p>
-    </div>
+
+    <div class="quiz-wrapper">
+
+        <header>
+             <h1>
+                <span class="lucide">&#xe49b;</span> DB2 Security & Compliance Exercises
+            </h1>
+            <p>Test your knowledge :: Mainframe Edition</p>
+        </header>
+
+        <div id="quiz-container">
+            <div id="question-container">
+                </div>
+
+            <div id="navigation-controls">
+                <button id="prev-button" disabled>
+                    <span class="lucide">&#xe03f;</span> Previous
+                </button>
+                <span id="progress-indicator">Question 1 / X</span>
+                <button id="next-button">
+                    Next
+                    <span class="lucide">&#xe044;</span> </button>
+                <button id="submit-button" class="hidden">
+                    <span class="lucide">&#xe157;</span> Submit Quiz
+                </button>
+            </div>
+
+            <div id="feedback-container" class="mt-4 space-y-2">
+                </div>
+        </div>
+
+        <div id="results-container" class="hidden">
+            <h2>
+                <span class="lucide">&#xe4d7;</span> Quiz Results
+            </h2>
+            <p>Final Score :: <strong id="score"></strong></p>
+            <div id="review-area">
+                </div>
+            <button id="retry-button">
+                <span class="lucide">&#xe3a7;</span> Retry Quiz
+            </button>
+        </div>
+
+    </div> <script>
+        // --- NEW Quiz Data: Based on Chapter 6 Security and Compliance ---
+        const quizData = [
+            // Introduction & Principles
+            {
+                question: "Which security principle advocates granting users only the minimum access rights necessary for their job?",
+                type: "multiple-choice",
+                options: ["Defense in Depth", "Separation of Duties", "Principle of Least Privilege", "Auditability"],
+                answer: "Principle of Least Privilege"
+            },
+            {
+                question: "The primary authentication mechanism for most DB2 for z/OS installations relies on ________.",
+                type: "fill-in-the-blank",
+                answer: "RACF" // or ACF2, TopSecret
+            },
+            {
+                question: "True or False: DB2 security primarily focuses on database-level controls and does not integrate with z/OS security.",
+                type: "true-false",
+                answer: "False" // It integrates closely with z/OS security (RACF, etc.).
+            },
+            {
+                question: "Which identifier represents the user's main identity, typically derived from the z/OS security product?",
+                type: "multiple-choice",
+                options: ["SQL ID", "Secondary Authorization ID", "Role", "Primary Authorization ID"],
+                answer: "Primary Authorization ID"
+            },
+            // Authorization & Privileges
+            {
+                question: "Which DB2 system authority grants complete administrative control over the entire DB2 subsystem?",
+                type: "fill-in-the-blank",
+                answer: "SYSADM"
+            },
+            {
+                question: "The authority required to grant and revoke privileges on objects is ________.",
+                type: "multiple-choice",
+                options: ["DATAACCESS", "SYSCTRL", "ACCESSCTRL", "SECADM"],
+                answer: "ACCESSCTRL"
+            },
+            {
+                question: "Which object-level privilege allows modifying existing rows in a table?",
+                type: "multiple-choice",
+                options: ["SELECT", "INSERT", "DELETE", "UPDATE"],
+                answer: "UPDATE"
+            },
+            {
+                question: "True or False: The `DBADM` authority provides the same level of control as `SYSADM`, but limited to a specific database.",
+                type: "true-false",
+                answer: "True"
+            },
+            {
+                question: "Granting the `EXECUTE` privilege allows a user to run ________.",
+                type: "fill-in-the-blank",
+                answer: "stored procedures" // or functions
+            },
+            {
+                question: "The `WITH GRANT OPTION` clause allows the recipient of a privilege to ________.",
+                type: "multiple-choice",
+                options: ["Revoke the privilege from others", "Grant the same privilege to others", "Audit the privilege usage", "Bypass security checks"],
+                answer: "Grant the same privilege to others"
+            },
+            // Advanced Access Control (LBAC, RCAC)
+            {
+                question: "Which access control mechanism uses security labels assigned to data and users to enforce multi-level security?",
+                type: "multiple-choice",
+                options: ["Discretionary Access Control (DAC)", "Role-Based Access Control (RBAC)", "Label-Based Access Control (LBAC)", "Row and Column Access Control (RCAC)"],
+                answer: "Label-Based Access Control (LBAC)"
+            },
+            {
+                question: "Defining rules that filter which rows a user can access based on predicates is achieved using ________.",
+                type: "fill-in-the-blank",
+                answer: "Row Permissions"
+            },
+            {
+                question: "True or False: Column masks allow hiding entire columns from unauthorized users.",
+                type: "true-false",
+                answer: "False" // They transform or mask the *values* within columns, not hide the column itself.
+            },
+            {
+                question: "Row and Column Access Control (RCAC) features include Row Permissions and ________.",
+                type: "fill-in-the-blank",
+                answer: "Column Masks"
+            },
+             {
+                question: "Creating a security policy with defined levels and compartments is part of implementing ________.",
+                type: "multiple-choice",
+                options: ["Auditing", "RBAC", "LBAC", "Trusted Contexts"],
+                answer: "LBAC"
+            },
+            // Roles & Trusted Contexts
+            {
+                question: "A collection of privileges grouped together for a specific job function is called a ________.",
+                type: "fill-in-the-blank",
+                answer: "Role"
+            },
+            {
+                question: "Which DB2 feature allows assigning roles or different security attributes based on connection properties like IP address?",
+                type: "multiple-choice",
+                options: ["Secondary Auth IDs", "Trusted Contexts", "Column Masks", "Security Labels"],
+                answer: "Trusted Contexts"
+            },
+            {
+                question: "True or False: Roles in DB2 can only be assigned privileges, not system or database authorities.",
+                type: "true-false",
+                answer: "False" // Roles can hold various privileges and authorities.
+            },
+            {
+                question: "Trusted contexts can enhance security for connection pooling by associating specific attributes with ________.",
+                type: "multiple-choice",
+                options: ["Individual SQL statements", "Specific tables", "Application server IDs", "Database partitions"],
+                answer: "Application server IDs" // Or system AUTHIDs, connection properties.
+            },
+            // User Rights Management & Administration
+            {
+                question: "Which administrative model involves security administrators handling all privilege assignments?",
+                type: "multiple-choice",
+                options: ["Decentralized", "Hybrid", "Object Owner", "Centralized"],
+                answer: "Centralized"
+            },
+            {
+                question: "Regularly reviewing access rights helps prevent privilege ________, where users accumulate unnecessary permissions over time.",
+                type: "fill-in-the-blank",
+                answer: "accumulation" // or creep
+            },
+            {
+                question: "True or False: The SECADM authority is typically separated from SYSADM to enforce separation of duties.",
+                type: "true-false",
+                answer: "True"
+            },
+            {
+                question: "Automating user rights management often involves integration with ________ systems for provisioning.",
+                type: "multiple-choice",
+                options: ["Monitoring", "Backup", "HR", "Network"],
+                answer: "HR"
+            },
+            // Compliance, Auditing & Encryption
+            {
+                question: "Which regulation focuses on the protection of personal data for individuals within the European Union?",
+                type: "fill-in-the-blank",
+                answer: "GDPR"
+            },
+            {
+                question: "DB2's capability to record security-relevant events relies on starting specific ________ trace classes.",
+                type: "multiple-choice",
+                options: ["Performance", "Statistics", "Accounting", "Audit"],
+                answer: "Audit"
+            },
+            {
+                question: "True or False: DB2 native encryption protects data only while it is stored on disk (at rest).",
+                type: "true-false",
+                answer: "True" // Encryption in transit requires separate mechanisms like SSL/TLS.
+            },
+            {
+                question: "Protecting data transmitted over the network between clients and the DB2 server often involves using protocols like ________.",
+                type: "fill-in-the-blank",
+                answer: "SSL" // or TLS
+            },
+            {
+                question: "Which DB2 catalog table is commonly queried to review granted object privileges?",
+                type: "multiple-choice",
+                options: ["SYSIBM.SYSTABLES", "SYSIBM.SYSROLES", "SYSIBM.SYSTABAUTH", "SYSIBM.SYSUSERAUTH"],
+                answer: "SYSIBM.SYSTABAUTH" // (and others like SYSCOLAUTH, SYSPLANAUTH etc.)
+            },
+             {
+                question: "The Payment Card Industry Data Security Standard is commonly referred to as ________.",
+                type: "fill-in-the-blank",
+                answer: "PCI DSS"
+            },
+            // Network Security & Best Practices
+            {
+                question: "Securing the Distributed Data Facility (DDF) often involves configuring ________ ports and potentially using AT-TLS.",
+                type: "multiple-choice",
+                options: ["Default", "UDP", "Secure (SECPORT)", "Resync (RESPORT)"],
+                answer: "Secure (SECPORT)"
+            },
+            {
+                question: "Regularly applying IBM-provided maintenance (PTFs) is crucial for addressing known security ________.",
+                type: "fill-in-the-blank",
+                answer: "vulnerabilities"
+            },
+            {
+                question: "True or False: Security documentation should be kept confidential and accessible only to the SYSADM.",
+                type: "true-false",
+                answer: "False" // Needs to be accessible to relevant personnel for operations and incident response.
+            },
+            {
+                question: "Which security concept assumes that no user or connection should be implicitly trusted, requiring verification at every step?",
+                type: "multiple-choice",
+                options: ["Defense in Depth", "Zero Trust", "Least Privilege", "Separation of Duties"],
+                answer: "Zero Trust"
+            },
+             {
+                question: "Implementing strong password policies and encouraging the use of ________ enhances authentication security.",
+                type: "fill-in-the-blank",
+                answer: "password phrases"
+            },
+             {
+                question: "True or False: DB2 auditing automatically captures all SQL statements executed by default.",
+                type: "true-false",
+                answer: "False" // Specific audit trace classes need to be started and policies defined.
+            },
+             {
+                question: "Which authority is specifically responsible for administering security policies like RCAC and LBAC?",
+                type: "multiple-choice",
+                options: ["SYSADM", "SYSCTRL", "DBADM", "SECADM"],
+                answer: "SECADM"
+            }
+        ];
+
+        // --- Quiz Logic (DOM References) ---
+        // (This section remains identical to the previous versions)
+        const quizContainer = document.getElementById('quiz-container');
+        const questionContainer = document.getElementById('question-container');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreElement = document.getElementById('score');
+        const reviewArea = document.getElementById('review-area');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const submitButton = document.getElementById('submit-button');
+        const retryButton = document.getElementById('retry-button');
+        const progressIndicator = document.getElementById('progress-indicator');
+
+        // --- State Variables ---
+        // (This section remains identical to the previous versions)
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let score = 0;
+
+        // --- Function to display a question ---
+        // (This function remains identical to the previous versions)
+        function displayQuestion(index) {
+            questionContainer.innerHTML = '';
+            if (index < 0 || index >= quizData.length) {
+                console.error("Invalid question index:", index);
+                questionContainer.innerHTML = '<p>Error: Could not load question.</p>';
+                return;
+            }
+            const questionData = quizData[index];
+            progressIndicator.textContent = `Question ${index + 1} / ${quizData.length}`;
+            const questionTextElement = document.createElement('p');
+            questionTextElement.textContent = `${index + 1}. ${questionData.question}`;
+            questionContainer.appendChild(questionTextElement);
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            if (questionData.type === 'multiple-choice' || questionData.type === 'true-false') {
+                const options = (questionData.type === 'true-false') ? ['True', 'False'] : questionData.options;
+                options.forEach(option => {
+                    const label = document.createElement('label');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = option;
+                    if (userAnswers[index] === option) {
+                        input.checked = true;
+                    }
+                    input.addEventListener('change', () => handleAnswerChange(index, option));
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(option));
+                    optionsContainer.appendChild(label);
+                });
+            } else if (questionData.type === 'fill-in-the-blank') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = `question-${index}`;
+                input.placeholder = 'Type your answer here...';
+                input.value = userAnswers[index] || '';
+                input.addEventListener('input', (e) => handleAnswerChange(index, e.target.value.trim()));
+                optionsContainer.appendChild(input);
+            }
+            questionContainer.appendChild(optionsContainer);
+            updateNavigationButtons();
+        }
+
+        // --- Function to handle answer changes ---
+        // (This function remains identical to the previous versions)
+        function handleAnswerChange(index, value) {
+             userAnswers[index] = value;
+        }
+
+        // --- Function to update navigation buttons visibility/state ---
+        // (This function remains identical to the previous versions)
+        function updateNavigationButtons() {
+            prevButton.disabled = currentQuestionIndex === 0;
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextButton.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+            } else {
+                nextButton.classList.remove('hidden');
+                submitButton.classList.add('hidden');
+            }
+        }
+
+        // --- Function to check answers and calculate score ---
+        // (This function remains identical to the previous versions)
+        function checkAnswers() {
+            score = 0;
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let correctAnswer = question.answer;
+                let isCorrect = false;
+                if (question.type === 'fill-in-the-blank' && userAnswer) {
+                    const userAnswerLower = userAnswer.toLowerCase();
+                    if (Array.isArray(correctAnswer)) {
+                         isCorrect = correctAnswer.map(a => a.toLowerCase()).includes(userAnswerLower);
+                    } else if (typeof correctAnswer === 'string') {
+                        const possibleAnswers = correctAnswer.split(' / ').map(a => a.trim().toLowerCase());
+                         isCorrect = possibleAnswers.includes(userAnswerLower);
+                    }
+                } else {
+                    isCorrect = userAnswer === correctAnswer;
+                }
+                if (isCorrect) {
+                    score++;
+                }
+            });
+        }
+
+
+        // --- Function to display results and review ---
+        // (This function remains identical to the previous versions)
+        function displayResults() {
+            quizContainer.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            scoreElement.textContent = `${score} / ${quizData.length} (${((score / quizData.length) * 100).toFixed(1)}%)`;
+            reviewArea.innerHTML = '';
+            quizData.forEach((question, index) => {
+                const reviewElement = document.createElement('div');
+                const userAnswer = userAnswers[index] || '[[[ No Answer ]]]';
+                let correctAnswer = question.answer;
+                let correctAnswerDisplay = Array.isArray(correctAnswer) ? correctAnswer.join(' / ') : correctAnswer;
+
+                 let isCorrect = false;
+                 const userAnswerLower = typeof userAnswer === 'string' ? userAnswer.toLowerCase() : null;
+                 if (question.type === 'fill-in-the-blank' && userAnswerLower) {
+                     if (Array.isArray(correctAnswer)) {
+                         isCorrect = correctAnswer.map(a => a.toLowerCase()).includes(userAnswerLower);
+                     } else if (typeof correctAnswer === 'string') {
+                         const possibleAnswers = correctAnswer.split(' / ').map(a => a.trim().toLowerCase());
+                         isCorrect = possibleAnswers.includes(userAnswerLower);
+                     }
+                 } else {
+                     isCorrect = userAnswer === correctAnswer;
+                 }
+
+                let feedbackHTML = `<p class="font-semibold">${index + 1}. ${question.question}</p>`;
+                feedbackHTML += `<p class="text-sm">Your Answer: <span class="user-answer-text ${isCorrect ? 'correct' : 'incorrect'}">${userAnswer}</span></p>`;
+                if (!isCorrect) {
+                    feedbackHTML += `<p class="text-sm">Correct Answer: <span class="correct-answer-text">${correctAnswerDisplay}</span></p>`;
+                }
+                reviewElement.innerHTML = feedbackHTML;
+                reviewArea.appendChild(reviewElement);
+            });
+        }
+
+        // --- Event Listeners for Buttons ---
+        // (This section remains identical to the previous versions)
+        prevButton.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+        nextButton.addEventListener('click', () => {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        });
+        submitButton.addEventListener('click', () => {
+            checkAnswers();
+            displayResults();
+        });
+        retryButton.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            score = 0;
+            resultsContainer.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            displayQuestion(currentQuestionIndex);
+        });
+
+        // --- Initial Load ---
+        // (This section remains identical to the previous versions)
+        displayQuestion(currentQuestionIndex);
+
+    </script>
+
 </body>
 </html>
