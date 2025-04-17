@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Fundamentals Solved Exercises - Chapter 4</title>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+
+      body {
+          background-color: #0a0a14;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3);
+      }
+
+      .solutions-wrapper {
+          max-width: 900px;
+          margin: 20px auto;
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8);
+          border: 1px solid #33ff33;
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4);
+      }
+
+      header {
+          background-color: #001a00;
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+
+      header h1 {
+          color: #33ff33;
+          font-size: 1.8rem;
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      header h1 .lucide {
+          font-size: 1.6rem;
+          margin-right: 10px;
+      }
+
+      header p {
+          color: #99ff99;
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+
+      .nav-controls {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+          margin-bottom: 20px;
+      }
+
+      .solution-container {
+          margin-bottom: 30px;
+          border-bottom: 1px dashed #228822;
+          padding-bottom: 20px;
+      }
+
+      .solution-container:last-child {
+          border-bottom: none;
+      }
+
+      .question {
+          font-size: 1.2rem;
+          color: #ccffcc;
+          margin-bottom: 10px;
+          padding: 15px;
+          background-color: rgba(0, 26, 0, 0.4);
+          border: 1px dashed #33ff33;
+      }
+
+      .answer {
+          display: block;
+          margin: 15px 0;
+          padding: 10px;
+          background-color: rgba(51, 255, 51, 0.1);
+          border-left: 4px solid #33ff33;
+      }
+
+      .explanation {
+          margin-top: 10px;
+          padding: 15px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822;
+      }
+
+      button {
+          background-color: #001a00;
+          color: #33ff33;
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff;
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button .lucide {
+          margin-right: 8px;
+      }
+
+      .category {
+          color: #00ff99;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 5px;
+          margin-top: 30px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      .category .lucide {
+          margin-right: 8px;
+      }
+
+      #search-box {
+          width: 100%;
+          padding: 10px;
+          background-color: #000000;
+          border: 1px solid #33ff33;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 20px;
+      }
+      #search-box:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+      }
+
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .solutions-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          .nav-controls { flex-wrap: wrap; justify-content: center; }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="solutions-wrapper">
+
+        <header>
+            <h1>
+                <span class="lucide"></span> DB2 Fundamentals Solutions - Chapter 4
+            </h1>
+            <p>Complete Answer Guide :: Mainframe Edition</p>
+        </header>
+
+        <div class="nav-controls">
+            <button id="toggle-all-btn">
+                <span class="lucide"></span> Toggle All Explanations
+            </button>
+            <input type="text" id="search-box" placeholder="Search questions...">
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Performance Concepts & Monitoring
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">1. Which SMF record type primarily contains thread-level accounting information (CPU time, elapsed time, I/O counts per thread)?</div>
+            <div class="answer"><strong>Answer:</strong> Type 101 (Accounting)</div>
+            <div class="explanation">
+                <p>SMF Type 101 records capture thread-level accounting information in DB2, including CPU time, elapsed time, I/O counts, and SQL statement counts. These records are generated when threads terminate and are crucial for performance analysis, capacity planning, and chargeback processes.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">2. The DB2 Instrumentation Facility Component ID, used to trace specific events, is commonly known as ________.</div>
+            <div class="answer"><strong>Answer:</strong> IFCID</div>
+            <div class="explanation">
+                <p>The Instrumentation Facility Component ID (IFCID) is a unique identifier used in DB2 to trace specific events or activities. IFCIDs are associated with performance, accounting, or audit traces, allowing DBAs to collect detailed diagnostic information for troubleshooting and performance tuning.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">3. True or False: Effective performance management in DB2 is typically a linear process with a defined start and end.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Effective performance management in DB2 is a cyclical and ongoing process, not linear. It involves continuous monitoring, analysis, tuning, and validation to adapt to changing workloads, data growth, and application requirements, ensuring sustained optimal performance.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">4. Which DB2 command is used to display the status and statistics of buffer pools?</div>
+            <div class="answer"><strong>Answer:</strong> DISPLAY BUFFERPOOL</div>
+            <div class="explanation">
+                <p>The DISPLAY BUFFERPOOL command in DB2 provides detailed status and statistics about buffer pools, including hit ratios, I/O activity, and page usage. This information helps DBAs assess buffer pool performance and make adjustments to optimize data access efficiency.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> RUNSTATS & Statistics
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">5. Which utility is essential for collecting statistics used by the DB2 optimizer to determine access paths?</div>
+            <div class="answer"><strong>Answer:</strong> RUNSTATS</div>
+            <div class="explanation">
+                <p>The RUNSTATS utility collects statistics about data distribution, cardinality, and other characteristics, storing them in the DB2 Catalog. These statistics are critical for the DB2 optimizer to choose efficient access paths for SQL queries, directly impacting query performance.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">6. The `RUNSTATS` parameter `SHRLEVEL CHANGE` allows statistics collection while permitting ________ operations on the target objects.</div>
+            <div class="answer"><strong>Answer:</strong> Concurrent updates</div>
+            <div class="explanation">
+                <p>The `SHRLEVEL CHANGE` parameter in RUNSTATS allows statistics collection while permitting concurrent read and write operations on the target objects. This minimizes application downtime, making it suitable for high-availability environments where continuous access is required.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">7. Which catalog table column typically stores the number of distinct values for an index's full key?</div>
+            <div class="answer"><strong>Answer:</strong> SYSINDEXES.FULLKEYCARDF</div>
+            <div class="explanation">
+                <p>The SYSINDEXES.FULLKEYCARDF column in the DB2 Catalog stores the number of distinct values for an index's full key. This statistic helps the optimizer evaluate the selectivity of an index, influencing decisions about whether to use the index for query execution.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">8. True or False: Using the `SAMPLE` option in RUNSTATS always provides the most accurate statistics for the optimizer.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The `SAMPLE` option in RUNSTATS collects statistics based on a subset of data, which is faster but less accurate than a full scan. While sampling can be sufficient for many scenarios, a full collection provides the most accurate statistics, especially for highly selective or skewed data distributions.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">9. Collecting frequency distribution statistics for specific column values is achieved using the ________ keyword in RUNSTATS.</div>
+            <div class="answer"><strong>Answer:</strong> HISTOGRAM</div>
+            <div class="explanation">
+                <p>The HISTOGRAM keyword (or FREQVAL for specific values) in RUNSTATS collects frequency distribution statistics for column values. This helps the optimizer understand data skew and make better access path decisions, particularly for predicates involving common or rare values.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">10. A low `CLUSTERRATIO` value for an index often indicates a need for which DB2 utility?</div>
+            <div class="answer"><strong>Answer:</strong> REORG</div>
+            <div class="explanation">
+                <p>A low CLUSTERRATIO value indicates that the physical order of rows in a table deviates significantly from the order of the clustering index, reducing its efficiency. Running the REORG utility reorganizes the table to restore the clustering order, improving query performance.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Bottlenecks & Problem Resolution
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">11. Excessive lock wait times, deadlocks, and timeouts are typically symptoms of ________ -related performance bottlenecks.</div>
+            <div class="answer"><strong>Answer:</strong> Lock</div>
+            <div class="explanation">
+                <p>Excessive lock wait times, deadlocks, and timeouts are classic symptoms of lock-related performance bottlenecks. These occur when transactions compete for the same resources, causing delays or failures. Tuning lock granularity, timeout settings, or transaction design can mitigate these issues.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">12. Buffer pool thrashing, characterized by low hit ratios and high synchronous read I/O, is primarily an ________ bottleneck.</div>
+            <div class="answer"><strong>Answer:</strong> I/O</div>
+            <div class="explanation">
+                <p>Buffer pool thrashing, marked by low hit ratios and high synchronous read I/O, is primarily an I/O bottleneck, often caused by insufficient buffer pool size. This forces frequent disk accesses, degrading performance. Increasing buffer pool size or optimizing queries can alleviate this issue.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">13. True or False: The first step in systematic performance problem resolution is usually implementing a potential fix.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The first step in systematic performance problem resolution is identifying symptoms, such as high CPU usage or long response times, through monitoring tools or traces. Only after understanding the issue can potential causes be analyzed and fixes implemented, ensuring a targeted approach.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">14. Which DB2 facility is crucial for analyzing the access path chosen by the optimizer for a specific SQL statement?</div>
+            <div class="answer"><strong>Answer:</strong> EXPLAIN</div>
+            <div class="explanation">
+                <p>The EXPLAIN facility in DB2 provides detailed information about the access path chosen by the optimizer for an SQL statement, including table accesses, index usage, and join methods. This helps DBAs identify inefficient queries and optimize performance.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">15. A common solution for excessive tablespace scans identified via EXPLAIN is to create appropriate ________.</div>
+            <div class="answer"><strong>Answer:</strong> indexes</div>
+            <div class="explanation">
+                <p>Excessive tablespace scans, as identified by EXPLAIN, indicate that queries are scanning entire tables unnecessarily. Creating appropriate indexes on columns used in predicates or joins allows the optimizer to use index access paths, significantly reducing query execution time.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Query Optimizer & Tuning
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">16. Which component of the DB2 optimizer is responsible for checking SQL syntax and semantics?</div>
+            <div class="answer"><strong>Answer:</strong> Parser</div>
+            <div class="explanation">
+                <p>The Parser component of the DB2 optimizer checks the syntax and semantics of SQL statements, ensuring they are valid and meaningful before further processing. It verifies statement structure and resolves references to database objects, passing the query to subsequent optimization stages.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">17. The `OPTIMIZE FOR n ROWS` clause primarily influences the optimizer's choice of ________ strategy.</div>
+            <div class="answer"><strong>Answer:</strong> retrieval</div>
+            <div class="explanation">
+                <p>The `OPTIMIZE FOR n ROWS` clause influences the optimizer's choice of retrieval strategy by indicating the expected number of rows to be retrieved. This affects decisions about access paths and join methods, optimizing for scenarios where only a few rows are needed.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">18. True or False: Using functions on indexed columns in predicates generally helps the optimizer choose better access paths.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Using functions on indexed columns in predicates (e.g., `UPPER(column) = 'VALUE'`) often makes the predicate non-indexable, preventing the optimizer from using the index. Rewriting queries to avoid functions or creating expression-based indexes can improve performance.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">19. Which join method is generally efficient when joining a small table to a large table using an index on the large table?</div>
+            <div class="answer"><strong>Answer:</strong> Nested Loop Join</div>
+            <div class="explanation">
+                <p>A Nested Loop Join is efficient when joining a small table to a large table with an index on the large table. The optimizer uses the small table to probe the indexed large table, minimizing I/O and leveraging the index for fast lookups.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">20. The `REOPT(ALWAYS)` bind option tells DB2 to re-optimize an SQL statement using actual host variable or parameter marker values at ________ time.</div>
+            <div class="answer"><strong>Answer:</strong> execution</div>
+            <div class="explanation">
+                <p>The `REOPT(ALWAYS)` bind option instructs DB2 to re-optimize an SQL statement at execution time, using the actual values of host variables or parameter markers. This ensures the optimizer selects the best access path based on current data, at the cost of additional overhead.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">21. Rewriting `WHERE YEAR(ORDER_DATE) = 2024` to `WHERE ORDER_DATE BETWEEN '2024-01-01' AND '2024-12-31'` makes the predicate ________.</div>
+            <div class="answer"><strong>Answer:</strong> Sargable</div>
+            <div class="explanation">
+                <p>Rewriting `WHERE YEAR(ORDER_DATE) = 2024` to `WHERE ORDER_DATE BETWEEN '2024-01-01' AND '2024-12-31'` makes the predicate Sargable (Search ARGument Able), allowing DB2 to use an index on ORDER_DATE. This avoids applying functions to the column, enabling efficient index-based access.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">22. True or False: The `FETCH FIRST n ROWS ONLY` clause guarantees that only 'n' rows will be processed internally by DB2.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The `FETCH FIRST n ROWS ONLY` clause limits the number of rows returned to the application, but DB2 may process more rows internally before stopping after fetching 'n'. For example, during a sort or join, additional rows may be processed to determine the final result set.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Advanced Optimization & Best Practices
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">23. Which type of parallelism involves using multiple processors to execute components of a single query concurrently?</div>
+            <div class="answer"><strong>Answer:</strong> CPU Parallelism</div>
+            <div class="explanation">
+                <p>CPU Parallelism in DB2 involves using multiple processors to execute components of a single query concurrently, such as scanning partitions or processing joins. This improves query performance by distributing workload across available CPUs, particularly for large or complex queries.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">24. A pre-computed result set stored physically to speed up complex or frequent queries is known as a ________.</div>
+            <div class="answer"><strong>Answer:</strong> Materialized Query Table</div>
+            <div class="explanation">
+                <p>A Materialized Query Table (MQT) is a physical table that stores pre-computed results of a query, used to speed up complex or frequently executed queries. MQTs can be refreshed manually or automatically, providing performance benefits for analytical or reporting workloads.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">25. True or False: Establishing performance baselines is primarily useful only after a performance problem occurs.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Establishing performance baselines is crucial for proactive monitoring, not just after problems occur. Baselines provide a reference for normal system behavior, enabling DBAs to detect deviations early, identify potential issues, and measure the impact of tuning efforts.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">26. Which routine maintenance activity is essential for removing physical data disorganization and reclaiming space?</div>
+            <div class="answer"><strong>Answer:</strong> REORG</div>
+            <div class="explanation">
+                <p>The REORG utility is essential for removing physical data disorganization, such as fragmented data or inefficient clustering, and reclaiming unused space in tablespaces and indexes. Regular reorganization improves query performance and optimizes storage utilization.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">27. Regularly executing ________ ensures that application plans or packages leverage the latest statistics and potential new access paths.</div>
+            <div class="answer"><strong>Answer:</strong> REBIND</div>
+            <div class="explanation">
+                <p>Regularly executing REBIND updates application plans or packages to leverage the latest statistics and optimizer improvements. This ensures that SQL statements use optimal access paths based on current data characteristics, enhancing performance without modifying application code.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Data Sharing, Temporal, Other
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">28. In a data sharing environment, the component responsible for managing coherency of cached data across members is the ________.</div>
+            <div class="answer"><strong>Answer:</strong> Group Buffer Pool (GBP)</div>
+            <div class="explanation">
+                <p>The Group Buffer Pool (GBP), managed within the Coupling Facility, ensures coherency of cached data across members in a DB2 data sharing environment. It stores shared data pages and coordinates updates to prevent conflicts, maintaining data consistency across subsystems.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">29. True or False: Lock contention can potentially increase in a data sharing environment due to global lock management.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>Lock contention can increase in a DB2 data sharing environment due to global lock management, as multiple members coordinate locks through the Coupling Facility. This introduces additional overhead and potential delays, requiring careful tuning of lock granularity and transaction design.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">30. Querying data based on application-defined effective dates typically involves tables with ________ time periods.</div>
+            <div class="answer"><strong>Answer:</strong> Business</div>
+            <div class="explanation">
+                <p>Querying data based on application-defined effective dates typically involves Business time periods in DB2 temporal tables. These periods, defined using BUSINESS_TIME columns, track when data is valid from a business perspective, supporting queries for specific effective date ranges.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">31. Which DB2 feature aims to automate performance management tasks using machine learning and dynamic adjustments?</div>
+            <div class="answer"><strong>Answer:</strong> Autonomous Database Features</div>
+            <div class="explanation">
+                <p>Autonomous Database Features in DB2 use machine learning and dynamic adjustments to automate performance management tasks, such as index recommendations, statistics collection, and query tuning. These features reduce manual effort and optimize system performance proactively.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">32. Optimizing XPath expressions and using appropriate XML indexes are key performance considerations when working with ________ data.</div>
+            <div class="answer"><strong>Answer:</strong> XML</div>
+            <div class="explanation">
+                <p>Optimizing XPath expressions and creating appropriate XML indexes are critical for improving query performance when working with XML data in DB2. Efficient XPath queries and targeted indexes reduce processing overhead and enable faster access to XML content.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">33. True or False: System-period temporal tables require manual updates to the history table whenever the base table is modified.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>System-period temporal tables in DB2 automatically manage updates to the associated history table when the base table is modified. DB2 tracks row changes using system-generated timestamps, ensuring historical data is maintained without manual intervention.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">34. The first step listed in the 'Systematic Tuning Methodology' section is to establish performance ________.</div>
+            <div class="answer"><strong>Answer:</strong> Baselines</div>
+            <div class="explanation">
+                <p>The first step in the Systematic Tuning Methodology is to establish performance baselines, which provide a reference for normal system behavior. Baselines enable DBAs to detect deviations, identify performance issues, and measure the effectiveness of tuning efforts.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">35. Prioritizing tuning efforts often involves focusing on ________ -impact applications or system-wide bottlenecks first.</div>
+            <div class="answer"><strong>Answer:</strong> High</div>
+            <div class="explanation">
+                <p>Prioritizing tuning efforts involves focusing on high-impact applications or system-wide bottlenecks first, as these have the greatest effect on overall performance. Addressing critical workloads or pervasive issues maximizes the return on tuning efforts and improves user experience.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript for toggle functionality and search
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle all explanations
+            const toggleAllBtn = document.getElementById('toggle-all-btn');
+            toggleAllBtn.addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                const firstExplanation = explanations[0];
+                const isHidden = firstExplanation.style.display === 'none';
+                
+                explanations.forEach(explanation => {
+                    explanation.style.display = isHidden ? 'block' : 'none';
+                });
+                
+                toggleAllBtn.innerHTML = isHidden ? 
+                    '<span class="lucide">&#xe2c4;</span> Hide All Explanations' : 
+                    '<span class="lucide">&#xe2c4;</span> Show All Explanations';
+            });
+
+            // Search functionality
+            const searchBox = document.getElementById('search-box');
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const questions = document.querySelectorAll('.question');
+                
+                questions.forEach(question => {
+                    const questionText = question.textContent.toLowerCase();
+                    const solutionContainer = question.closest('.solution-container');
+                    
+                    if (questionText.includes(searchTerm)) {
+                        solutionContainer.style.display = 'block';
+                    } else {
+                        solutionContainer.style.display = 'none';
+                    }
+                });
+            });
+
+            // Back to quiz button
+            const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+        });
+    </script>
+
+</body>
+</html>

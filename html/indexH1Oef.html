@@ -296,6 +296,9 @@
                 <span class="lucide">&#xe12f;</span> DB2 Fundamentals Exercises
             </h1>
             <p>Test your knowledge :: Mainframe Edition</p>
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe3a7;</span> Back To Mainpage
+            </button>
         </header>
 
         <div id="quiz-container">
@@ -731,6 +734,11 @@
         // --- Initial Load ---
         // Display the first question when the page loads
         displayQuestion(currentQuestionIndex);
+        
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
 
     </script>
 

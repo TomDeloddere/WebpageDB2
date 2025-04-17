@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Fundamentals Solved Exercises - Chapter 3</title>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+
+      body {
+          background-color: #0a0a14;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3);
+      }
+
+      .solutions-wrapper {
+          max-width: 900px;
+          margin: 20px auto;
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8);
+          border: 1px solid #33ff33;
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4);
+      }
+
+      header {
+          background-color: #001a00;
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+
+      header h1 {
+          color: #33ff33;
+          font-size: 1.8rem;
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      header h1 .lucide {
+          font-size: 1.6rem;
+          margin-right: 10px;
+      }
+
+      header p {
+          color: #99ff99;
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+
+      .nav-controls {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+          margin-bottom: 20px;
+      }
+
+      .solution-container {
+          margin-bottom: 30px;
+          border-bottom: 1px dashed #228822;
+          padding-bottom: 20px;
+      }
+
+      .solution-container:last-child {
+          border-bottom: none;
+      }
+
+      .question {
+          font-size: 1.2rem;
+          color: #ccffcc;
+          margin-bottom: 10px;
+          padding: 15px;
+          background-color: rgba(0, 26, 0, 0.4);
+          border: 1px dashed #33ff33;
+      }
+
+      .answer {
+          display: block;
+          margin: 15px 0;
+          padding: 10px;
+          background-color: rgba(51, 255, 51, 0.1);
+          border-left: 4px solid #33ff33;
+      }
+
+      .explanation {
+          margin-top: 10px;
+          padding: 15px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822;
+      }
+
+      button {
+          background-color: #001a00;
+          color: #33ff33;
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff;
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button .lucide {
+          margin-right: 8px;
+      }
+
+      .category {
+          color: #00ff99;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 5px;
+          margin-top: 30px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      .category .lucide {
+          margin-right: 8px;
+      }
+
+      #search-box {
+          width: 100%;
+          padding: 10px;
+          background-color: #000000;
+          border: 1px solid #33ff33;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 20px;
+      }
+      #search-box:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+      }
+
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .solutions-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          .nav-controls { flex-wrap: wrap; justify-content: center; }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="solutions-wrapper">
+
+        <header>
+            <h1>
+                <span class="lucide">&#xe12f;</span> DB2 Fundamentals Solutions - Chapter 3
+            </h1>
+            <p>Complete Answer Guide :: Mainframe Edition</p>
+        </header>
+
+        <div class="nav-controls">
+            <button id="toggle-all-btn">
+                <span class="lucide">&#xe2c4;</span> Toggle All Explanations
+            </button>
+            <input type="text" id="search-box" placeholder="Search questions...">
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe03f;</span> Back To Mainpage
+            </button>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe021;</span> Requirements & Conceptual/Logical Design
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">1. Which database design phase focuses on business concepts like entities and relationships, independent of a specific DBMS?</div>
+            <div class="answer"><strong>Answer:</strong> Conceptual Design</div>
+            <div class="explanation">
+                <p>The Conceptual Design phase focuses on defining the high-level structure of the database in terms of entities, their attributes, and relationships, without tying it to a specific DBMS like DB2. This phase produces an Entity-Relationship (ER) model that represents business requirements in a platform-independent manner, serving as the foundation for subsequent logical and physical design phases.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">2. The process of eliminating repeating groups and ensuring atomic values corresponds to which Normal Form?</div>
+            <div class="answer"><strong>Answer:</strong> 1NF</div>
+            <div class="explanation">
+                <p>First Normal Form (1NF) requires that all attributes in a table contain atomic (indivisible) values and that repeating groups are eliminated. This ensures each column holds a single value per row, and each row is unique, forming the basis for further normalization to reduce redundancy and improve data integrity.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">3. True or False: Denormalization involves adding controlled redundancy to improve query performance.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>Denormalization is the intentional introduction of controlled redundancy into a database design to enhance query performance. By reducing the need for complex joins or improving data locality, denormalization can speed up read-heavy operations, though it may complicate updates and increase storage requirements.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">4. Which type of integrity constraint ensures that foreign key values match existing primary key values in the referenced table?</div>
+            <div class="answer"><strong>Answer:</strong> Referential Integrity</div>
+            <div class="explanation">
+                <p>Referential Integrity ensures that foreign key values in a child table correspond to existing primary key values in the referenced parent table. This constraint maintains valid relationships between tables, preventing orphaned records and enforcing data consistency in DB2 through foreign key constraints.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">5. Eliminating transitive dependencies (where non-key attributes depend on other non-key attributes) is the goal of ________ Normal Form.</div>
+            <div class="answer"><strong>Answer:</strong> 3NF</div>
+            <div class="explanation">
+                <p>Third Normal Form (3NF) eliminates transitive dependencies, ensuring that non-key attributes depend only on the primary key. This reduces data redundancy and prevents update anomalies, building on 2NF by ensuring all attributes are directly dependent on the key, the whole key, and nothing but the key.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe1d1;</span> Physical Design for DB2
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">6. Which DB2 object maps logical tables to physical DASD storage?</div>
+            <div class="answer"><strong>Answer:</strong> Tablespace</div>
+            <div class="explanation">
+                <p>A Tablespace in DB2 is the object that maps logical tables to physical DASD (Direct Access Storage Device) storage. It defines the storage structure for one or more tables, specifying how data is organized and stored on disk, including attributes like page size and partitioning strategy.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">7. An index that determines the physical storage order of rows in a table is called a ________ index.</div>
+            <div class="answer"><strong>Answer:</strong> Clustering</div>
+            <div class="explanation">
+                <p>A Clustering index determines the physical storage order of rows in a table, optimizing data retrieval for queries that access data in the order of the index. DB2 attempts to maintain this order during data modifications, improving performance for range-based queries and sequential access.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">8. True or False: Range partitioning is typically based on system-generated sequence numbers.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Range partitioning is typically based on meaningful column values, such as dates, codes, or numeric ranges, rather than system-generated sequence numbers. This allows data to be logically grouped into partitions based on business-relevant criteria, improving query performance and manageability.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">9. Which DB2 parameter controls the percentage of space left empty on a page during LOAD or REORG for future updates?</div>
+            <div class="answer"><strong>Answer:</strong> PCTFREE</div>
+            <div class="explanation">
+                <p>The PCTFREE parameter in DB2 specifies the percentage of space left empty on each page during LOAD or REORG operations to accommodate future updates or inserts. This free space helps prevent page splits and maintains performance by allowing rows to grow without requiring immediate reorganization.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">10. Optimizing a database schema specifically for reporting and analytics often involves using a ________ schema design.</div>
+            <div class="answer"><strong>Answer:</strong> Star</div>
+            <div class="explanation">
+                <p>A Star schema is commonly used for optimizing database schemas for reporting and analytics. It features a central fact table surrounded by dimension tables, simplifying queries and improving performance for analytical workloads. Snowflake schemas, an extension of Star schemas, are also used but are more normalized.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe025;</span> Database Objects
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">11. Which DB2 object provides a logical grouping of related objects like tables and views within a database?</div>
+            <div class="answer"><strong>Answer:</strong> Schema</div>
+            <div class="explanation">
+                <p>A Schema in DB2 is a logical grouping of related database objects, such as tables, views, indexes, and stored procedures. It provides a namespace for organizing objects and managing access permissions, allowing multiple users or applications to work within the same database without naming conflicts.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">12. A virtual table derived from one or more base tables using a stored SELECT statement is a ________.</div>
+            <div class="answer"><strong>Answer:</strong> View</div>
+            <div class="explanation">
+                <p>A View in DB2 is a virtual table defined by a stored SELECT statement. It does not store data physically but dynamically retrieves data from underlying base tables when queried, providing a way to simplify complex queries, enforce security, or present data in a customized format.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">13. True or False: An Alias in DB2 is primarily used to define alternative access paths for performance.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>An Alias in DB2 is primarily used to provide an alternative name for a table or view, often for simplifying access, ensuring location transparency, or supporting distributed environments. It does not define alternative access paths for performance, which is typically handled by indexes or query optimization.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">14. Which type of temporary table is specific to a single application process and implicitly dropped?</div>
+            <div class="answer"><strong>Answer:</strong> Declared Temporary Table</div>
+            <div class="explanation">
+                <p>A Declared Temporary Table (DTT) in DB2 is specific to a single application process and is implicitly dropped when the session ends. Unlike Global Temporary Tables, DTTs are not shared across sessions and are useful for temporary data storage during complex application processing.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">15. Procedural logic automatically executed by DB2 in response to INSERT, UPDATE, or DELETE operations is implemented using ________.</div>
+            <div class="answer"><strong>Answer:</strong> Triggers</div>
+            <div class="explanation">
+                <p>Triggers in DB2 are procedural logic defined to execute automatically in response to INSERT, UPDATE, or DELETE operations on a table. They are used to enforce business rules, maintain data integrity, or automate tasks like logging changes, and can be defined as BEFORE, AFTER, or INSTEAD OF triggers.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe1df;</span> Indexes and Views
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">16. Which clause in `CREATE INDEX` allows including additional columns in the index leaf pages to satisfy queries without accessing the table?</div>
+            <div class="answer"><strong>Answer:</strong> INCLUDE</div>
+            <div class="explanation">
+                <p>The INCLUDE clause in the `CREATE INDEX` statement allows additional non-key columns to be stored in the index leaf pages. This enables DB2 to satisfy certain queries directly from the index without accessing the underlying table, improving query performance through index-only access.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">17. True or False: A table can have multiple clustering indexes defined.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>A table in DB2 can have only one clustering index, as it determines the physical storage order of the table's rows. Multiple clustering indexes would conflict with the need for a single physical ordering, though a table can have multiple non-clustering indexes for other purposes.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">18. A view created with the `WITH CHECK OPTION` clause restricts ________ operations on the view.</div>
+            <div class="answer"><strong>Answer:</strong> INSERT</div>
+            <div class="explanation">
+                <p>The `WITH CHECK OPTION` clause in a view definition restricts INSERT and UPDATE operations on the view to ensure that modified or inserted rows satisfy the view's WHERE condition. This enforces data integrity by preventing rows that would not be visible through the view from being added or modified.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">19. Which DB2 object physically stores pre-computed results of a query, often used to optimize complex views?</div>
+            <div class="answer"><strong>Answer:</strong> Materialized Query Table (MQT)</div>
+            <div class="explanation">
+                <p>A Materialized Query Table (MQT) in DB2 physically stores the pre-computed results of a query, often used to optimize complex views or analytical queries. Unlike regular views, MQTs store data on disk, and their contents can be refreshed manually or automatically to reflect changes in the underlying tables.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe0a1;</span> Referential Integrity
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">20. In Declarative Referential Integrity (DRI), which `ON DELETE` rule automatically deletes child rows when the corresponding parent row is deleted?</div>
+            <div class="answer"><strong>Answer:</strong> CASCADE</div>
+            <div class="explanation">
+                <p>The `ON DELETE CASCADE` rule in Declarative Referential Integrity (DRI) automatically deletes child rows in a dependent table when the corresponding parent row is deleted. This ensures referential integrity by preventing orphaned records and is commonly used when child records are meaningless without their parent.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">21. True or False: DB2 directly supports `ON UPDATE CASCADE` using declarative foreign key constraints.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>DB2 does not directly support `ON UPDATE CASCADE` using declarative foreign key constraints. To implement cascading updates (where changes to a parent table's primary key propagate to child table foreign keys), triggers or application logic must be used, as declarative constraints only support `ON DELETE` actions like CASCADE, SET NULL, or RESTRICT.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">22. The DB2 utility often used to check for and report referential integrity violations is ________.</div>
+            <div class="answer"><strong>Answer:</strong> CHECK DATA</div>
+            <div class="explanation">
+                <p>The CHECK DATA utility in DB2 is used to verify referential integrity and check constraints, reporting any violations. It scans tables to ensure that foreign key values match primary key values in referenced tables and can place tablespaces in a CHECK-pending status if violations are found.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">23. Setting a foreign key constraint to `NOT ENFORCED` temporarily disables RI checking but may impact ________.</div>
+            <div class="answer"><strong>Answer:</strong> Query Optimization</div>
+            <div class="explanation">
+                <p>Setting a foreign key constraint to `NOT ENFORCED` disables referential integrity checking, which can be useful during data loads or migrations. However, this may impact query optimization, as the DB2 optimizer relies on enforced constraints to make assumptions about data relationships and choose efficient access paths.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe193;</span> Advanced Implementation & Constraints
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">24. Which partitioning strategy automatically adds new partitions as data grows, simplifying capacity management?</div>
+            <div class="answer"><strong>Answer:</strong> Partition-By-Growth</div>
+            <div class="explanation">
+                <p>Partition-By-Growth is a DB2 partitioning strategy that automatically adds new partitions as data grows, simplifying capacity management. Unlike range or list partitioning, it does not require predefined partition boundaries, making it ideal for tables with unpredictable growth patterns.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">25. A constraint that ensures values in a column or set of columns are unique but allows NULLs is a ________ constraint.</div>
+            <div class="answer"><strong>Answer:</strong> Unique</div>
+            <div class="explanation">
+                <p>A Unique constraint in DB2 ensures that values in a column or set of columns are unique across all rows in a table, but unlike primary keys, it allows NULL values. This is useful for enforcing uniqueness for optional attributes, such as employee IDs that may not always be assigned.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">26. True or False: Check constraints can only validate conditions based on a single column's value.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Check constraints in DB2 can validate complex conditions involving multiple columns within the same row, not just single-column values. For example, a check constraint could ensure that an employee's salary is greater than their department's minimum salary, referencing multiple columns in the condition.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">27. DB2's feature for fine-grained security that filters rows based on user identity or context is called ________.</div>
+            <div class="answer"><strong>Answer:</strong> Row Permissions</div>
+            <div class="explanation">
+                <p>Row Permissions, part of DB2's Row and Column Access Control (RCAC), provide fine-grained security by filtering rows based on user identity or session context. This allows DB2 to restrict access to specific rows without requiring application-level logic, enhancing security for sensitive data.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">28. A column defined to automatically generate sequential numeric values upon insertion is an ________ column.</div>
+            <div class="answer"><strong>Answer:</strong> Identity</div>
+            <div class="explanation">
+                <p>An Identity column in DB2 is defined to automatically generate sequential numeric values upon row insertion, typically used for surrogate keys. It simplifies key management by eliminating the need for application logic to generate unique identifiers, with options to control starting values and increments.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe035;</span> Schema Evolution & Performance
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">29. Which DB2 utility option allows reorganization of a tablespace with minimal application outage?</div>
+            <div class="answer"><strong>Answer:</strong> REORG SHRLEVEL CHANGE</div>
+            <div class="explanation">
+                <p>The REORG SHRLEVEL CHANGE option allows reorganization of a tablespace with minimal application outage by permitting read and write access during most of the reorganization process. This ensures high availability, as applications can continue to access the tablespace while it is being reorganized to optimize performance.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">30. True or False: Using views can help provide logical data independence during schema evolution.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>Views in DB2 provide logical data independence by presenting a consistent interface to applications, even if the underlying table structures change during schema evolution. By modifying the view definition, DBAs can shield applications from changes in table design, reducing the need for application code changes.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">31. Setting the `LOCKSIZE` option to ________ generally provides the highest level of concurrency but potentially higher overhead.</div>
+            <div class="answer"><strong>Answer:</strong> ROW</div>
+            <div class="explanation">
+                <p>Setting the `LOCKSIZE` option to ROW provides the highest level of concurrency in DB2, as it locks only individual rows during transactions, minimizing contention. However, this can introduce higher overhead due to the increased number of locks managed, compared to page or table-level locking.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">32. Which DB2 command is used to analyze the access path chosen by the optimizer for an SQL statement?</div>
+            <div class="answer"><strong>Answer:</strong> EXPLAIN</div>
+            <div class="explanation">
+                <p>The EXPLAIN command in DB2 is used to analyze the access path chosen by the optimizer for an SQL statement. It generates detailed information about the query execution plan, including table accesses, index usage, and join methods, helping DBAs optimize performance by identifying inefficient queries.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe193;</span> Temporal Data & Best Practices
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">33. Which type of temporal table automatically tracks the period when a row was physically present in the database?</div>
+            <div class="answer"><strong>Answer:</strong> System Time Table</div>
+            <div class="explanation">
+                <p>A System Time Table in DB2 automatically tracks the period when a row was physically present in the database using system-generated timestamps. It is used for auditing and historical data tracking, with changes automatically recorded in an associated history table when rows are updated or deleted.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">34. True or False: Business time periods represent the application-defined effective date range for a row.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>Business time periods in DB2 represent the application-defined effective date range for a row, typically used to track when data is valid from a business perspective. This is distinct from system time, which tracks physical row existence, and is implemented using BUSINESS_TIME columns in temporal tables.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">35. Using the `COMMENT ON` statement helps populate the DB2 ________.</div>
+            <div class="answer"><strong>Answer:</strong> Catalog</div>
+            <div class="explanation">
+                <p>The `COMMENT ON` statement in DB2 is used to add descriptive remarks to database objects, storing this metadata in the DB2 Catalog (specifically in columns like REMARKS). This enhances documentation and helps DBAs and developers understand the purpose and structure of database objects.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">36. Which Quality Assurance technique involves validating data integrity rules and relationships using DB2 utilities?</div>
+            <div class="answer"><strong>Answer:</strong> Database Verification</div>
+            <div class="explanation">
+                <p>Database Verification is a Quality Assurance technique that uses DB2 utilities like CHECK DATA to validate data integrity rules and relationships. It ensures that constraints, such as referential integrity and check constraints, are enforced, identifying and reporting violations to maintain data quality.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">37. Which routine maintenance activity is crucial for providing the DB2 optimizer with up-to-date information about data characteristics?</div>
+            <div class="answer"><strong>Answer:</strong> RUNSTATS</div>
+            <div class="explanation">
+                <p>The RUNSTATS utility in DB2 is a critical maintenance activity that collects statistics about data distribution, cardinality, and other characteristics. These statistics are stored in the DB2 Catalog and used by the optimizer to choose efficient query execution plans, ensuring optimal performance.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript for toggle functionality and search
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle all explanations
+            const toggleAllBtn = document.getElementById('toggle-all-btn');
+            toggleAllBtn.addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                const firstExplanation = explanations[0];
+                const isHidden = firstExplanation.style.display === 'none';
+                
+                explanations.forEach(explanation => {
+                    explanation.style.display = isHidden ? 'block' : 'none';
+                });
+                
+                toggleAllBtn.innerHTML = isHidden ? 
+                    '<span class="lucide">&#xe2c4;</span> Hide All Explanations' : 
+                    '<span class="lucide">&#xe2c4;</span> Show All Explanations';
+            });
+
+            // Search functionality
+            const searchBox = document.getElementById('search-box');
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const questions = document.querySelectorAll('.question');
+                
+                questions.forEach(question => {
+                    const questionText = question.textContent.toLowerCase();
+                    const solutionContainer = question.closest('.solution-container');
+                    
+                    if (questionText.includes(searchTerm)) {
+                        solutionContainer.style.display = 'block';
+                    } else {
+                        solutionContainer.style.display = 'none';
+                    }
+                });
+            });
+
+            // Back to quiz button
+            const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+        });
+    </script>
+
+</body>
+</html>

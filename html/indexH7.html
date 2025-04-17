@@ -6,6 +6,35 @@
     <title>DB2 Automation & Scripting - Mainframe Edition</title>
 
     <style>
+        button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button:disabled {
+          background-color: #05050a; /* Darker background when disabled */
+          color: #447744; /* Dimmed green text */
+          border-color: #225522; /* Dimmed border */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
         /* General styles - Mainframe inspired but optimized for learning */
         body {
             background-color: #0a0a14;
@@ -255,6 +284,9 @@
 
         <header>
             <h1>DB2 Automation and Scripting</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe3a7;</span> Back To Mainpage
+            </button>
             </header>
 
         <nav>
@@ -720,5 +752,13 @@ REORG TABLESPACE LIST(MY_TBS) WORKDDN(WORKDS) LOG NO
             </p>
         </footer>
 
-    </div> </body>
+    </div> 
+    <script>
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+    </script>
+
+</body>
 </html>

@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DB2 Fundamentals</title>
     <style>
+        button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button:disabled {
+          background-color: #05050a; /* Darker background when disabled */
+          color: #447744; /* Dimmed green text */
+          border-color: #225522; /* Dimmed border */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
         /* General styles - Mainframe inspired but optimized for learning */
         body {
             background-color: #0a0a14;
@@ -194,6 +223,9 @@
     <div class="container">
         <header>
             <h1>DB2 Fundamentals</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe3a7;</span> Back To Mainpage
+            </button>
         </header>
 
         <nav>
@@ -850,7 +882,7 @@
 
         <footer>
             <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
-            <<p>Sources:
+            <p>Sources:
                 <a href="https://www.ibm.com/docs/en/zos-basic-skills?topic=zos-db2-concepts" target="_blank" rel="noopener noreferrer">ibm.com</a>,
                 <a href="https://www.ibm.com/docs/en/db2-for-zos/12?topic=zos-db2-basics-tutorial-working-db2-interactively" target="_blank" rel="noopener noreferrer">ibm.com</a>,
                 <a href="https://www.precisely.com/glossary/db2" target="_blank" rel="noopener noreferrer">precisely.com</a>,
@@ -874,5 +906,11 @@
 
         </footer>
     </div>
+    <script>
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+    </script>
 </body>
 </html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Fundamentals Solved Exercises - Mainframe Edition</title>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        /* Using jsdelivr CDN */
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem; /* Adjusted size */
+        line-height: 1;
+        display: inline-block; /* Ensure proper alignment */
+        vertical-align: middle;
+        margin-right: 5px; /* Space between icon and text */
+      }
+
+      /* --- Mainframe Styles (Adapted from User CSS) --- */
+      body {
+          background-color: #0a0a14; /* Dark blue background */
+          color: #b3ffb3; /* Light green text */
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px; /* Add padding around the body */
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3); /* Subtle text glow */
+      }
+
+      /* Main container for the solutions */
+      .solutions-wrapper {
+          max-width: 900px; /* Adjusted width */
+          margin: 20px auto; /* Center the container */
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8); /* Slightly transparent dark background */
+          border: 1px solid #33ff33; /* Bright green border */
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4); /* Green glow effect */
+      }
+
+      /* Header styling */
+      header {
+          background-color: #001a00; /* Dark green background */
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+
+      header h1 {
+          color: #33ff33; /* Bright green title */
+          font-size: 1.8rem; /* Adjusted size */
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex; /* Use flexbox for icon alignment */
+          align-items: center;
+          justify-content: center; /* Center title and icon */
+      }
+      header h1 .lucide {
+          font-size: 1.6rem; /* Larger icon in title */
+          margin-right: 10px;
+      }
+
+      header p {
+          color: #99ff99; /* Lighter green for subtitle */
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+
+      /* Navigation controls */
+      .nav-controls {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+          margin-bottom: 20px;
+      }
+
+      /* Solution container styling */
+      .solution-container {
+          margin-bottom: 30px;
+          border-bottom: 1px dashed #228822;
+          padding-bottom: 20px;
+      }
+
+      .solution-container:last-child {
+          border-bottom: none;
+      }
+
+      .question {
+          font-size: 1.2rem;
+          color: #ccffcc;
+          margin-bottom: 10px;
+          padding: 15px;
+          background-color: rgba(0, 26, 0, 0.4);
+          border: 1px dashed #33ff33;
+      }
+
+      .answer {
+          display: block;
+          margin: 15px 0;
+          padding: 10px;
+          background-color: rgba(51, 255, 51, 0.1);
+          border-left: 4px solid #33ff33;
+      }
+
+      .explanation {
+          margin-top: 10px;
+          padding: 15px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822;
+      }
+
+      /* Button styling */
+      button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
+
+      /* Category heading */
+      .category {
+          color: #00ff99; /* Cyan-green color */
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 5px;
+          margin-top: 30px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      .category .lucide {
+          margin-right: 8px;
+      }
+
+      /* Search box */
+      #search-box {
+          width: 100%;
+          padding: 10px;
+          background-color: #000000;
+          border: 1px solid #33ff33;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 20px;
+      }
+      #search-box:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .solutions-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          .nav-controls { flex-wrap: wrap; justify-content: center; }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="solutions-wrapper">
+
+        <header>
+            <h1>
+                <span class="lucide">&#xe12f;</span> DB2 Fundamentals Solutions
+            </h1>
+            <p>Complete Answer Guide :: Mainframe Edition</p>
+        </header>
+
+        <div class="nav-controls">
+            <button id="toggle-all-btn">
+                <span class="lucide">&#xe2c4;</span> Toggle All Explanations
+            </button>
+            <input type="text" id="search-box" placeholder="Search questions...">
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe03f;</span> Back To Mainpage
+            </button>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe021;</span> Relational Database Concepts
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">1. Who first proposed the relational database theory that forms the foundation of DB2?</div>
+            <div class="answer"><strong>Answer:</strong> E.F. Codd</div>
+            <div class="explanation">
+                <p>Dr. Edgar F. Codd, an IBM researcher, first proposed the relational model for database management in his seminal 1970 paper "A Relational Model of Data for Large Shared Data Banks." His revolutionary ideas formed the theoretical foundation for relational database systems, including IBM's DB2. Codd introduced key concepts like normalization, the relational algebra, and data independence that are still essential to modern database systems.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">2. In the relational model, data is organized into ________ consisting of tuples and attributes.</div>
+            <div class="answer"><strong>Answer:</strong> relations</div>
+            <div class="explanation">
+                <p>In the relational model, data is organized into relations (also called tables in implementation). Each relation consists of tuples (rows) and attributes (columns). This mathematical foundation provides the structure for how data is stored and accessed in DB2 and other relational database systems. The term "relation" comes from set theory in mathematics and was central to Codd's theoretical model.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">3. Which type of integrity ensures that primary keys uniquely identify rows in a table?</div>
+            <div class="answer"><strong>Answer:</strong> Entity Integrity</div>
+            <div class="explanation">
+                <p>Entity Integrity is the rule that ensures each row in a table is uniquely identifiable - meaning primary keys must be unique and cannot contain null values. This is one of the fundamental integrity constraints in relational database theory. The other main types are Referential Integrity (which governs relationships between tables) and Domain Integrity (which ensures values fall within their defined domains).</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">4. A ________ is one or more columns in a table that reference the primary key of another table.</div>
+            <div class="answer"><strong>Answer:</strong> foreign key</div>
+            <div class="explanation">
+                <p>A foreign key is a column or set of columns in one table that refers to the primary key in another table. Foreign keys are used to establish and enforce relationships between tables, implementing referential integrity. In DB2, foreign key constraints are defined using the FOREIGN KEY clause in CREATE TABLE or ALTER TABLE statements.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">5. True or False: A View in DB2 is a physical table containing a subset of data.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>A View in DB2 is a virtual table, not a physical one. It is defined by a SQL SELECT statement that is stored in the database catalog. When a view is accessed, DB2 executes the stored query to generate results dynamically. Views don't contain data themselves; they provide a way to present data from one or more tables in a different format without physically duplicating the data.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">6. What does the 'A' in ACID properties for transaction management stand for?</div>
+            <div class="answer"><strong>Answer:</strong> Atomicity</div>
+            <div class="explanation">
+                <p>Atomicity ensures that database transactions are treated as a single, indivisible unit of work that either completes entirely or not at all. If any part of a transaction fails, the entire transaction is rolled back, leaving the database in its previous consistent state. The other ACID properties are Consistency (transactions maintain database validity), Isolation (concurrent transactions don't interfere), and Durability (completed transactions persist even during system failures).</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe1d1;</span> Normalization
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">7. Which Normal Form (NF) deals with eliminating repeating groups and ensuring atomic values?</div>
+            <div class="answer"><strong>Answer:</strong> 1NF</div>
+            <div class="explanation">
+                <p>First Normal Form (1NF) is the most basic level of normalization that requires eliminating repeating groups and ensuring all values are atomic (indivisible). In practical terms, this means each column should contain only one value (not lists or sets of values), and each row should be unique. 1NF serves as the foundation for higher normal forms like 2NF and 3NF.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">8. ________ Normal Form (3NF) aims to eliminate transitive dependencies.</div>
+            <div class="answer"><strong>Answer:</strong> Third</div>
+            <div class="explanation">
+                <p>Third Normal Form (3NF) builds upon 2NF by eliminating transitive dependencies - situations where a non-key attribute depends on another non-key attribute rather than directly on the primary key. A table is in 3NF when it's in 2NF and all attributes depend only on the key, the whole key, and nothing but the key. This reduces data redundancy and potential update anomalies in the database.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">9. True or False: Most DB2 database designs aim for 5NF as a standard practice.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Most DB2 database designs typically aim for Third Normal Form (3NF) as a standard practice, striking a balance between reducing redundancy and maintaining practical performance. While higher normal forms like 4NF and 5NF exist, they are generally only applied in specific situations where the additional complexity is warranted. In many production environments, database designers may even denormalize certain aspects of a 3NF design to improve query performance.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe025;</span> DB2 Components & Structures
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">10. Which DB2 component handles locking to maintain data consistency during concurrent access?</div>
+            <div class="answer"><strong>Answer:</strong> IRLM</div>
+            <div class="explanation">
+                <p>The IRLM (IMS/VS Resource Lock Manager) is the DB2 component responsible for managing locks and resolving lock conflicts. It operates as a separate address space that coordinates locking among all DB2 subsystems in a data sharing environment. IRLM ensures data consistency when multiple users attempt to access the same data simultaneously by granting, denying, or queuing lock requests according to DB2's concurrency control protocols.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">11. The ________ Address Space (DBM1) manages buffer pools and data access.</div>
+            <div class="answer"><strong>Answer:</strong> Database Services</div>
+            <div class="explanation">
+                <p>The Database Services Address Space (DBM1) is a critical component of DB2 that manages buffer pools, the EDM pool, and handles most data access operations. It's where most of the "work" in DB2 is performed, including SQL statement execution, I/O operations, and data manipulation. DBM1 is one of the primary address spaces created when DB2 starts and consumes significant system resources due to its central role in database operations.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">12. What is the primary purpose of Buffer Pools in DB2?</div>
+            <div class="answer"><strong>Answer:</strong> Cache data pages from disk</div>
+            <div class="explanation">
+                <p>Buffer Pools in DB2 are areas of virtual storage that temporarily store data pages from tablespaces and indexes after they've been read from disk. This caching mechanism significantly improves performance by reducing physical I/O operations - once data is in a buffer pool, subsequent accesses can retrieve it from memory rather than requiring additional disk reads. DB2 systems typically configure multiple buffer pools of varying sizes and characteristics to optimize performance for different workloads.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">13. True or False: DB2 supports only one buffer pool (BP0) with a fixed 4K page size.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>DB2 supports multiple buffer pools with varying page sizes. While BP0 (4K) is the default buffer pool, DB2 allows for creating additional buffer pools with page sizes of 4K, 8K, 16K, and 32K. This flexibility enables database administrators to optimize buffer pool allocations based on specific application needs - larger page sizes might benefit tables with large rows or LOB data, while smaller page sizes might be more efficient for tables with high random access patterns.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">14. A named collection of DASD volumes where DB2 can allocate space is called a ________.</div>
+            <div class="answer"><strong>Answer:</strong> Storage Group</div>
+            <div class="explanation">
+                <p>A Storage Group (often abbreviated as STOGROUP) is a logical grouping of direct access storage device (DASD) volumes that DB2 can use to allocate storage space for tablespaces and indexes. Storage Groups abstract the physical storage details from the database objects, allowing DBAs to manage space allocation without needing to specify exact volume information when creating database objects. This simplifies storage administration and provides flexibility in physical storage management.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">15. Which system database contains the metadata about all database objects (the data dictionary)?</div>
+            <div class="answer"><strong>Answer:</strong> DSNDB06 (Catalog)</div>
+            <div class="explanation">
+                <p>DSNDB06, known as the DB2 Catalog, contains metadata about all database objects such as tables, views, indexes, stored procedures, and user authorizations. It functions as the data dictionary for DB2, storing information that the system needs to process SQL statements and manage database objects. The catalog consists of multiple tables that can be queried using standard SQL, making it a valuable resource for DBAs and developers needing information about database structure and properties.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">16. True or False: The DB2 Directory (DSNDB01) is directly accessible and modifiable using standard SQL.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The DB2 Directory (DSNDB01) is not directly accessible or modifiable using standard SQL. Unlike the DB2 Catalog (DSNDB06), which can be queried with standard SQL statements, the Directory contains internal control information that is only accessed by DB2 itself. The Directory holds critical control information such as log ranges for database recovery and bootstrap dataset (BSDS) records. Users and even DBAs cannot directly query or modify Directory tables.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe1df;</span> Logging and Recovery
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">17. Which DB2 component records all data changes to ensure recoverability?</div>
+            <div class="answer"><strong>Answer:</strong> Logging System</div>
+            <div class="explanation">
+                <p>The Logging System in DB2 records all data changes (inserts, updates, deletes) to ensure recoverability in case of system or application failures. It writes log records sequentially to active log datasets, which are subsequently archived for long-term storage. These log records contain before and after images of changed data, allowing DB2 to roll forward (reapply changes) or roll back (undo changes) during recovery operations. The logging system is critical to implementing the Atomicity and Durability aspects of ACID properties.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">18. The ________ contains critical recovery information and tracks active and archive logs.</div>
+            <div class="answer"><strong>Answer:</strong> Bootstrap Dataset</div>
+            <div class="explanation">
+                <p>The Bootstrap Dataset (BSDS) contains critical recovery information and tracks the location of active and archive logs. It serves as the "roadmap" for DB2 recovery processes, maintaining information about which logs contain which recovery ranges and where they are located. The BSDS is typically duplexed (maintained in two copies) to ensure its availability during recovery scenarios. Without a valid BSDS, locating and applying log records during recovery would be extremely difficult.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">19. True or False: Write-ahead logging ensures data changes are written to disk *before* the corresponding log records.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Write-ahead logging (WAL) protocol ensures that log records describing data changes are written to disk before the actual data changes. This sequence is critical for recovery - if a system failure occurs after log records are written but before data pages are written to disk, DB2 can use the log records to either complete or undo the transaction. This protocol supports the Durability property of ACID by ensuring that committed transactions can be recovered even if data pages hadn't been physically written to disk.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe0a1;</span> Data Sharing
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">20. What z/OS facility provides high-speed communication and shared storage for DB2 Data Sharing?</div>
+            <div class="answer"><strong>Answer:</strong> Coupling Facility</div>
+            <div class="explanation">
+                <p>The Coupling Facility (CF) is a specialized z/OS component that provides high-speed communication and shared storage for DB2 Data Sharing environments. It contains shared memory structures called "structures" that DB2 uses to maintain cache coherency, manage locks, and coordinate work across multiple DB2 subsystems. The three main types of structures used by DB2 are the Shared Communications Area (SCA), Lock Structure, and Group Buffer Pools, which collectively enable multiple DB2 subsystems to access and update the same data concurrently.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">21. In Data Sharing, individual DB2 subsystems within a group are called ________.</div>
+            <div class="answer"><strong>Answer:</strong> members</div>
+            <div class="explanation">
+                <p>In a DB2 Data Sharing environment, individual DB2 subsystems that participate in the group are called members. Each member is a complete DB2 subsystem running on its own z/OS image (LPAR) that can access and modify the same shared data. Members communicate with each other through the Coupling Facility and coordinate their activities to maintain data integrity. This architecture provides scalability by allowing workload distribution across multiple members and availability because applications can connect to any available member.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">22. True or False: A primary benefit of DB2 Data Sharing is reduced hardware cost.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The primary benefits of DB2 Data Sharing are increased availability, scalability, and workload flexibility - not reduced hardware costs. In fact, implementing Data Sharing typically increases hardware costs due to the requirement for Coupling Facility hardware and additional z/OS images. The investment is justified by business requirements for continuous availability (24x7 operations), capacity growth without application changes, and workload balancing across multiple systems. The ability to perform rolling maintenance (upgrading one member while others remain available) is another key benefit.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe035;</span> DB2 and z/OS Integration
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">23. In which member of SYS1.PARMLIB is a DB2 subsystem typically defined?</div>
+            <div class="answer"><strong>Answer:</strong> IEFSSNxx</div>
+            <div class="explanation">
+                <p>DB2 subsystems are typically defined in the IEFSSNxx member of SYS1.PARMLIB. This member contains definitions for all subsystems that should be started during z/OS IPL (Initial Program Load). For DB2, the entry specifies the subsystem name, load modules to be used during initialization, and other parameters. When z/OS starts, it processes these definitions to make the subsystems known to the operating system, allowing them to be started either automatically or manually via operator commands.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">24. Which z/OS component is primarily used by DB2 for security services like authentication and authorization?</div>
+            <div class="answer"><strong>Answer:</strong> RACF</div>
+            <div class="explanation">
+                <p>Resource Access Control Facility (RACF) is the z/OS security component primarily used by DB2 for external security services. DB2 integrates with RACF (or equivalent products like CA ACF2 or CA Top Secret) to handle authentication of users, authorization to DB2 resources, and audit logging of security-relevant events. This integration provides a centralized security mechanism across the z/OS environment, ensuring consistent security policies for database access and allowing security administrators to manage access controls through standard z/OS security tools.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">25. Which DB2 address space manages overall control, startup/shutdown, and log management?</div>
+            <div class="answer"><strong>Answer:</strong> MSTR</div>
+            <div class="explanation">
+                <p>The System Services Address Space (MSTR) manages overall control of the DB2 subsystem, handling startup and shutdown processes, log management, and recovery coordination. It's the first DB2 address space started during initialization and the last one terminated during shutdown. MSTR is responsible for starting other DB2 address spaces, managing connections to z/OS components, coordinating recovery operations, and processing many DB2 commands. It maintains control structures that are critical for DB2 operations.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">26. True or False: Stored procedures in DB2 always execute within the DBM1 address space.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Stored procedures in DB2 typically execute in WLM-managed Stored Procedure Address Spaces (SPAS), not in the DBM1 address space. This architecture isolates stored procedure execution from the main DB2 engine, providing better resource management, fault isolation, and scalability. Each stored procedure is associated with a WLM application environment that defines its execution characteristics. WLM can start multiple SPAS instances based on workload demands, allowing for parallel execution and better overall system performance.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">27. DB2 utilizes the z/OS ________ to manage workload prioritization and resource allocation.</div>
+            <div class="answer"><strong>Answer:</strong> Workload Manager</div>
+            <div class="explanation">
+                <p>DB2 utilizes the z/OS Workload Manager (WLM) to manage workload prioritization and resource allocation. WLM classifies work based on service classes and goals defined by the system administrator, then dynamically adjusts resource allocations to meet those goals. For DB2, WLM influences dispatch priority, storage allocation, and CPU access. It also manages stored procedure address spaces and distributed threads. This integration allows DB2 workloads to be properly balanced with other z/OS workloads according to business priorities.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">28. Which SMF record type primarily contains *accounting* data about DB2 thread activity?</div>
+            <div class="answer"><strong>Answer:</strong> Type 101 (Accounting)</div>
+            <div class="explanation">
+                <p>SMF Type 101 records contain accounting data about DB2 thread activity. These records are produced when threads terminate or sign off, capturing resource usage statistics for individual threads or groups of threads. Type 101 records include information such as CPU time used, I/O counts, wait times, SQL statement counts, and elapsed times. These records are essential for performance monitoring, capacity planning, and chargeback activities. They provide the data needed to analyze application performance and resource consumption at a detailed level.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">29. The ________ Attachment Facility connects CICS applications to DB2.</div>
+            <div class="answer"><strong>Answer:</strong> CICS</div>
+            <div class="explanation">
+                <p>The CICS Attachment Facility connects CICS applications to DB2. It manages the communication between CICS transactions and DB2, establishing connections, managing thread allocation, and handling synchronization between the two subsystems. The attachment facility includes components in both CICS and DB2 address spaces and uses the Resource Manager Interface (RMI) for coordination. It allows CICS applications to execute SQL statements against DB2 databases while maintaining transactional integrity across both systems.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe193;</span> Distributed Data Facility (DDF)
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">30. Which DB2 address space manages network connections for distributed access?</div>
+            <div class="answer"><strong>Answer:</strong> DIST</div>
+            <div class="explanation">
+                <p>The Distributed Data Facility (DDF) address space (DIST) manages network connections for distributed access to DB2. It handles communication protocols, security handshakes, and data transmission between remote clients or servers and the local DB2 subsystem. DDF supports both inbound connections from remote applications accessing local DB2 data and outbound connections where local applications access remote data. This component is essential for implementing distributed database applications and enabling cross-platform data access.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">31. What is the standard data stream protocol used by DDF for communication?</div>
+            <div class="answer"><strong>Answer:</strong> DRDA</div>
+            <div class="explanation">
+                <p>Distributed Relational Database Architecture (DRDA) is the standard data stream protocol used by DDF for communication. DRDA provides a common language for applications to access data in distributed relational database systems regardless of the underlying platform. It defines formats and protocols for communication between clients and servers, supporting operations like SQL statement execution, multi-row fetches, and parameter passing. DRDA enables interoperability between different database systems while providing optimizations for efficient data transfer.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">32. True or False: DDF only supports the SNA communication protocol.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>DDF supports both TCP/IP and SNA communication protocols, with TCP/IP being the predominant protocol in modern environments. While historically SNA was the primary protocol for mainframe communications, most DB2 distributed connections now use TCP/IP due to its widespread adoption, network management advantages, and better integration with modern systems. Both protocols can be active simultaneously, allowing DB2 to support legacy SNA applications while accommodating newer TCP/IP-based clients.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">33. The default TCP/IP port for standard DB2 SQL connections is ________.</div>
+            <div class="answer"><strong>Answer:</strong> 446</div>
+            <div class="explanation">
+
+
+
+                <script>
+                    // JavaScript for toggle functionality and search
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Toggle all explanations
+                        const toggleAllBtn = document.getElementById('toggle-all-btn');
+                        toggleAllBtn.addEventListener('click', function() {
+                            const explanations = document.querySelectorAll('.explanation');
+                            const firstExplanation = explanations[0];
+                            const isHidden = firstExplanation.style.display === 'none';
+                            
+                            explanations.forEach(explanation => {
+                                explanation.style.display = isHidden ? 'block' : 'none';
+                            });
+                            
+                            toggleAllBtn.innerHTML = isHidden ? 
+                                '<span class="lucide">&#xe2c4;</span> Hide All Explanations' : 
+                                '<span class="lucide">&#xe2c4;</span> Show All Explanations';
+                        });
+            
+                        // Search functionality
+                        const searchBox = document.getElementById('search-box');
+                        searchBox.addEventListener('input', function() {
+                            const searchTerm = this.value.toLowerCase();
+                            const questions = document.querySelectorAll('.question');
+                            
+                            questions.forEach(question => {
+                                const questionText = question.textContent.toLowerCase();
+                                const solutionContainer = question.closest('.solution-container');
+                                
+                                if (questionText.includes(searchTerm)) {
+                                    solutionContainer.style.display = 'block';
+                                } else {
+                                    solutionContainer.style.display = 'none';
+                                }
+                            });
+                        });
+            
+                        // Back to quiz button
+            const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+        });
+                </script>

@@ -256,6 +256,9 @@
                 <span class="lucide">&#xea96;</span> DB2 SQL & App Programming Exercises
             </h1>
             <p>Test your knowledge :: Mainframe Edition</p>
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe3a7;</span> Back To Mainpage
+            </button>
         </header>
 
         <div id="quiz-container">
@@ -660,6 +663,11 @@
         // --- Initial Load ---
         // (This section remains identical to the previous version)
         displayQuestion(currentQuestionIndex);
+
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
 
     </script>
 

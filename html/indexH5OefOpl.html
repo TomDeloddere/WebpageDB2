@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Fundamentals Solved Exercises - Chapter 5</title>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+
+      body {
+          background-color: #0a0a14;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3);
+      }
+
+      .solutions-wrapper {
+          max-width: 900px;
+          margin: 20px auto;
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8);
+          border: 1px solid #33ff33;
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4);
+      }
+
+      header {
+          background-color: #001a00;
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+
+      header h1 {
+          color: #33ff33;
+          font-size: 1.8rem;
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      header h1 .lucide {
+          font-size: 1.6rem;
+          margin-right: 10px;
+      }
+
+      header p {
+          color: #99ff99;
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+
+      .nav-controls {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+          margin-bottom: 20px;
+      }
+
+      .solution-container {
+          margin-bottom: 30px;
+          border-bottom: 1px dashed #228822;
+          padding-bottom: 20px;
+      }
+
+      .solution-container:last-child {
+          border-bottom: none;
+      }
+
+      .question {
+          font-size: 1.2rem;
+          color: #ccffcc;
+          margin-bottom: 10px;
+          padding: 15px;
+          background-color: rgba(0, 26, 0, 0.4);
+          border: 1px dashed #33ff33;
+      }
+
+      .answer {
+          display: block;
+          margin: 15px 0;
+          padding: 10px;
+          background-color: rgba(51, 255, 51, 0.1);
+          border-left: 4px solid #33ff33;
+      }
+
+      .explanation {
+          margin-top: 10px;
+          padding: 15px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822;
+      }
+
+      button {
+          background-color: #001a00;
+          color: #33ff33;
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff;
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button .lucide {
+          margin-right: 8px;
+      }
+
+      .category {
+          color: #00ff99;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 5px;
+          margin-top: 30px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      .category .lucide {
+          margin-right: 8px;
+      }
+
+      #search-box {
+          width: 100%;
+          padding: 10px;
+          background-color: #000000;
+          border: 1px solid #33ff33;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 20px;
+      }
+      #search-box:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+      }
+
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .solutions-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          .nav-controls { flex-wrap: wrap; justify-content: center; }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="solutions-wrapper">
+
+        <header>
+            <h1>
+                <span class="lucide"></span> DB2 Fundamentals Solutions - Chapter 5
+            </h1>
+            <p>Complete Answer Guide :: Mainframe Edition</p>
+        </header>
+
+        <div class="nav-controls">
+            <button id="toggle-all-btn">
+                <span class="lucide"></span> Toggle All Explanations
+            </button>
+            <input type="text" id="search-box" placeholder="Search questions...">
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Introduction & Concepts
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">1. Which objective defines the maximum acceptable amount of data loss measured in time?</div>
+            <div class="answer"><strong>Answer:</strong> RPO (Recovery Point Objective)</div>
+            <div class="explanation">
+                <p>The Recovery Point Objective (RPO) defines the maximum acceptable amount of data loss, measured as the time between the last backup and the point of failure. A lower RPO requires more frequent backups or continuous replication to minimize potential data loss during recovery.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">2. The DB2 dataset that tracks active and archive log information is the ________.</div>
+            <div class="answer"><strong>Answer:</strong> BSDS</div>
+            <div class="explanation">
+                <p>The Bootstrap Data Set (BSDS) in DB2 tracks information about active and archive logs, including their locations and recovery ranges. It serves as a critical roadmap for recovery processes, ensuring DB2 can locate and apply the correct log records during recovery operations.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">3. True or False: DB2's dual logging protects against failures affecting both copies of the active log simultaneously.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>DB2's dual logging protects against failures affecting a single copy of the active log by maintaining two identical copies. However, it does not protect against simultaneous failures of both copies, such as a catastrophic disk failure affecting both storage volumes, which would require additional recovery measures.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">4. Which type of log record contains information needed to reapply committed changes during forward recovery?</div>
+            <div class="answer"><strong>Answer:</strong> Redo Record</div>
+            <div class="explanation">
+                <p>Redo Records in DB2 contain the information needed to reapply committed changes during forward recovery. These records store the "after" images of modified data, allowing DB2 to reconstruct committed transactions from a prior backup or recovery point during recovery operations.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Recovery Scenarios & RECOVER Utility
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">5. Which recovery scenario is automatically handled by DB2 during restart after an abnormal termination?</div>
+            <div class="answer"><strong>Answer:</strong> System Failure</div>
+            <div class="explanation">
+                <p>DB2 automatically handles system failures (e.g., power outages or crashes) during restart by performing crash recovery. This process uses the logs and BSDS to roll back incomplete transactions (undo) and reapply committed changes (redo), restoring the database to a consistent state.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">6. The DB2 utility primarily used for restoring objects from image copies and applying logs is ________.</div>
+            <div class="answer"><strong>Answer:</strong> RECOVER</div>
+            <div class="explanation">
+                <p>The RECOVER utility in DB2 is used to restore database objects, such as tablespaces or indexes, from image copies and apply subsequent log records to bring the objects to a consistent state or a specific point in time, ensuring data integrity during recovery.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">7. Which `RECOVER` option specifies recovery to the point in time represented by the last available image copy registered in SYSCOPY?</div>
+            <div class="answer"><strong>Answer:</strong> TOLASTCOPY</div>
+            <div class="explanation">
+                <p>The `TOLASTCOPY` option in the RECOVER utility restores an object to the point in time represented by the last available image copy registered in the SYSIBM.SYSCOPY catalog table. This is useful for recovering to a known backup point without applying additional logs.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">8. True or False: The `REBUILD INDEX` utility always recovers index data faster than using `RECOVER INDEX` with image copies.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>While the REBUILD INDEX utility is often faster than RECOVER INDEX with image copies, it is not always guaranteed. The performance depends on factors like the size of the table, the availability of image copies, and system resources. REBUILD INDEX reconstructs the index from table data, which can be quicker in some scenarios.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">9. The `RECOVER` option `LOGONLY` is used to apply log records without first restoring from an ________.</div>
+            <div class="answer"><strong>Answer:</strong> image copy</div>
+            <div class="explanation">
+                <p>The `LOGONLY` option in the RECOVER utility applies log records to an object without first restoring from an image copy. This is typically used when the object's data is already current (e.g., after a FlashCopy restore) and only log application is needed to reach the desired recovery point.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Backup Strategies & COPY Utility
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">10. Which DB2 utility is used to create backup copies of tablespaces and indexspaces?</div>
+            <div class="answer"><strong>Answer:</strong> COPY</div>
+            <div class="explanation">
+                <p>The COPY utility in DB2 creates backup copies (image copies) of tablespaces and indexspaces, which are essential for recovery operations. These copies can be full or incremental and are registered in the SYSIBM.SYSCOPY catalog table for use by the RECOVER utility.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">11. An image copy that only records pages changed since the last full or incremental copy is called a(n) ________ image copy.</div>
+            <div class="answer"><strong>Answer:</strong> Incremental</div>
+            <div class="explanation">
+                <p>An Incremental image copy records only the pages that have changed since the last full or incremental copy. This reduces backup time and storage requirements compared to a full image copy, but recovery may require combining multiple incremental copies with a full copy.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">12. Which `COPY` option allows concurrent read/write access to the object being copied, resulting in a potentially 'fuzzy' copy?</div>
+            <div class="answer"><strong>Answer:</strong> SHRLEVEL CHANGE</div>
+            <div class="explanation">
+                <p>The `SHRLEVEL CHANGE` option in the COPY utility allows concurrent read and write access to the object being copied, resulting in a potentially 'fuzzy' copy that may include uncommitted changes. This maximizes availability but requires log application during recovery to ensure consistency.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">13. True or False: FlashCopy requires specialized disk subsystem hardware capabilities.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>FlashCopy, a high-speed backup and restore technology, requires specialized disk subsystem hardware capabilities, such as those provided by IBM DS8000 or compatible storage systems. It enables near-instantaneous copies by leveraging hardware-level snapshot features, reducing backup and recovery times.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">14. Information about image copies, such as timestamps and locations, is registered in the DB2 catalog table ________.</div>
+            <div class="answer"><strong>Answer:</strong> SYSIBM.SYSCOPY</div>
+            <div class="explanation">
+                <p>The SYSIBM.SYSCOPY catalog table stores metadata about image copies, including timestamps, locations, and types (full or incremental). This information is used by DB2 during recovery to locate and apply the appropriate image copies for restoring database objects.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">15. Which utility can consolidate multiple incremental image copies into a new full image copy?</div>
+            <div class="answer"><strong>Answer:</strong> MERGECOPY</div>
+            <div class="explanation">
+                <p>The MERGECOPY utility consolidates multiple incremental image copies with a full image copy to create a new full image copy. This simplifies recovery by reducing the number of copies needed and can improve recovery performance by minimizing log application.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> QUIESCE & System-Level Backup
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">16. The primary purpose of the `QUIESCE` utility is to establish a point of ________ across related objects.</div>
+            <div class="answer"><strong>Answer:</strong> consistency</div>
+            <div class="explanation">
+                <p>The QUIESCE utility establishes a point of consistency across related database objects by flushing pending updates to disk and recording a consistent recovery point (RBA or LRSN). This ensures that subsequent backups or recovery operations start from a known consistent state.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">17. True or False: The `QUIESCE` utility creates a physical backup copy of the specified objects.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The QUIESCE utility does not create a physical backup copy; instead, it records a consistent recovery point (RBA or LRSN) for specified objects. This point can be used by other utilities, like COPY or RECOVER, to ensure consistent backups or recoveries without physical data copying.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">18. Which DB2 utility creates consistent backups of entire DB2 subsystems, often leveraging hardware features like FlashCopy?</div>
+            <div class="answer"><strong>Answer:</strong> BACKUP SYSTEM</div>
+            <div class="explanation">
+                <p>The BACKUP SYSTEM utility creates consistent backups of entire DB2 subsystems, often using hardware features like FlashCopy for speed. It captures the entire subsystem, including data, logs, and BSDS, enabling rapid system-level recovery in disaster scenarios.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">19. A major advantage of `BACKUP SYSTEM` compared to object-level image copies is significantly reduced ________ time.</div>
+            <div class="answer"><strong>Answer:</strong> backup</div>
+            <div class="explanation">
+                <p>A major advantage of the BACKUP SYSTEM utility is significantly reduced backup time compared to object-level image copies. By leveraging hardware features like FlashCopy, it creates a near-instantaneous snapshot of the entire subsystem, minimizing application outages during backups.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">20. True or False: `BACKUP SYSTEM` provides more granular recovery options than object-level image copies.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>BACKUP SYSTEM provides less granular recovery options than object-level image copies. While it is efficient for system-level recovery, it restores the entire subsystem, whereas object-level copies allow recovery of specific tablespaces or indexes, offering more flexibility for targeted recoveries.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Recovery Planning & Procedures
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">21. Which DB2 utility can be used to validate the availability and usability of image copies and logs needed for recovery?</div>
+            <div class="answer"><strong>Answer:</strong> REPORT RECOVERY</div>
+            <div class="explanation">
+                <p>The REPORT RECOVERY utility validates the availability and usability of image copies and logs required for recovery. It checks the SYSIBM.SYSCOPY table and BSDS to ensure that all necessary recovery assets are accessible, helping DBAs prepare for recovery scenarios.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">22. Regularly performing recovery drills on test systems is crucial for validating ________ and procedures.</div>
+            <div class="answer"><strong>Answer:</strong> RTO</div>
+            <div class="explanation">
+                <p>Regular recovery drills on test systems validate the Recovery Time Objective (RTO) and associated procedures. These drills ensure that recovery processes meet downtime targets, identify gaps in documentation, and confirm that recovery assets are reliable, enhancing preparedness for real incidents.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">23. True or False: Recovery documentation should primarily focus only on the technical steps, excluding contact information or escalation procedures.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Comprehensive recovery documentation should include technical steps, contact information, and escalation procedures. This ensures that recovery teams can quickly coordinate, communicate, and resolve issues during a recovery event, minimizing downtime and errors.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">24. Recovering a tablespace partition requires using the `RECOVER TABLESPACE` command with the ________ option.</div>
+            <div class="answer"><strong>Answer:</strong> DSNUM</div>
+            <div class="explanation">
+                <p>The `DSNUM` option in the RECOVER TABLESPACE command specifies the partition number to be recovered. This allows DB2 to target a specific partition of a partitioned tablespace, enabling granular recovery without affecting other partitions.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">25. Point-in-time recovery to a specific log record sequence number is achieved using the `RECOVER ... ________` option.</div>
+            <div class="answer"><strong>Answer:</strong> TOLOGPOINT</div>
+            <div class="explanation">
+                <p>The `TOLOGPOINT` option in the RECOVER utility enables point-in-time recovery to a specific log record sequence number (LRSN or RBA). This allows DB2 to restore an object to a precise moment, useful for recovering from application errors or data corruption.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">26. Which utility is generally preferred for recovering indexes when the corresponding tablespace is also being recovered?</div>
+            <div class="answer"><strong>Answer:</strong> REBUILD INDEX</div>
+            <div class="explanation">
+                <p>The REBUILD INDEX utility is generally preferred for recovering indexes when the corresponding tablespace is also being recovered. Rebuilding the index from the table data is often faster and simpler than using RECOVER INDEX, especially if the tablespace recovery already restores the underlying data.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Advanced & System Recovery
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">27. Which type of DB2 restart might be necessary if normal restart fails due to log issues or inconsistencies?</div>
+            <div class="answer"><strong>Answer:</strong> Conditional Restart</div>
+            <div class="explanation">
+                <p>A Conditional Restart may be necessary if a normal DB2 restart fails due to log issues or inconsistencies. This advanced restart option allows DBAs to bypass problematic log ranges or force a specific recovery point, resolving issues that prevent standard crash recovery.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">28. True or False: Recovering a system-period temporal table automatically handles the recovery of its associated history table.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>Recovering a system-period temporal table in DB2 automatically handles the recovery of its associated history table. DB2 maintains the relationship between the base and history tables, ensuring that both are restored consistently during recovery operations.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">29. In a data sharing environment, recovery often involves coordination with the ________ to resolve locks and ensure consistency.</div>
+            <div class="answer"><strong>Answer:</strong> IRLM</div>
+            <div class="explanation">
+                <p>In a DB2 data sharing environment, recovery involves coordination with the IRLM (IMS/VS Resource Lock Manager) to resolve locks and ensure consistency across members. The IRLM, often in conjunction with the Coupling Facility, manages global locks to prevent conflicts during recovery.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">30. The DB2 utility used to remove outdated image copy records from SYSIBM.SYSCOPY is ________.</div>
+            <div class="answer"><strong>Answer:</strong> MODIFY RECOVERY</div>
+            <div class="explanation">
+                <p>The MODIFY RECOVERY utility removes outdated or unneeded image copy records from the SYSIBM.SYSCOPY catalog table. This helps manage catalog space and ensures that only relevant recovery assets are considered during recovery operations.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">31. Disaster recovery typically involves restoring backups and applying logs at an ________ site.</div>
+            <div class="answer"><strong>Answer:</strong> alternate</div>
+            <div class="explanation">
+                <p>Disaster recovery typically involves restoring backups and applying logs at an alternate or remote site to resume operations after a catastrophic failure at the primary site. This requires offsite storage of backups and logs to ensure availability during such events.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">32. True or False: The `RECOVER` utility can recover multiple objects in parallel to reduce overall recovery time.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>The RECOVER utility can recover multiple objects in parallel using the PARALLEL option, reducing overall recovery time. This is particularly useful for large databases with many tablespaces or indexes, as it leverages system resources to perform recoveries concurrently.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">33. Which recovery phase during system restart involves rolling back incomplete transactions?</div>
+            <div class="answer"><strong>Answer:</strong> Undo Phase</div>
+            <div class="explanation">
+                <p>The Undo Phase during DB2 system restart rolls back incomplete transactions to ensure database consistency. Using log records, DB2 reverses uncommitted changes (using undo records) to restore the database to its state before the failure occurred.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">34. The maximum acceptable downtime during a recovery event is defined by the ________.</div>
+            <div class="answer"><strong>Answer:</strong> RTO</div>
+            <div class="explanation">
+                <p>The Recovery Time Objective (RTO) defines the maximum acceptable downtime during a recovery event. It represents the time a system can be unavailable before causing significant business impact, guiding the design of recovery processes and infrastructure.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">35. True or False: It is generally recommended to exclude temporary tablespaces and work files from regular backup schedules.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>It is generally recommended to exclude temporary tablespaces and work files from regular backup schedules, as their data is transient and not needed for recovery. These objects are typically recreated during system operation, and backing them up unnecessarily consumes resources.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript for toggle functionality and search
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle all explanations
+            const toggleAllBtn = document.getElementById('toggle-all-btn');
+            toggleAllBtn.addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                const firstExplanation = explanations[0];
+                const isHidden = firstExplanation.style.display === 'none';
+                
+                explanations.forEach(explanation => {
+                    explanation.style.display = isHidden ? 'block' : 'none';
+                });
+                
+                toggleAllBtn.innerHTML = isHidden ? 
+                    '<span class="lucide">&#xe2c4;</span> Hide All Explanations' : 
+                    '<span class="lucide">&#xe2c4;</span> Show All Explanations';
+            });
+
+            // Search functionality
+            const searchBox = document.getElementById('search-box');
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const questions = document.querySelectorAll('.question');
+                
+                questions.forEach(question => {
+                    const questionText = question.textContent.toLowerCase();
+                    const solutionContainer = question.closest('.solution-container');
+                    
+                    if (questionText.includes(searchTerm)) {
+                        solutionContainer.style.display = 'block';
+                    } else {
+                        solutionContainer.style.display = 'none';
+                    }
+                });
+            });
+
+            // Back to quiz button
+            const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+        });
+    </script>
+
+</body>
+</html>

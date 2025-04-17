@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Fundamentals Solved Exercises - Chapter 7</title>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+
+      body {
+          background-color: #0a0a14;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3);
+      }
+
+      .solutions-wrapper {
+          max-width: 900px;
+          margin: 20px auto;
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8);
+          border: 1px solid #33ff33;
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4);
+      }
+
+      header {
+          background-color: #001a00;
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+
+      header h1 {
+          color: #33ff33;
+          font-size: 1.8rem;
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      header h1 .lucide {
+          font-size: 1.6rem;
+          margin-right: 10px;
+      }
+
+      header p {
+          color: #99ff99;
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+
+      .nav-controls {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+          margin-bottom: 20px;
+      }
+
+      .solution-container {
+          margin-bottom: 30px;
+          border-bottom: 1px dashed #228822;
+          padding-bottom: 20px;
+      }
+
+      .solution-container:last-child {
+          border-bottom: none;
+      }
+
+      .question {
+          font-size: 1.2rem;
+          color: #ccffcc;
+          margin-bottom: 10px;
+          padding: 15px;
+          background-color: rgba(0, 26, 0, 0.4);
+          border: 1px dashed #33ff33;
+      }
+
+      .answer {
+          display: block;
+          margin: 15px 0;
+          padding: 10px;
+          background-color: rgba(51, 255, 51, 0.1);
+          border-left: 4px solid #33ff33;
+      }
+
+      .explanation {
+          margin-top: 10px;
+          padding: 15px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822;
+      }
+
+      button {
+          background-color: #001a00;
+          color: #33ff33;
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff;
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button .lucide {
+          margin-right: 8px;
+      }
+
+      .category {
+          color: #00ff99;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 5px;
+          margin-top: 30px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      .category .lucide {
+          margin-right: 8px;
+      }
+
+      #search-box {
+          width: 100%;
+          padding: 10px;
+          background-color: #000000;
+          border: 1px solid #33ff33;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 20px;
+      }
+      #search-box:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+      }
+
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .solutions-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          .nav-controls { flex-wrap: wrap; justify-content: center; }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="solutions-wrapper">
+
+        <header>
+            <h1>
+                <span class="lucide"></span> DB2 Fundamentals Solutions - Chapter 7
+            </h1>
+            <p>Complete Answer Guide :: Mainframe Edition</p>
+        </header>
+
+        <div class="nav-controls">
+            <button id="toggle-all-btn">
+                <span class="lucide"></span> Toggle All Explanations
+            </button>
+            <input type="text" id="search-box" placeholder="Search questions...">
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> JCL Fundamentals
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">1. Which JCL statement identifies the job to the system and specifies accounting information?</div>
+            <div class="answer"><strong>Answer:</strong> JOB</div>
+            <div class="explanation">
+                <p>The JOB statement in JCL identifies the job to the z/OS system and specifies accounting information, such as the job name, user ID, and billing details. It is the first statement in a JCL job and sets the context for the job's execution.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">2. The JCL statement used to define datasets required by a program is the ________ statement.</div>
+            <div class="answer"><strong>Answer:</strong> DD</div>
+            <div class="explanation">
+                <p>The DD (Data Definition) statement in JCL defines datasets required by a program, specifying their names, locations, and attributes (e.g., input, output, or temporary). It connects the program's logical file references to physical datasets on z/OS.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">3. True or False: The `EXEC PGM=DSNUTILB` statement is used to execute SQL statements directly.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The `EXEC PGM=DSNUTILB` statement executes DB2 utilities, not SQL statements directly. To run SQL or DB2 commands, programs like IKJEFT01 with the DSN subcommand (e.g., via DSNTEP2 or DSNTIAD) are used, typically with SYSTSIN for input.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">4. Which JCL parameter controls step execution based on the return codes of previous steps?</div>
+            <div class="answer"><strong>Answer:</strong> COND</div>
+            <div class="explanation">
+                <p>The COND parameter on the EXEC statement controls step execution based on the return codes of previous steps. It specifies conditions under which a step should be executed or skipped, enabling conditional processing in JCL jobs.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">5. To make JCL reusable, ________ parameters (like &VAR) can be defined using SET statements or PROCs.</div>
+            <div class="answer"><strong>Answer:</strong> Symbolic</div>
+            <div class="explanation">
+                <p>Symbolic parameters (e.g., &VAR) make JCL reusable by allowing values to be defined dynamically using SET statements or within JCL PROCs. This parameterization enhances flexibility and reduces hardcoding in JCL scripts.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> DB2-Specific JCL & Utilities
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">6. Which DD statement typically provides the DB2 subsystem ID and commands when executing via IKJEFT01?</div>
+            <div class="answer"><strong>Answer:</strong> SYSTSIN</div>
+            <div class="explanation">
+                <p>The SYSTSIN DD statement provides input to the IKJEFT01 program, typically including the DB2 subsystem ID (via DSN SYSTEM) and DB2 commands or SQL statements. It is used to specify the environment and actions for DB2 processing in JCL.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">7. The `REGION=0M` parameter on the EXEC statement allows the job step to use ________ available memory.</div>
+            <div class="answer"><strong>Answer:</strong> all</div>
+            <div class="explanation">
+                <p>The `REGION=0M` parameter on the EXEC statement allows the job step to use all available memory in the address space, subject to system limits. This maximizes resource availability for memory-intensive tasks like DB2 utilities.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">8. True or False: The `STEPLIB` DD statement points to the dataset containing the JCL procedure library.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The STEPLIB DD statement points to the dataset containing program load libraries (e.g., DB2's SDSNLOAD for utility or application programs), not the JCL procedure library. JCL procedures are typically stored in libraries referenced by the JCLLIB statement.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">9. Which common DB2 utility is used to collect statistics for the optimizer?</div>
+            <div class="answer"><strong>Answer:</strong> RUNSTATS</div>
+            <div class="explanation">
+                <p>The RUNSTATS utility collects statistics about DB2 objects, such as data distribution and cardinality, which are stored in the DB2 catalog. These statistics are critical for the DB2 optimizer to choose efficient access paths for SQL queries.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">10. Automating the `REORG` utility is crucial for maintaining data ________ and performance.</div>
+            <div class="answer"><strong>Answer:</strong> organization</div>
+            <div class="explanation">
+                <p>Automating the REORG utility is crucial for maintaining data organization, such as restoring clustering order and removing fragmentation. This improves query performance and optimizes storage utilization in DB2 tablespaces and indexes.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> REXX Scripting
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">11. Which scripting language is commonly used on z/OS for automating tasks and interacting with DB2?</div>
+            <div class="answer"><strong>Answer:</strong> REXX</div>
+            <div class="explanation">
+                <p>REXX (Restructured Extended Executor) is a versatile scripting language commonly used on z/OS for automating tasks and interacting with DB2. Its ease of use and integration with z/OS and DB2 make it ideal for scripting utilities and administrative tasks.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">12. The REXX interface specifically designed for interacting with DB2 is often called ________.</div>
+            <div class="answer"><strong>Answer:</strong> DSNREXX</div>
+            <div class="explanation">
+                <p>The DSNREXX interface is specifically designed for REXX scripts to interact with DB2, enabling the execution of SQL statements, DB2 commands, and utility control statements. It provides a programmatic way to manage DB2 operations within REXX scripts.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">13. True or False: REXX scripts can dynamically generate and submit JCL for DB2 utilities.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>REXX scripts can dynamically generate and submit JCL for DB2 utilities by constructing JCL statements and using z/OS services (e.g., TSO SUBMIT) to execute them. This allows automation of complex workflows tailored to specific conditions or requirements.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">14. In REXX, the SQL Communication Area (SQLCA) structure provides feedback, including the ________, after executing an SQL statement.</div>
+            <div class="answer"><strong>Answer:</strong> SQLCODE</div>
+            <div class="explanation">
+                <p>The SQL Communication Area (SQLCA) in REXX provides feedback after executing an SQL statement, including the SQLCODE, which indicates the success, failure, or specific error condition of the statement. This allows scripts to handle SQL outcomes programmatically.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">15. Using REXX to build SQL statements dynamically requires careful handling to prevent ________ vulnerabilities.</div>
+            <div class="answer"><strong>Answer:</strong> SQL injection</div>
+            <div class="explanation">
+                <p>Building SQL statements dynamically in REXX requires careful handling to prevent SQL injection vulnerabilities. This includes validating and sanitizing input, using parameterized queries, or binding variables to avoid malicious code execution.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Automation Tools
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">16. Which type of z/OS tool is primarily used for scheduling batch jobs based on time or dependencies (e.g., OPC/TWS, CA-7)?</div>
+            <div class="answer"><strong>Answer:</strong> Job Schedulers</div>
+            <div class="explanation">
+                <p>Job Schedulers, such as OPC/TWS (Tivoli Workload Scheduler) or CA-7, are z/OS tools used for scheduling batch jobs based on time or dependencies. They automate the execution of DB2 utilities and other tasks, ensuring timely and coordinated processing.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">17. Tools like SA z/OS or NetView are classified as ________ Automation tools, often used for reacting to system events and messages.</div>
+            <div class="answer"><strong>Answer:</strong> System</div>
+            <div class="explanation">
+                <p>Tools like SA z/OS (System Automation for z/OS) or NetView are classified as System Automation tools. They react to system events and messages, such as DB2 console messages, to automate responses like restarting subsystems or triggering alerts.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">18. True or False: The DB2 Administration Tool provides features for generating utility JCL and managing DB2 objects.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>The DB2 Administration Tool provides features for generating utility JCL and managing DB2 objects, such as tablespaces, indexes, and schemas. It simplifies administrative tasks by offering a user-friendly interface for DBAs to automate and execute maintenance tasks.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">19. DB2's ________ Director is a feature aimed at automating routine maintenance tasks based on real-time statistics.</div>
+            <div class="answer"><strong>Answer:</strong> Autonomics</div>
+            <div class="explanation">
+                <p>DB2's Autonomics Director automates routine maintenance tasks, such as REORG or RUNSTATS, based on real-time statistics and system conditions. It uses analytics to determine when maintenance is needed, reducing manual intervention and optimizing performance.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Monitoring & Alerting
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">20. Automated systems often monitor specific DB2 ________ messages to trigger alerts or corrective actions.</div>
+            <div class="answer"><strong>Answer:</strong> console</div>
+            <div class="explanation">
+                <p>Automated systems monitor specific DB2 console messages (e.g., DSN messages) to trigger alerts or corrective actions. These messages indicate issues like utility failures, lock contention, or subsystem errors, enabling proactive response through automation tools.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">21. Setting performance ________ allows automation tools to detect deviations from normal behavior.</div>
+            <div class="answer"><strong>Answer:</strong> Thresholds</div>
+            <div class="explanation">
+                <p>Setting performance thresholds allows automation tools to detect deviations from normal behavior, such as high CPU usage or low buffer pool hit ratios. These thresholds trigger alerts or automated actions to address performance issues in the DB2 environment.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">22. True or False: Effective automation completely eliminates the need for human monitoring of the DB2 environment.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Effective automation assists but does not completely eliminate the need for human monitoring. While automation handles routine tasks and alerts, human oversight is crucial for complex issues, strategic decisions, and validating automation outcomes in the DB2 environment.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">23. Automated responses to alerts might include actions like notifying DBAs, cancelling problematic threads, or initiating ________ procedures.</div>
+            <div class="answer"><strong>Answer:</strong> Recovery</div>
+            <div class="explanation">
+                <p>Automated responses to alerts in DB2 may include notifying DBAs, cancelling problematic threads, or initiating recovery procedures. For example, automation tools can trigger RECOVER or RESTART actions in response to detected failures or inconsistencies.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Best Practices & Advanced Techniques
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">24. Which JCL feature allows defining reusable patterns for output dataset names, often incorporating dates or sequence numbers?</div>
+            <div class="answer"><strong>Answer:</strong> TEMPLATE</div>
+            <div class="explanation">
+                <p>The TEMPLATE JCL feature allows defining reusable patterns for output dataset names, often incorporating dynamic elements like dates or sequence numbers. This simplifies dataset management in DB2 utilities, ensuring consistent naming conventions.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">25. The `LISTDEF` control statement is used to define reusable ________ of DB2 objects for utility processing.</div>
+            <div class="answer"><strong>Answer:</strong> lists</div>
+            <div class="explanation">
+                <p>The LISTDEF control statement defines reusable lists of DB2 objects (e.g., tablespaces, indexes) for utility processing. It enables utilities like REORG or COPY to operate on multiple objects efficiently, reducing JCL complexity and improving automation.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">26. True or False: Hardcoding object names and dataset names directly into automation scripts is considered a best practice.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Hardcoding object names and dataset names in automation scripts is not a best practice. Parameterization, using symbolic variables or catalog queries, is preferred for flexibility, maintainability, and adaptability to changing environments.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">27. Robust automation scripts should include comprehensive ________ handling to manage unexpected return codes or failures.</div>
+            <div class="answer"><strong>Answer:</strong> Error</div>
+            <div class="explanation">
+                <p>Robust automation scripts should include comprehensive error handling to manage unexpected return codes or failures. This involves checking SQLCODE, utility return codes, or system messages and implementing retries, notifications, or fallback actions as needed.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">28. Keeping automation scripts and JCL under ________ control helps manage changes and track history.</div>
+            <div class="answer"><strong>Answer:</strong> version</div>
+            <div class="explanation">
+                <p>Keeping automation scripts and JCL under version control (or source control) helps manage changes, track history, and ensure consistency. Tools like ISPF or modern SCM systems enable collaboration, rollback, and auditability for automation assets.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">29. A key benefit of automation, mentioned in the introduction, is the reduction of ________ error.</div>
+            <div class="answer"><strong>Answer:</strong> human</div>
+            <div class="explanation">
+                <p>A key benefit of automation is the reduction of human error by standardizing and streamlining repetitive tasks, such as DB2 utility execution or monitoring. Automation minimizes manual intervention, ensuring consistent and reliable operations.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">30. True or False: REXX scripts can directly parse DB2 catalog tables to dynamically generate utility control statements.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>REXX scripts can directly parse DB2 catalog tables (e.g., SYSIBM.SYSTABLES) using DSNREXX to execute SQL SELECT statements. The retrieved data can be used to dynamically generate utility control statements, enabling tailored automation for specific objects.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">31. Which JCL statement is used to incorporate predefined JCL segments from a library?</div>
+            <div class="answer"><strong>Answer:</strong> INCLUDE</div>
+            <div class="explanation">
+                <p>The INCLUDE JCL statement incorporates predefined JCL segments from a library, such as a PDS member, into the job. This promotes modularity and reuse, allowing common JCL code to be shared across multiple jobs.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">32. Automating the DB2 `CHECK DATA` utility helps ensure data and referential ________.</div>
+            <div class="answer"><strong>Answer:</strong> integrity</div>
+            <div class="explanation">
+                <p>Automating the CHECK DATA utility helps ensure data and referential integrity by verifying that table data complies with defined constraints, such as referential integrity or check constraints. This prevents data corruption and maintains database consistency.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">33. True or False: Conditional processing in JCL using IF/THEN/ELSE is primarily used for setting symbolic parameters.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Conditional processing in JCL using IF/THEN/ELSE is primarily used to control execution flow based on conditions, such as return codes from previous steps. It is not used for setting symbolic parameters, which is typically handled by SET statements.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">34. The DB2 program often executed via `PGM=IKJEFT01` to run SQL or DSN commands is ________.</div>
+            <div class="answer"><strong>Answer:</strong> DSNTEP2</div>
+            <div class="explanation">
+                <p>The DSNTEP2 program, executed via `PGM=IKJEFT01`, is commonly used to run SQL statements or DSN commands in a batch environment. It processes input from SYSTSIN, supporting dynamic SQL execution, while DSNTIAD is an alternative for similar purposes.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">35. Thorough ________ of automation scripts and JCL in a non-production environment is a critical best practice.</div>
+            <div class="answer"><strong>Answer:</strong> testing</div>
+            <div class="explanation">
+                <p>Thorough testing of automation scripts and JCL in a non-production environment is a critical best practice. This ensures scripts function correctly, handle errors appropriately, and meet requirements without risking production data or system stability.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript for toggle functionality and search
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle all explanations
+            const toggleAllBtn = document.getElementById('toggle-all-btn');
+            toggleAllBtn.addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                const firstExplanation = explanations[0];
+                const isHidden = firstExplanation.style.display === 'none';
+                
+                explanations.forEach(explanation => {
+                    explanation.style.display = isHidden ? 'block' : 'none';
+                });
+                
+                toggleAllBtn.innerHTML = isHidden ? 
+                    '<span class="lucide">&#xe2c4;</span> Hide All Explanations' : 
+                    '<span class="lucide">&#xe2c4;</span> Show All Explanations';
+            });
+
+            // Search functionality
+            const searchBox = document.getElementById('search-box');
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const questions = document.querySelectorAll('.question');
+                
+                questions.forEach(question => {
+                    const questionText = question.textContent.toLowerCase();
+                    const solutionContainer = question.closest('.solution-container');
+                    
+                    if (questionText.includes(searchTerm)) {
+                        solutionContainer.style.display = 'block';
+                    } else {
+                        solutionContainer.style.display = 'none';
+                    }
+                });
+            });
+
+            // Back to quiz button
+            const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+        });
+    </script>
+
+</body>
+</html>

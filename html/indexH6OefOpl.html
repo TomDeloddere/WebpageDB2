@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Fundamentals Solved Exercises - Chapter 6</title>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+
+      body {
+          background-color: #0a0a14;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3);
+      }
+
+      .solutions-wrapper {
+          max-width: 900px;
+          margin: 20px auto;
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8);
+          border: 1px solid #33ff33;
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4);
+      }
+
+      header {
+          background-color: #001a00;
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+
+      header h1 {
+          color: #33ff33;
+          font-size: 1.8rem;
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      header h1 .lucide {
+          font-size: 1.6rem;
+          margin-right: 10px;
+      }
+
+      header p {
+          color: #99ff99;
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+
+      .nav-controls {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+          margin-bottom: 20px;
+      }
+
+      .solution-container {
+          margin-bottom: 30px;
+          border-bottom: 1px dashed #228822;
+          padding-bottom: 20px;
+      }
+
+      .solution-container:last-child {
+          border-bottom: none;
+      }
+
+      .question {
+          font-size: 1.2rem;
+          color: #ccffcc;
+          margin-bottom: 10px;
+          padding: 15px;
+          background-color: rgba(0, 26, 0, 0.4);
+          border: 1px dashed #33ff33;
+      }
+
+      .answer {
+          display: block;
+          margin: 15px 0;
+          padding: 10px;
+          background-color: rgba(51, 255, 51, 0.1);
+          border-left: 4px solid #33ff33;
+      }
+
+      .explanation {
+          margin-top: 10px;
+          padding: 15px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822;
+      }
+
+      button {
+          background-color: #001a00;
+          color: #33ff33;
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff;
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button .lucide {
+          margin-right: 8px;
+      }
+
+      .category {
+          color: #00ff99;
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 5px;
+          margin-top: 30px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      .category .lucide {
+          margin-right: 8px;
+      }
+
+      #search-box {
+          width: 100%;
+          padding: 10px;
+          background-color: #000000;
+          border: 1px solid #33ff33;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 20px;
+      }
+      #search-box:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+      }
+
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .solutions-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          .nav-controls { flex-wrap: wrap; justify-content: center; }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="solutions-wrapper">
+
+        <header>
+            <h1>
+                <span class="lucide"></span> DB2 Fundamentals Solutions - Chapter 6
+            </h1>
+            <p>Complete Answer Guide :: Mainframe Edition</p>
+        </header>
+
+        <div class="nav-controls">
+            <button id="toggle-all-btn">
+                <span class="lucide"></span> Toggle All Explanations
+            </button>
+            <input type="text" id="search-box" placeholder="Search questions...">
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Introduction & Principles
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">1. Which security principle advocates granting users only the minimum access rights necessary for their job?</div>
+            <div class="answer"><strong>Answer:</strong> Principle of Least Privilege</div>
+            <div class="explanation">
+                <p>The Principle of Least Privilege advocates granting users only the minimum access rights necessary to perform their job functions. This reduces the risk of unauthorized access or accidental misuse, enhancing overall security in DB2 and z/OS environments.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">2. The primary authentication mechanism for most DB2 for z/OS installations relies on ________.</div>
+            <div class="answer"><strong>Answer:</strong> RACF</div>
+            <div class="explanation">
+                <p>Most DB2 for z/OS installations rely on RACF (Resource Access Control Facility) as the primary authentication mechanism. RACF, or equivalent z/OS security products like ACF2 or TopSecret, validates user credentials and integrates with DB2 to enforce authentication policies.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">3. True or False: DB2 security primarily focuses on database-level controls and does not integrate with z/OS security.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>DB2 security integrates closely with z/OS security mechanisms, such as RACF, ACF2, or TopSecret. It leverages z/OS for authentication, authorization, and auditing, combining database-level controls with system-level security to provide a robust security framework.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">4. Which identifier represents the user's main identity, typically derived from the z/OS security product?</div>
+            <div class="answer"><strong>Answer:</strong> Primary Authorization ID</div>
+            <div class="explanation">
+                <p>The Primary Authorization ID represents the user's main identity in DB2, typically derived from the z/OS security product (e.g., RACF user ID). It is used to determine the user's privileges and access rights within the DB2 subsystem.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Authorization & Privileges
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">5. Which DB2 system authority grants complete administrative control over the entire DB2 subsystem?</div>
+            <div class="answer"><strong>Answer:</strong> SYSADM</div>
+            <div class="explanation">
+                <p>The SYSADM (System Administrator) authority grants complete administrative control over the entire DB2 subsystem. It includes the ability to manage all objects, execute utilities, and perform system-level tasks, making it the highest level of authority in DB2.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">6. The authority required to grant and revoke privileges on objects is ________.</div>
+            <div class="answer"><strong>Answer:</strong> ACCESSCTRL</div>
+            <div class="explanation">
+                <p>The ACCESSCTRL authority allows users to grant and revoke privileges on DB2 objects, such as tables, views, and stored procedures. This authority is typically assigned to security administrators to manage access rights without requiring full SYSADM privileges.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">7. Which object-level privilege allows modifying existing rows in a table?</div>
+            <div class="answer"><strong>Answer:</strong> UPDATE</div>
+            <div class="explanation">
+                <p>The UPDATE privilege allows users to modify existing rows in a table using SQL UPDATE statements. This privilege is specific to the table and can be granted at the table or column level to control data modification access.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">8. True or False: The `DBADM` authority provides the same level of control as `SYSADM`, but limited to a specific database.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>The DBADM (Database Administrator) authority provides administrative control similar to SYSADM, but it is limited to a specific database. DBADM users can manage objects and privileges within their assigned database without affecting other databases or the subsystem.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">9. Granting the `EXECUTE` privilege allows a user to run ________.</div>
+            <div class="answer"><strong>Answer:</strong> stored procedures</div>
+            <div class="explanation">
+                <p>The EXECUTE privilege allows a user to run stored procedures or user-defined functions in DB2. This privilege is necessary for executing these objects and can be granted to specific users, roles, or groups to control access to procedural logic.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">10. The `WITH GRANT OPTION` clause allows the recipient of a privilege to ________.</div>
+            <div class="answer"><strong>Answer:</strong> Grant the same privilege to others</div>
+            <div class="explanation">
+                <p>The `WITH GRANT OPTION` clause allows the recipient of a privilege to grant the same privilege to other users or roles. This enables delegated administration, but it must be used cautiously to prevent unintended escalation of access rights.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Advanced Access Control (LBAC, RCAC)
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">11. Which access control mechanism uses security labels assigned to data and users to enforce multi-level security?</div>
+            <div class="answer"><strong>Answer:</strong> Label-Based Access Control (LBAC)</div>
+            <div class="explanation">
+                <p>Label-Based Access Control (LBAC) uses security labels assigned to data rows and users to enforce multi-level security. It ensures that users can only access data with compatible security labels, providing fine-grained control for sensitive environments.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">12. Defining rules that filter which rows a user can access based on predicates is achieved using ________.</div>
+            <div class="answer"><strong>Answer:</strong> Row Permissions</div>
+            <div class="explanation">
+                <p>Row Permissions, part of DB2's Row and Column Access Control (RCAC), define predicate-based rules to filter which rows a user can access. These rules are enforced transparently, restricting access to specific rows based on user attributes or session context.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">13. True or False: Column masks allow hiding entire columns from unauthorized users.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Column masks in DB2 do not hide entire columns; instead, they transform or mask the values within columns for unauthorized users, such as replacing sensitive data with asterisks or nulls. This allows controlled access while protecting sensitive information.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">14. Row and Column Access Control (RCAC) features include Row Permissions and ________.</div>
+            <div class="answer"><strong>Answer:</strong> Column Masks</div>
+            <div class="explanation">
+                <p>Row and Column Access Control (RCAC) in DB2 includes Row Permissions, which filter accessible rows, and Column Masks, which transform or obscure column values for unauthorized users. Together, these features provide fine-grained data access control.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">15. Creating a security policy with defined levels and compartments is part of implementing ________.</div>
+            <div class="answer"><strong>Answer:</strong> LBAC</div>
+            <div class="explanation">
+                <p>Implementing Label-Based Access Control (LBAC) involves creating a security policy with defined levels and compartments. These policies assign security labels to data and users, enforcing access restrictions based on hierarchical or compartmentalized security requirements.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Roles & Trusted Contexts
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">16. A collection of privileges grouped together for a specific job function is called a ________.</div>
+            <div class="answer"><strong>Answer:</strong> Role</div>
+            <div class="explanation">
+                <p>A Role in DB2 is a collection of privileges and authorities grouped together to represent a specific job function. Roles simplify access management by allowing privileges to be assigned to roles, which can then be granted to users or groups.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">17. Which DB2 feature allows assigning roles or different security attributes based on connection properties like IP address?</div>
+            <div class="answer"><strong>Answer:</strong> Trusted Contexts</div>
+            <div class="explanation">
+                <p>Trusted Contexts in DB2 allow the assignment of roles or security attributes based on connection properties, such as IP address, user ID, or application name. This enhances security for specific connection scenarios, like application servers or connection pooling.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">18. True or False: Roles in DB2 can only be assigned privileges, not system or database authorities.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Roles in DB2 can be assigned both privileges (e.g., SELECT, UPDATE) and system or database authorities (e.g., DBADM, SYSCTRL). This flexibility allows roles to encapsulate a wide range of permissions, simplifying security administration.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">19. Trusted contexts can enhance security for connection pooling by associating specific attributes with ________.</div>
+            <div class="answer"><strong>Answer:</strong> Application server IDs</div>
+            <div class="explanation">
+                <p>Trusted contexts enhance security for connection pooling by associating specific attributes, such as roles or privileges, with application server IDs or other connection properties. This ensures that pooled connections operate with appropriate security settings, reducing the risk of privilege misuse.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> User Rights Management & Administration
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">20. Which administrative model involves security administrators handling all privilege assignments?</div>
+            <div class="answer"><strong>Answer:</strong> Centralized</div>
+            <div class="explanation">
+                <p>The Centralized administrative model involves security administrators handling all privilege assignments, ensuring consistent and controlled access management. This model contrasts with decentralized models where object owners or other users may grant privileges.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">21. Regularly reviewing access rights helps prevent privilege ________, where users accumulate unnecessary permissions over time.</div>
+            <div class="answer"><strong>Answer:</strong> accumulation</div>
+            <div class="explanation">
+                <p>Regularly reviewing access rights prevents privilege accumulation (or privilege creep), where users accumulate unnecessary permissions over time due to role changes or project reassignments. This practice ensures adherence to the Principle of Least Privilege and reduces security risks.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">22. True or False: The SECADM authority is typically separated from SYSADM to enforce separation of duties.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>The SECADM (Security Administrator) authority is typically separated from SYSADM to enforce separation of duties. SECADM focuses on managing security policies and privileges, while SYSADM handles system administration, reducing the risk of a single user having excessive control.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">23. Automating user rights management often involves integration with ________ systems for provisioning.</div>
+            <div class="answer"><strong>Answer:</strong> HR</div>
+            <div class="explanation">
+                <p>Automating user rights management often involves integration with HR (Human Resources) systems for provisioning. HR systems provide data on employee roles, hires, and terminations, enabling automated assignment or revocation of DB2 privileges based on job functions.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Compliance, Auditing & Encryption
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">24. Which regulation focuses on the protection of personal data for individuals within the European Union?</div>
+            <div class="answer"><strong>Answer:</strong> GDPR</div>
+            <div class="explanation">
+                <p>The General Data Protection Regulation (GDPR) focuses on protecting personal data for individuals within the European Union. It imposes strict requirements on data handling, privacy, and security, affecting DB2 environments that store or process EU residents' data.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">25. DB2's capability to record security-relevant events relies on starting specific ________ trace classes.</div>
+            <div class="answer"><strong>Answer:</strong> Audit</div>
+            <div class="explanation">
+                <p>DB2's auditing capability relies on starting specific Audit trace classes to record security-relevant events, such as privilege usage, authentication attempts, or data access. These traces generate IFCID records, which can be analyzed to ensure compliance and detect unauthorized activity.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">26. True or False: DB2 native encryption protects data only while it is stored on disk (at rest).</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>DB2 native encryption protects data at rest, encrypting data stored on disk to prevent unauthorized access. Encryption in transit, such as between clients and the DB2 server, requires separate mechanisms like SSL/TLS, which are not part of native encryption.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">27. Protecting data transmitted over the network between clients and the DB2 server often involves using protocols like ________.</div>
+            <div class="answer"><strong>Answer:</strong> SSL</div>
+            <div class="explanation">
+                <p>Protecting data transmitted over the network between clients and the DB2 server often involves using SSL (Secure Sockets Layer) or its successor, TLS (Transport Layer Security). These protocols encrypt network traffic to ensure data confidentiality and integrity.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">28. Which DB2 catalog table is commonly queried to review granted object privileges?</div>
+            <div class="answer"><strong>Answer:</strong> SYSIBM.SYSTABAUTH</div>
+            <div class="explanation">
+                <p>The SYSIBM.SYSTABAUTH catalog table is commonly queried to review granted object privileges for tables and views. It records privileges like SELECT, INSERT, or UPDATE, along with the grantee and grantor, aiding in access rights audits.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">29. The Payment Card Industry Data Security Standard is commonly referred to as ________.</div>
+            <div class="answer"><strong>Answer:</strong> PCI DSS</div>
+            <div class="explanation">
+                <p>The Payment Card Industry Data Security Standard (PCI DSS) is a set of security standards designed to protect cardholder data. DB2 environments handling payment card data must comply with PCI DSS requirements, including encryption, access controls, and auditing.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide"></span> Network Security & Best Practices
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">30. Securing the Distributed Data Facility (DDF) often involves configuring ________ ports and potentially using AT-TLS.</div>
+            <div class="answer"><strong>Answer:</strong> Secure (SECPORT)</div>
+            <div class="explanation">
+                <p>Securing the Distributed Data Facility (DDF) involves configuring the Secure Port (SECPORT) for encrypted connections and potentially using Application Transparent Transport Layer Security (AT-TLS). This ensures that remote client connections to DB2 are encrypted and secure.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">31. Regularly applying IBM-provided maintenance (PTFs) is crucial for addressing known security ________.</div>
+            <div class="answer"><strong>Answer:</strong> vulnerabilities</div>
+            <div class="explanation">
+                <p>Regularly applying IBM-provided Program Temporary Fixes (PTFs) is crucial for addressing known security vulnerabilities in DB2. These updates patch potential exploits, ensuring the subsystem remains secure against evolving threats.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">32. True or False: Security documentation should be kept confidential and accessible only to the SYSADM.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Security documentation should be accessible to relevant personnel, such as security administrators, DBAs, and incident response teams, not just SYSADM. While it should be kept confidential from unauthorized users, it must be available for operational and emergency purposes.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">33. Which security concept assumes that no user or connection should be implicitly trusted, requiring verification at every step?</div>
+            <div class="answer"><strong>Answer:</strong> Zero Trust</div>
+            <div class="explanation">
+                <p>The Zero Trust security concept assumes that no user or connection should be implicitly trusted, requiring verification at every step. In DB2, this involves continuous authentication, authorization, and monitoring to protect against internal and external threats.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">34. Implementing strong password policies and encouraging the use of ________ enhances authentication security.</div>
+            <div class="answer"><strong>Answer:</strong> password phrases</div>
+            <div class="explanation">
+                <p>Implementing strong password policies and encouraging the use of password phrases (longer, complex passphrases) enhances authentication security. Password phrases are harder to crack than traditional passwords, improving protection against unauthorized access in DB2 environments.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">35. True or False: DB2 auditing automatically captures all SQL statements executed by default.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>DB2 auditing does not automatically capture all SQL statements by default. Specific audit trace classes and policies must be defined and started to record desired events, such as SQL execution, privilege usage, or security violations, ensuring targeted auditing.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">36. Which authority is specifically responsible for administering security policies like RCAC and LBAC?</div>
+            <div class="answer"><strong>Answer:</strong> SECADM</div>
+            <div class="explanation">
+                <p>The SECADM (Security Administrator) authority is responsible for administering security policies like Row and Column Access Control (RCAC) and Label-Based Access Control (LBAC). SECADM users manage these advanced access controls to enforce fine-grained security in DB2.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript for toggle functionality and search
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle all explanations
+            const toggleAllBtn = document.getElementById('toggle-all-btn');
+            toggleAllBtn.addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                const firstExplanation = explanations[0];
+                const isHidden = firstExplanation.style.display === 'none';
+                
+                explanations.forEach(explanation => {
+                    explanation.style.display = isHidden ? 'block' : 'none';
+                });
+                
+                toggleAllBtn.innerHTML = isHidden ? 
+                    '<span class="lucide">&#xe2c4;</span> Hide All Explanations' : 
+                    '<span class="lucide">&#xe2c4;</span> Show All Explanations';
+            });
+
+            // Search functionality
+            const searchBox = document.getElementById('search-box');
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const questions = document.querySelectorAll('.question');
+                
+                questions.forEach(question => {
+                    const questionText = question.textContent.toLowerCase();
+                    const solutionContainer = question.closest('.solution-container');
+                    
+                    if (questionText.includes(searchTerm)) {
+                        solutionContainer.style.display = 'block';
+                    } else {
+                        solutionContainer.style.display = 'none';
+                    }
+                });
+            });
+
+            // Back to quiz button
+            const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+        });
+    </script>
+
+</body>
+</html>

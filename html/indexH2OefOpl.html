@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB2 Fundamentals Solved Exercises - Chapter 2: SQL Fundamentals</title>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        /* Using jsdelivr CDN */
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.1rem; /* Adjusted size */
+        line-height: 1;
+        display: inline-block; /* Ensure proper alignment */
+        vertical-align: middle;
+        margin-right: 5px; /* Space between icon and text */
+      }
+
+      /* --- Mainframe Styles (Adapted from User CSS) --- */
+      body {
+          background-color: #0a0a14; /* Dark blue background */
+          color: #b3ffb3; /* Light green text */
+          font-family: 'Courier New', monospace;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px; /* Add padding around the body */
+          text-shadow: 0 0 1px rgba(179, 255, 179, 0.3); /* Subtle text glow */
+      }
+
+      /* Main container for the solutions */
+      .solutions-wrapper {
+          max-width: 900px; /* Adjusted width */
+          margin: 20px auto; /* Center the container */
+          padding: 25px;
+          background-color: rgba(10, 10, 20, 0.8); /* Slightly transparent dark background */
+          border: 1px solid #33ff33; /* Bright green border */
+          box-shadow: 0 0 10px rgba(51, 255, 51, 0.4); /* Green glow effect */
+      }
+
+      /* Header styling */
+      header {
+          background-color: #001a00; /* Dark green background */
+          padding: 15px;
+          text-align: center;
+          border-bottom: 2px solid #33ff33;
+          margin-bottom: 30px;
+      }
+
+      header h1 {
+          color: #33ff33; /* Bright green title */
+          font-size: 1.8rem; /* Adjusted size */
+          margin: 0;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: flex; /* Use flexbox for icon alignment */
+          align-items: center;
+          justify-content: center; /* Center title and icon */
+      }
+      header h1 .lucide {
+          font-size: 1.6rem; /* Larger icon in title */
+          margin-right: 10px;
+      }
+
+      header p {
+          color: #99ff99; /* Lighter green for subtitle */
+          font-size: 1rem;
+          margin-top: 5px;
+      }
+
+      /* Navigation controls */
+      .nav-controls {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+          border-top: 1px solid #228822;
+          border-bottom: 1px solid #228822;
+          margin-bottom: 20px;
+      }
+
+      /* Solution container styling */
+      .solution-container {
+          margin-bottom: 30px;
+          border-bottom: 1px dashed #228822;
+          padding-bottom: 20px;
+      }
+
+      .solution-container:last-child {
+          border-bottom: none;
+      }
+
+      .question {
+          font-size: 1.2rem;
+          color: #ccffcc;
+          margin-bottom: 10px;
+          padding: 15px;
+          background-color: rgba(0, 26, 0, 0.4);
+          border: 1px dashed #33ff33;
+      }
+
+      .answer {
+          display: block;
+          margin: 15px 0;
+          padding: 10px;
+          background-color: rgba(51, 255, 51, 0.1);
+          border-left: 4px solid #33ff33;
+      }
+
+      .explanation {
+          margin-top: 10px;
+          padding: 15px;
+          background-color: rgba(0, 0, 0, 0.3);
+          border: 1px solid #228822;
+      }
+
+      /* Button styling */
+      button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
+
+      /* Category heading */
+      .category {
+          color: #00ff99; /* Cyan-green color */
+          border-bottom: 1px solid #00ff99;
+          padding-bottom: 5px;
+          margin-top: 30px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex;
+          align-items: center;
+      }
+      .category .lucide {
+          margin-right: 8px;
+      }
+
+      /* Search box */
+      #search-box {
+          width: 100%;
+          padding: 10px;
+          background-color: #000000;
+          border: 1px solid #33ff33;
+          color: #b3ffb3;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 20px;
+      }
+      #search-box:focus {
+          outline: none;
+          box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .solutions-wrapper { padding: 15px; }
+          header h1 { font-size: 1.5rem; }
+          .nav-controls { flex-wrap: wrap; justify-content: center; }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="solutions-wrapper">
+
+        <header>
+            <h1>
+                <span class="lucide">&#xe12f;</span> DB2 Fundamentals Solutions
+            </h1>
+            <p>Chapter 2: SQL Fundamentals :: Complete Answer Guide</p>
+        </header>
+
+        <div class="nav-controls">
+            <button id="toggle-all-btn">
+                <span class="lucide">&#xe2c4;</span> Toggle All Explanations
+            </button>
+            <input type="text" id="search-box" placeholder="Search questions...">
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe03f;</span> Back To Mainpage
+            </button>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe021;</span> SQL Fundamentals & DML
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">1. Which SQL category includes statements like SELECT, INSERT, UPDATE, and DELETE?</div>
+            <div class="answer"><strong>Answer:</strong> DML</div>
+            <div class="explanation">
+                <p>DML (Data Manipulation Language) includes statements that work with the data in database objects. The primary DML statements are SELECT (retrieve data), INSERT (add new rows), UPDATE (modify existing rows), and DELETE (remove rows). These contrast with DDL (Data Definition Language) which defines database structure, DCL (Data Control Language) which manages permissions, and TCL (Transaction Control Language) which manages transactions.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">2. The SQL clause used to filter rows based on a specified condition is ________.</div>
+            <div class="answer"><strong>Answer:</strong> WHERE</div>
+            <div class="explanation">
+                <p>The WHERE clause is used in SQL statements to filter rows based on specified conditions. It appears after the FROM clause in SELECT, UPDATE, and DELETE statements. Conditions in the WHERE clause can use comparison operators (=, <>, >, etc.), logical operators (AND, OR, NOT), and special operators (BETWEEN, IN, LIKE, IS NULL). Only rows that satisfy the WHERE condition are included in the result set or affected by the operation.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">3. True or False: The SELECT * FROM EMPLOYEE statement retrieves only the primary key column.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The SELECT * FROM EMPLOYEE statement retrieves all columns from the EMPLOYEE table, not just the primary key. The asterisk (*) is a wildcard that means "all columns." While this is convenient for quick queries, it's generally better practice in production code to explicitly list only the columns needed, as this improves performance and makes the code more maintainable.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">4. Which operator is used for pattern matching in a WHERE clause?</div>
+            <div class="answer"><strong>Answer:</strong> LIKE</div>
+            <div class="explanation">
+                <p>The LIKE operator is used for pattern matching in WHERE clauses. It allows wildcard characters: percent (%) for any string of zero or more characters, and underscore (_) for any single character. For example, WHERE NAME LIKE 'SM%' finds names starting with "SM", and WHERE NAME LIKE '_A%' finds names where the second character is "A". LIKE is often used with character string data types.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">5. The SQL keyword used to sort results in descending order is ________.</div>
+            <div class="answer"><strong>Answer:</strong> DESC</div>
+            <div class="explanation">
+                <p>The DESC keyword specifies descending order in an ORDER BY clause. By default, ORDER BY sorts in ascending order (ASC), but adding DESC after a column name reverses this. For example: ORDER BY SALARY DESC sorts from highest to lowest salary. Multiple columns can be sorted with different directions: ORDER BY DEPT ASC, SALARY DESC sorts departments ascending but salaries descending within each department.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe1d1;</span> Advanced SQL: Joins
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">6. Which type of JOIN returns all rows from the left table and matching rows from the right table?</div>
+            <div class="answer"><strong>Answer:</strong> LEFT OUTER JOIN</div>
+            <div class="explanation">
+                <p>A LEFT OUTER JOIN (or simply LEFT JOIN) returns all rows from the left table (the first table mentioned) and matching rows from the right table. If no match exists, NULL values are returned for right table columns. This contrasts with INNER JOIN (only matching rows), RIGHT OUTER JOIN (all right rows + matching left), and FULL OUTER JOIN (all rows from both tables with NULLs where no match exists).</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">7. Joining a table to itself is known as a ________ JOIN.</div>
+            <div class="answer"><strong>Answer:</strong> Self</div>
+            <div class="explanation">
+                <p>A Self JOIN is when a table is joined to itself. This is useful when relationships exist between rows in the same table, such as employee-manager relationships in an employee table. Self joins typically use table aliases to distinguish between the "two copies" of the table. For example: SELECT e1.name, e2.name FROM EMPLOYEE e1 JOIN EMPLOYEE e2 ON e1.manager_id = e2.emp_id.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">8. True or False: An INNER JOIN requires matching values in the join columns of both tables.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>An INNER JOIN returns only rows where there are matching values in both tables' join columns. Rows that don't have matches in both tables are excluded from the result set. This is the most common type of join and represents the intersection between two tables based on the join condition. The join condition is typically specified with an ON clause or in the WHERE clause (for older syntax).</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe025;</span> Advanced SQL: Subqueries & Aggregates
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">9. A subquery that returns a single value is called a ________ subquery.</div>
+            <div class="answer"><strong>Answer:</strong> Scalar</div>
+            <div class="explanation">
+                <p>A Scalar subquery returns exactly one column and at most one row - a single value. These can be used anywhere a single value expression is valid, such as in SELECT lists, WHERE clauses, or SET clauses. If a scalar subquery returns no rows, the result is NULL. If it returns multiple rows, it causes an error. Scalar subqueries are often used with comparison operators (=, >, <, etc.).</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">10. Which SQL clause is used to filter groups based on a specified condition after aggregation?</div>
+            <div class="answer"><strong>Answer:</strong> HAVING</div>
+            <div class="explanation">
+                <p>The HAVING clause filters groups after aggregation, while WHERE filters rows before aggregation. HAVING is used with GROUP BY and can reference aggregate functions (e.g., HAVING COUNT(*) > 5). This differs from WHERE which cannot use aggregate functions. The sequence is: WHERE filters rows → GROUP BY forms groups → HAVING filters groups → ORDER BY sorts results.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">11. Which aggregate function calculates the total number of rows matching the criteria?</div>
+            <div class="answer"><strong>Answer:</strong> COUNT</div>
+            <div class="explanation">
+                <p>The COUNT function calculates the number of rows matching the criteria. COUNT(*) counts all rows, while COUNT(column) counts non-NULL values in a column. Other aggregate functions include SUM (total of values), AVG (average), MAX (highest value), and MIN (lowest value). Aggregate functions are often used with GROUP BY to produce summary reports, but can also be used without grouping to produce single-row results.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">12. True or False: A correlated subquery can be executed independently of the outer query.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>A correlated subquery references columns from the outer query and must be executed repeatedly - once for each row processed by the outer query. This differs from non-correlated subqueries which can be executed independently. Correlated subqueries can impact performance but are necessary for certain types of comparisons, such as when you need to compare each row against an aggregate of related rows.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe1df;</span> Advanced SQL: CTEs & DB2 Extensions
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">13. A named temporary result set defined within an SQL statement is called a ________.</div>
+            <div class="answer"><strong>Answer:</strong> Common Table Expression (CTE)</div>
+            <div class="explanation">
+                <p>A Common Table Expression (CTE) is a named temporary result set defined within the execution scope of a single SQL statement. Defined using the WITH clause, CTEs can improve readability and maintainability of complex queries by breaking them into logical parts. They can be referenced multiple times in the main query and can be recursive (referencing themselves), which is particularly useful for hierarchical data like organizational charts.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">14. The DB2-specific clause WITH UR specifies which isolation level?</div>
+            <div class="answer"><strong>Answer:</strong> Uncommitted Read</div>
+            <div class="explanation">
+                <p>WITH UR (Uncommitted Read) is a DB2-specific isolation level that allows reading uncommitted changes from other transactions. It provides the highest concurrency but lowest isolation, potentially reading "dirty" data that might be rolled back. Other isolation levels are CS (Cursor Stability - default), RS (Read Stability), and RR (Repeatable Read). UR is useful for read-only queries where absolute accuracy isn't critical but performance is important.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">15. True or False: The CURRENT DATE special register requires selecting from a specific table.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>The CURRENT DATE special register (and other datetime registers like CURRENT TIME, CURRENT TIMESTAMP) can be used without referencing any table. While you can select them from SYSIBM.SYSDUMMY1 (DB2's dummy table), you can also use them directly in expressions or as values in INSERT/UPDATE statements. For example: VALUES CURRENT DATE or SET DATE_COL = CURRENT DATE.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe0a1;</span> Query Optimization
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">16. The DB2 component responsible for choosing the most efficient access path for an SQL query is the ________.</div>
+            <div class="answer"><strong>Answer:</strong> Optimizer</div>
+            <div class="explanation">
+                <p>The DB2 Optimizer analyzes SQL statements and determines the most efficient way to execute them. It considers factors like table sizes, index availability, column statistics, and system resources to choose access paths (e.g., index scans vs. table scans, join methods). The optimizer uses statistics collected by RUNSTATS, so keeping statistics current is crucial for optimal performance. Its decisions are captured in the access plan visible through EXPLAIN.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">17. Which type of index aligns its structure with the table's partitioning scheme?</div>
+            <div class="answer"><strong>Answer:</strong> Partitioned Index</div>
+            <div class="explanation">
+                <p>A Partitioned Index is partitioned in the same way as its table, with each index partition corresponding to a table partition. This alignment improves performance for partition-aware queries. A more specific type is the Data Partitioned Secondary Index (DPSI), where index entries contain the partition number, allowing DB2 to determine which partition contains the data without accessing the table. Non-partitioned indexes (NPSI) span all partitions and may require accessing multiple partitions.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">18. The DB2 utility used to gather statistics about tables and indexes for the optimizer is ________.</div>
+            <div class="answer"><strong>Answer:</strong> RUNSTATS</div>
+            <div class="explanation">
+                <p>The RUNSTATS utility collects statistical information about tables, indexes, and columns that the DB2 Optimizer uses to determine efficient access paths. Statistics include cardinality (number of rows), number of distinct values, distribution of values, and physical characteristics. Current statistics are crucial for optimal performance. RUNSTATS can be run on entire tablespaces or specific tables/indexes, with options to control the level of detail collected.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">19. True or False: Using functions on indexed columns in a WHERE clause generally improves performance.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>Applying functions to indexed columns in WHERE clauses (e.g., WHERE UPPER(NAME) = 'SMITH') typically prevents DB2 from using the index, resulting in less efficient table scans. This is because the function changes the value being compared, making it impossible to use the index's ordered structure. For better performance, consider creating function-based indexes (where supported) or restructuring the query to avoid column transformations.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe193;</span> Stored Procedures
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">20. Which type of DB2 stored procedure is written entirely in SQL PL?</div>
+            <div class="answer"><strong>Answer:</strong> Native SQL</div>
+            <div class="explanation">
+                <p>Native SQL stored procedures are written entirely in SQL Procedural Language (SQL PL), DB2's procedural extension to SQL. They are compiled and executed directly by DB2, unlike external procedures written in languages like COBOL or Java. SQL PL provides control structures (IF, LOOP, etc.), variable declarations, error handling, and other procedural features. Native procedures offer better performance for data-intensive operations and simpler deployment than external procedures.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">21. In SQL PL, the DECLARE ... HANDLER FOR SQLEXCEPTION statement is used for ________ handling.</div>
+            <div class="answer"><strong>Answer:</strong> error</div>
+            <div class="explanation">
+                <p>The DECLARE HANDLER statement defines how SQL procedures should respond to specific conditions (errors, warnings, or notifications). HANDLER FOR SQLEXCEPTION deals with error conditions (SQLCODE < 0). Other handler types include SQLEXCEPTION (SQLCODE < 0), SQLWARNING (SQLCODE > 0), and NOT FOUND (SQLCODE = +100). Handlers can CONTINUE execution, EXIT the compound statement, or perform other actions when conditions occur.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">22. True or False: A cursor declared WITH HOLD remains open across a COMMIT statement.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>Normally, cursors close when a COMMIT occurs, but WITH HOLD keeps them open. This is useful when you need to maintain position in a result set across transactions. For example: DECLARE C1 CURSOR WITH HOLD FOR SELECT * FROM EMPLOYEE. Without WITH HOLD, the cursor would close at COMMIT, requiring re-opening and re-positioning. WITH HOLD cursors consume resources until explicitly closed, so they should be closed when no longer needed.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">23. Which parameter mode allows a stored procedure to both receive and return a value through the same parameter?</div>
+            <div class="answer"><strong>Answer:</strong> INOUT</div>
+            <div class="explanation">
+                <p>INOUT parameters allow values to be passed both into and out of a stored procedure through the same parameter. This contrasts with IN parameters (input only) and OUT parameters (output only). INOUT parameters are initialized with the caller's input value, can be modified within the procedure, and the final value is returned to the caller. They're useful when you need to both receive and return information through the same parameter.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe035;</span> Application Interaction
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">24. The DB2 process that converts embedded SQL into host language calls and creates a DBRM is the ________.</div>
+            <div class="answer"><strong>Answer:</strong> Precompiler</div>
+            <div class="explanation">
+                <p>The DB2 Precompiler processes source programs containing embedded SQL, converting SQL statements into host language calls and producing a modified source program and a Database Request Module (DBRM). The DBRM contains the SQL statements extracted from the program and is input to the BIND process. The precompiler also generates a COPYBOOK for host variable declarations. This step is necessary because host language compilers don't understand embedded SQL syntax directly.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">25. A ________ is a compiled form of SQL statements from a single source program.</div>
+            <div class="answer"><strong>Answer:</strong> package</div>
+            <div class="explanation">
+                <p>A Package is the compiled form of SQL statements from a single source program's DBRM, created during the BIND process. Packages contain executable access paths for the SQL statements. Multiple packages can be included in a Plan (older method) or used directly with the Package List (newer method). Packages allow for modular application development and can be rebound independently when database changes occur.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">26. Which DB2 attachment facility is commonly used by CICS applications to connect to DB2?</div>
+            <div class="answer"><strong>Answer:</strong> CICS Attachment Facility</div>
+            <div class="explanation">
+                <p>The CICS Attachment Facility enables CICS transactions to access DB2 databases. It manages the connection between CICS and DB2, including thread pooling, security, and two-phase commit coordination for distributed transactions. When a CICS program issues SQL statements, the attachment facility routes them to DB2 and returns results. It's implemented through specialized CICS resource definitions and provides tight integration between the two subsystems.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">27. True or False: Dynamic SQL uses parameter markers primarily for security reasons (preventing SQL injection).</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>Parameter markers (question marks in dynamic SQL) separate SQL syntax from data values, preventing SQL injection attacks where malicious input could alter statement meaning. With parameter markers, user input is treated as data, not executable code. For example: EXECUTE STATEMENT 'SELECT * FROM EMPLOYEE WHERE EMPID = ?' USING :HV is safer than concatenating input directly into the SQL string. This is a critical security practice for dynamic SQL.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe0a1;</span> Data Types & Transactions
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">28. In COBOL, which picture clause often represents a DB2 INTEGER data type?</div>
+            <div class="answer"><strong>Answer:</strong> PIC S9(9) COMP</div>
+            <div class="explanation">
+                <p>PIC S9(9) COMP is commonly used for DB2 INTEGER (4-byte binary integer) in COBOL. The 'S9(9)' indicates a signed 9-digit number, and 'COMP' specifies binary storage. Other mappings include: SMALLINT → PIC S9(4) COMP, DECIMAL(p,s) → PIC S9(p-s)V9(s) COMP-3, CHAR(n) → PIC X(n). Proper host variable definitions are crucial to prevent data conversion errors or truncation when transferring data between COBOL and DB2.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">29. A variable used alongside a host variable to indicate whether the corresponding column value is NULL is called an ________ variable.</div>
+            <div class="answer"><strong>Answer:</strong> indicator</div>
+            <div class="explanation">
+                <p>Indicator variables are 2-byte integer host variables that accompany regular host variables to handle NULL values. A negative value indicates NULL, while 0 means not NULL. For output, DB2 sets the indicator; for input, applications can set it to insert NULLs. Example: EXEC SQL FETCH C1 INTO :HV :INDVAR. Indicator variables are essential for distinguishing between NULL and default values (like zeros or spaces) in database columns.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">30. Which transaction isolation level provides the highest degree of isolation but potentially the lowest concurrency?</div>
+            <div class="answer"><strong>Answer:</strong> Repeatable Read (RR)</div>
+            <div class="explanation">
+                <p>Repeatable Read (RR) provides the highest isolation by ensuring that all data read during a transaction remains unchanged until the transaction completes. It prevents dirty reads, non-repeatable reads, and phantom reads. This is achieved through strict locking, which can reduce concurrency by blocking other transactions. Lower isolation levels are CS (Cursor Stability - default), RS (Read Stability), and UR (Uncommitted Read), each offering more concurrency but less isolation.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">31. True or False: A ROLLBACK statement makes all changes since the last COMMIT permanent.</div>
+            <div class="answer"><strong>Answer:</strong> False</div>
+            <div class="explanation">
+                <p>ROLLBACK undoes all changes made in the current transaction (since the last COMMIT, ROLLBACK, or connection start). It returns the database to its previous consistent state, making none of the transaction's changes permanent. This contrasts with COMMIT which makes changes permanent. ROLLBACK is crucial for error recovery and maintaining data consistency when operations fail or business rules are violated.</p>
+            </div>
+        </div>
+
+        <h2 class="category">
+            <span class="lucide">&#xe193;</span> Error Handling & Security
+        </h2>
+
+        <div class="solution-container">
+            <div class="question">32. Which field in the SQLCA structure contains the primary status code after an SQL statement executes?</div>
+            <div class="answer"><strong>Answer:</strong> SQLCODE</div>
+            <div class="explanation">
+                <p>The SQLCODE field in the SQL Communication Area (SQLCA) contains the primary status code after SQL statement execution. A zero indicates success, positive values are warnings (e.g., +100 for no data found), and negative values are errors. SQLCODE provides the most concise feedback about statement execution. The SQLCA also contains SQLSTATE (standardized 5-character code), error message text, and other diagnostic information for more detailed error analysis.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">33. The GET DIAGNOSTICS statement provides a more standardized way to retrieve error information compared to relying solely on the ________.</div>
+            <div class="answer"><strong>Answer:</strong> SQLCA</div>
+            <div class="explanation">
+                <p>GET DIAGNOSTICS is an SQL standard alternative to the DB2-specific SQLCA for error handling. It retrieves detailed information about the most recently executed SQL statement into host variables. While SQLCA is widely used in existing DB2 applications, GET DIAGNOSTICS offers more standardized, flexible error handling and is preferred for new development, especially in environments requiring cross-platform compatibility.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">34. True or False: Using parameter markers in dynamic SQL (PREPARE/EXECUTE) helps prevent SQL injection attacks.</div>
+            <div class="answer"><strong>Answer:</strong> True</div>
+            <div class="explanation">
+                <p>Parameter markers separate SQL code from data values, preventing SQL injection where malicious input could alter statement meaning. With parameter markers, user input is treated strictly as data, not executable code. For example: PREPARE STMT FROM 'SELECT * FROM USER WHERE ID = ?' followed by EXECUTE STMT USING :HV is safer than concatenating input directly into the SQL string. This is a critical security practice for dynamic SQL applications.</p>
+            </div>
+        </div>
+
+        <div class="solution-container">
+            <div class="question">35. Which DB2 authorization model involves granting privileges to logical groups rather than individual users?</div>
+            <div class="answer"><strong>Answer:</strong> Role-based access control</div>
+            <div class="explanation">
+                <p>Role-Based Access Control (RBAC) allows privileges to be granted to roles (logical groups), which are then assigned to users. This simplifies administration by allowing privilege management at the role level rather than individually for each user. DB2 implements RBAC through CREATE ROLE, GRANT (to role), and GRANT (role to user). Roles can be enabled dynamically (SET CURRENT ROLE) to provide context-sensitive privileges.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript for toggle functionality and search
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle all explanations
+            const toggleAllBtn = document.getElementById('toggle-all-btn');
+            toggleAllBtn.addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                const firstExplanation = explanations[0];
+                const isHidden = firstExplanation.style.display === 'none';
+                
+                explanations.forEach(explanation => {
+                    explanation.style.display = isHidden ? 'block' : 'none';
+                });
+                
+                toggleAllBtn.innerHTML = isHidden ? 
+                    '<span class="lucide">&#xe2c4;</span> Hide All Explanations' : 
+                    '<span class="lucide">&#xe2c4;</span> Show All Explanations';
+            });
+
+            // Search functionality
+            const searchBox = document.getElementById('search-box');
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const questions = document.querySelectorAll('.question');
+                
+                questions.forEach(question => {
+                    const questionText = question.textContent.toLowerCase();
+                    const solutionContainer = question.closest('.solution-container');
+                    
+                    if (questionText.includes(searchTerm)) {
+                        solutionContainer.style.display = 'block';
+                    } else {
+                        solutionContainer.style.display = 'none';
+                    }
+                });
+            });
+
+            // Back to quiz button
+            const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+            backToQuizBtn.addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+        });
+    </script>
+</body>
+</html>
