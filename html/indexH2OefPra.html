@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>DB2 SQL & Application Programming - Practical Exercises</title>
+    <style>
+        button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button:disabled {
+          background-color: #05050a; /* Darker background when disabled */
+          color: #447744; /* Dimmed green text */
+          border-color: #225522; /* Dimmed border */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
+        /* General styles - Mainframe inspired but optimized for learning */
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        nav li {
+            margin: 5px 15px; /* Add vertical margin for wrapped items */
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        h4 {
+            color: #00e6b8;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            white-space: pre; /* Preserve whitespace and line breaks */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        .exercise {
+            background-color: rgba(0, 26, 0, 0.5);
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .exercise::before {
+            content: "EXERCISE";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #33ff33;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .solution {
+            background-color: rgba(26, 0, 26, 0.5);
+            border: 1px solid #cc33ff;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            display: none;
+        }
+        .solution::before {
+            content: "SOLUTION";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #cc33ff;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .toggle-solution {
+            background-color: #330033;
+            color: #cc33ff;
+            border-color: #cc33ff;
+            margin-top: 10px;
+        }
+        .toggle-solution:hover {
+            background-color: rgba(204, 51, 255, 0.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 SQL & Application Programming - Practical Exercises</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe3a7;</span> Back To Mainpage
+            </button>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#sql-queries">SQL Query Writing</a></li>
+                <li><a href="#stored-procedures">Stored Procedures</a></li>
+                <li><a href="#app-integration">Application Integration</a></li>
+                <li><a href="#error-handling">Error Handling</a></li>
+            </ul>
+        </nav>
+
+        <section id="sql-queries">
+            <h2>SQL Query Writing Exercises</h2>
+            <p>Practice writing and optimizing SQL queries for DB2.</p>
+
+            <div class="exercise">
+                <h3>Exercise 1: Complex Query with Joins and Aggregates</h3>
+                <p>Write a query to find the total salary and number of employees per department, including only departments with more than 5 employees and an average salary greater than 50,000. Use the <code>EMPLOYEE</code> and <code>DEPARTMENT</code> tables.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Join EMPLOYEE and DEPARTMENT tables</li>
+                    <li>Group by department name</li>
+                    <li>Include only departments meeting the criteria</li>
+                    <li>Sort by total salary descending</li>
+                    <li>Limit to top 10 results</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+SELECT D.DEPTNAME, 
+       COUNT(*) AS EMP_COUNT, 
+       SUM(E.SALARY) AS TOTAL_SALARY,
+       AVG(E.SALARY) AS AVG_SALARY
+FROM EMPLOYEE E
+INNER JOIN DEPARTMENT D ON E.DEPTNO = D.DEPTNO
+GROUP BY D.DEPTNAME
+HAVING COUNT(*) > 5 AND AVG(E.SALARY) > 50000
+ORDER BY TOTAL_SALARY DESC
+FETCH FIRST 10 ROWS ONLY;
+                    </pre>
+                    <p><strong>Explanation:</strong> The query joins the tables, groups by department name, applies the HAVING clause to filter groups, sorts by total salary, and limits to 10 rows for efficiency.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 2: Recursive CTE for Hierarchy</h3>
+                <p>Create a query to display the employee hierarchy starting from employees with no manager, showing each employee’s name and their level in the hierarchy. Use the <code>EMPLOYEE</code> table with columns <code>EMPNO</code>, <code>LASTNAME</code>, and <code>MANAGER_ID</code>.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use a recursive CTE</li>
+                    <li>Show employee number, last name, and hierarchy level</li>
+                    <li>Order by level and last name</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+WITH RECURSIVE EMP_HIERARCHY (EMPNO, LASTNAME, MANAGER_ID, LEVEL) AS (
+    SELECT EMPNO, LASTNAME, MANAGER_ID, 1
+    FROM EMPLOYEE
+    WHERE MANAGER_ID IS NULL
+    UNION ALL
+    SELECT E.EMPNO, E.LASTNAME, E.MANAGER_ID, H.LEVEL + 1
+    FROM EMPLOYEE E
+    JOIN EMP_HIERARCHY H ON E.MANAGER_ID = H.EMPNO
+)
+SELECT EMPNO, LASTNAME, LEVEL
+FROM EMP_HIERARCHY
+ORDER BY LEVEL, LASTNAME;
+                    </pre>
+                    <p><strong>Explanation:</strong> The recursive CTE starts with top-level employees (no manager) and iteratively joins to find subordinates, incrementing the level. Results are sorted for clarity.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="stored-procedures">
+            <h2>Stored Procedure Exercises</h2>
+            <p>Practice developing and optimizing stored procedures in SQL PL.</p>
+
+            <div class="exercise">
+                <h3>Exercise 3: Creating a Salary Update Procedure</h3>
+                <p>Write a native SQL stored procedure to increase salaries for employees in a specified department by a given percentage. Include error handling for invalid inputs.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Accept department number and percentage increase as IN parameters</li>
+                    <li>Validate that percentage is positive</li>
+                    <li>Return number of updated rows as an OUT parameter</li>
+                    <li>Handle SQL exceptions</li>
+                    <li>Commit changes on success</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE PROCEDURE UPDATE_DEPT_SALARY
+    (IN P_DEPTNO CHAR(3),
+     IN P_PCT_INCREASE DECIMAL(5,2),
+     OUT P_ROWS_UPDATED INTEGER)
+    LANGUAGE SQL
+    MODIFIES SQL DATA
+    COMMIT ON RETURN YES
+BEGIN
+    DECLARE V_SQLCODE INTEGER;
+    DECLARE V_SQLSTATE CHAR(5);
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1
+            V_SQLCODE = DB2_RETURNED_SQLCODE,
+            V_SQLSTATE = RETURNED_SQLSTATE;
+        SET P_ROWS_UPDATED = -1;
+        SIGNAL SQLSTATE '75001'
+            SET MESSAGE_TEXT = 'Error updating salaries: SQLCODE=' || 
+                              V_SQLCODE || ', SQLSTATE=' || V_SQLSTATE;
+    END;
+
+    IF P_PCT_INCREASE <= 0 THEN
+        SIGNAL SQLSTATE '75002'
+            SET MESSAGE_TEXT = 'Percentage increase must be positive';
+    END IF;
+
+    UPDATE EMPLOYEE
+    SET SALARY = SALARY * (1 + P_PCT_INCREASE / 100)
+    WHERE DEPTNO = P_DEPTNO;
+
+    GET DIAGNOSTICS P_ROWS_UPDATED = ROW_COUNT;
+END;
+                    </pre>
+                    <p><strong>Explanation:</strong> The procedure validates input, updates salaries, captures the number of affected rows, and handles errors with an EXIT handler. The COMMIT ON RETURN ensures changes are committed on successful execution.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 4: Cursor-Based Procedure</h3>
+                <p>Create a stored procedure that processes employee records in a department using a cursor, calculating bonuses based on salary ranges and updating the <code>BONUS</code> column.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Accept department number as input</li>
+                    <li>Bonus rules: 10% for salary > 60,000; 5% for 40,000–60,000; 2,000 flat for < 40,000</li>
+                    <li>Use a cursor with HOLD to persist across commits</li>
+                    <li>Commit every 100 rows</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE PROCEDURE CALCULATE_BONUSES
+    (IN P_DEPTNO CHAR(3))
+    LANGUAGE SQL
+    MODIFIES SQL DATA
+BEGIN
+    DECLARE V_EMPNO CHAR(6);
+    DECLARE V_SALARY DECIMAL(9,2);
+    DECLARE V_BONUS DECIMAL(9,2);
+    DECLARE V_ROW_COUNT INTEGER DEFAULT 0;
+    DECLARE SQLSTATE CHAR(5);
+    
+    DECLARE emp_cursor CURSOR WITH HOLD FOR
+        SELECT EMPNO, SALARY
+        FROM EMPLOYEE
+        WHERE DEPTNO = P_DEPTNO
+        FOR UPDATE OF BONUS;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+        SIGNAL SQLSTATE '75003'
+            SET MESSAGE_TEXT = 'Error processing bonuses';
+    
+    OPEN emp_cursor;
+    
+    fetch_loop: LOOP
+        FETCH emp_cursor INTO V_EMPNO, V_SALARY;
+        IF SQLSTATE = '02000' THEN
+            LEAVE fetch_loop;
+        END IF;
+        
+        IF V_SALARY > 60000 THEN
+            SET V_BONUS = V_SALARY * 0.10;
+        ELSEIF V_SALARY >= 40000 THEN
+            SET V_BONUS = V_SALARY * 0.05;
+        ELSE
+            SET V_BONUS = 2000;
+        END IF;
+        
+        UPDATE EMPLOYEE
+        SET BONUS = V_BONUS
+        WHERE CURRENT OF emp_cursor;
+        
+        SET V_ROW_COUNT = V_ROW_COUNT + 1;
+        IF V_ROW_COUNT >= 100 THEN
+            COMMIT;
+            SET V_ROW_COUNT = 0;
+        END IF;
+    END LOOP;
+    
+    CLOSE emp_cursor;
+    IF V_ROW_COUNT > 0 THEN
+        COMMIT;
+    END IF;
+END;
+                    </pre>
+                    <p><strong>Explanation:</strong> The procedure uses a cursor with HOLD to process rows, calculates bonuses based on salary ranges, updates records, and commits every 100 rows to balance performance and transaction size.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="app-integration">
+            <h2>Application Integration Exercises</h2>
+            <p>Practice integrating applications with DB2, focusing on embedded SQL and connection management.</p>
+
+            <div class="exercise">
+                <h3>Exercise 5: Embedded SQL in COBOL</h3>
+                <p>Write a COBOL program fragment that retrieves employee details for a given department and handles NULL values for the commission column. Use embedded SQL.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use host variables for input and output</li>
+                    <li>Include indicator variable for commission</li>
+                    <li>Check SQLCODE for errors</li>
+                    <li>Process multiple rows with a cursor</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+       WORKING-STORAGE SECTION.
+       01  HOST-VARIABLES.
+           05  HV-DEPTNO      PIC X(3).
+           05  HV-EMPNO       PIC X(6).
+           05  HV-LASTNAME    PIC X(15).
+           05  HV-SALARY      PIC S9(7)V99 COMP-3.
+           05  HV-COMM        PIC S9(7)V99 COMP-3.
+           05  HV-COMM-IND    PIC S9(4) COMP.
+       01  SQLCODE-DISPLAY    PIC -9(9).
+
+       EXEC SQL
+           INCLUDE SQLCA
+       END-EXEC.
+
+       EXEC SQL
+           DECLARE EMP_CURSOR CURSOR FOR
+           SELECT EMPNO, LASTNAME, SALARY, COMMISSION
+           FROM EMPLOYEE
+           WHERE DEPTNO = :HV-DEPTNO
+       END-EXEC.
+
+       PROCEDURE DIVISION.
+           MOVE "010" TO HV-DEPTNO.
+
+           EXEC SQL
+               OPEN EMP_CURSOR
+           END-EXEC.
+           IF SQLCODE NOT = 0
+               DISPLAY "ERROR OPENING CURSOR: SQLCODE=" SQLCODE
+               STOP RUN.
+
+           PERFORM UNTIL SQLCODE = 100
+               EXEC SQL
+                   FETCH EMP_CURSOR
+                   INTO :HV-EMPNO,
+                        :HV-LASTNAME,
+                        :HV-SALARY,
+                        :HV-COMM :HV-COMM-IND
+               END-EXEC
+
+               MOVE SQLCODE TO SQLCODE-DISPLAY
+               IF SQLCODE = 0
+                   DISPLAY "EMPNO: " HV-EMPNO
+                   DISPLAY "NAME: " HV-LASTNAME
+                   DISPLAY "SALARY: " HV-SALARY
+                   IF HV-COMM-IND = -1
+                       DISPLAY "COMMISSION: NULL"
+                   ELSE
+                       DISPLAY "COMMISSION: " HV-COMM
+                   END-IF
+               ELSE IF SQLCODE NOT = 100
+                   DISPLAY "FETCH ERROR: SQLCODE=" SQLCODE-DISPLAY
+               END-IF
+           END-PERFORM.
+
+           EXEC SQL
+               CLOSE EMP_CURSOR
+           END-EXEC.
+           STOP RUN.
+                    </pre>
+                    <p><strong>Explanation:</strong> The COBOL program declares host variables, uses a cursor to fetch employee data, checks for NULL commissions with an indicator variable, and handles SQL errors by checking SQLCODE.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 6: Dynamic SQL with Parameter Markers</h3>
+                <p>Write a COBOL program fragment that uses dynamic SQL to update employee salaries based on a user-specified department and percentage increase, preventing SQL injection.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use PREPARE and EXECUTE for dynamic SQL</li>
+                    <li>Use parameter markers for inputs</li>
+                    <li>Include error handling</li>
+                    <li>Return number of affected rows</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+       WORKING-STORAGE SECTION.
+       01  HOST-VARIABLES.
+           05  HV-DEPTNO      PIC X(3).
+           05  HV-PCT         PIC S9(3)V99 COMP-3.
+           05  HV-ROWS        PIC S9(9) COMP.
+           05  HV-STMT        PIC X(1000).
+       01  SQLCODE-DISPLAY    PIC -9(9).
+
+       EXEC SQL
+           INCLUDE SQLCA
+       END-EXEC.
+
+       PROCEDURE DIVISION.
+           MOVE "010" TO HV-DEPTNO.
+           MOVE 5.25 TO HV-PCT.
+
+           MOVE "UPDATE EMPLOYEE SET SALARY = SALARY * (1 + ? / 100) +
+                 WHERE DEPTNO = ?" TO HV-STMT.
+
+           EXEC SQL
+               PREPARE DYN_STMT FROM :HV-STMT
+           END-EXEC.
+           IF SQLCODE NOT = 0
+               MOVE SQLCODE TO SQLCODE-DISPLAY
+               DISPLAY "PREPARE ERROR: SQLCODE=" SQLCODE-DISPLAY
+               STOP RUN.
+
+           EXEC SQL
+               EXECUTE DYN_STMT USING :HV-PCT, :HV-DEPTNO
+           END-EXEC.
+           IF SQLCODE NOT = 0
+               MOVE SQLCODE TO SQLCODE-DISPLAY
+               DISPLAY "EXECUTE ERROR: SQLCODE=" SQLCODE-DISPLAY
+               STOP RUN.
+
+           EXEC SQL
+               GET DIAGNOSTICS :HV-ROWS = ROW_COUNT
+           END-EXEC.
+
+           DISPLAY "ROWS UPDATED: " HV-ROWS.
+
+           EXEC SQL
+               COMMIT
+           END-EXEC.
+           STOP RUN.
+                    </pre>
+                    <p><strong>Explanation:</strong> The program uses dynamic SQL with parameter markers to safely update salaries, checks for errors, retrieves the number of affected rows, and commits the transaction.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="error-handling">
+            <h2>Error Handling Exercises</h2>
+            <p>Practice implementing robust error handling in DB2 applications.</p>
+
+            <div class="exercise">
+                <h3>Exercise 7: Comprehensive Error Handling in Stored Procedure</h3>
+                <p>Modify an existing stored procedure to transfer employees to a new department, adding comprehensive error handling for common issues like invalid department numbers or referential integrity violations.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Accept employee ID and new department number as inputs</li>
+                    <li>Validate department exists</li>
+                    <li>Handle SQL exceptions and return error details</li>
+                    <li>Return success/failure status and message</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE PROCEDURE TRANSFER_EMPLOYEE
+    (IN P_EMPNO CHAR(6),
+     IN P_NEW_DEPTNO CHAR(3),
+     OUT P_STATUS INTEGER,
+     OUT P_MESSAGE VARCHAR(100))
+    LANGUAGE SQL
+    MODIFIES SQL DATA
+BEGIN
+    DECLARE V_COUNT INTEGER;
+    DECLARE V_SQLCODE INTEGER;
+    DECLARE V_SQLSTATE CHAR(5);
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        GET DIAGNOSTICS CONDITION 1
+            V_SQLCODE = DB2_RETURNED_SQLCODE,
+            V_SQLSTATE = RETURNED_SQLSTATE;
+        SET P_STATUS = -1;
+        SET P_MESSAGE = 'Error transferring employee: SQLCODE=' || 
+                        V_SQLCODE || ', SQLSTATE=' || V_SQLSTATE;
+    END;
+    
+    -- Validate department exists
+    SELECT COUNT(*)
+    INTO V_COUNT
+    FROM DEPARTMENT
+    WHERE DEPTNO = P_NEW_DEPTNO;
+    
+    IF V_COUNT = 0 THEN
+        SET P_STATUS = -2;
+        SET P_MESSAGE = 'Invalid department number: ' || P_NEW_DEPTNO;
+        SIGNAL SQLSTATE '75004'
+            SET MESSAGE_TEXT = P_MESSAGE;
+    END IF;
+    
+    -- Perform the transfer
+    UPDATE EMPLOYEE
+    SET DEPTNO = P_NEW_DEPTNO
+    WHERE EMPNO = P_EMPNO;
+    
+    SET P_STATUS = 0;
+    SET P_MESSAGE = 'Employee ' || P_EMPNO || ' transferred successfully';
+END;
+                    </pre>
+                    <p><strong>Explanation:</strong> The procedure validates the department, updates the employee’s department, catches SQL exceptions, and returns status and message indicating success or failure.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 8: Analyzing SQLCA in Application</h3>
+                <p>Write a COBOL program fragment that executes a batch update of employee records and analyzes the SQLCA structure to log detailed error information if the update fails.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Update salaries for a department</li>
+                    <li>Check SQLCA fields: SQLCODE, SQLSTATE, SQLERRM</li>
+                    <li>Log error details to a display output</li>
+                    <li>Handle successful and failed cases</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+       WORKING-STORAGE SECTION.
+       01  HOST-VARIABLES.
+           05  HV-DEPTNO      PIC X(3).
+           05  HV-PCT         PIC S9(3)V99 COMP-3.
+       01  SQLCODE-DISPLAY    PIC -9(9).
+       01  ERROR-LOG.
+           05  ERR-SQLCODE    PIC -9(9).
+           05  ERR-SQLSTATE   PIC X(5).
+           05  ERR-MESSAGE    PIC X(72).
+
+       EXEC SQL
+           INCLUDE SQLCA
+       END-EXEC.
+
+       PROCEDURE DIVISION.
+           MOVE "010" TO HV-DEPTNO.
+           MOVE 5.00 TO HV-PCT.
+
+           EXEC SQL
+               UPDATE EMPLOYEE
+               SET SALARY = SALARY * (1 + :HV-PCT / 100)
+               WHERE DEPTNO = :HV-DEPTNO
+           END-EXEC.
+
+           MOVE SQLCODE TO SQLCODE-DISPLAY
+           IF SQLCODE = 0
+               DISPLAY "UPDATE SUCCESSFUL"
+               EXEC SQL
+                   COMMIT
+               END-EXEC
+           ELSE
+               MOVE SQLCODE TO ERR-SQLCODE
+               MOVE SQLSTATE TO ERR-SQLSTATE
+               MOVE SQLERRMC TO ERR-MESSAGE
+               DISPLAY "UPDATE FAILED:"
+               DISPLAY "SQLCODE: " SQLCODE-DISPLAY
+               DISPLAY "SQLSTATE: " ERR-SQLSTATE
+               DISPLAY "MESSAGE: " ERR-MESSAGE
+               EXEC SQL
+                   ROLLBACK
+               END-EXEC
+           END-IF.
+
+           STOP RUN.
+                    </pre>
+                    <p><strong>Explanation:</strong> The program updates salaries, checks SQLCA for success or failure, logs detailed error information from SQLCODE, SQLSTATE, and SQLERRM, and manages transactions accordingly.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle solution visibility
+        document.querySelectorAll('.toggle-solution').forEach(button => {
+            button.addEventListener('click', function() {
+                const solution = this.nextElementSibling;
+                if (solution.style.display === 'block') {
+                    solution.style.display = 'none';
+                    this.textContent = 'Show Solution';
+                } else {
+                    solution.style.display = 'block';
+                    this.textContent = 'Hide Solution';
+                }
+            });
+        });
+
+        // Back button functionality
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+        backToQuizBtn.addEventListener('click', function() {
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

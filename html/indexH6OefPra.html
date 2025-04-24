@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>DB2 Security & Compliance - Practical Exercises</title>
+    <style>
+        button {
+            background-color: #001a00;
+            color: #33ff33;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border: 1px solid #33ff33;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        button:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+        }
+        button:disabled {
+            background-color: #05050a;
+            color: #447744;
+            border-color: #225522;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        button .lucide {
+            margin-right: 8px;
+        }
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav li {
+            margin: 5px 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        h4 {
+            color: #00e6b8;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            white-space: pre;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "SEC_CONSOLE >";
+            color: #ff6347;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        .exercise {
+            background-color: rgba(0, 26, 0, 0.5);
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .exercise::before {
+            content: "EXERCISE";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #33ff33;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .solution {
+            background-color: rgba(26, 0, 26, 0.5);
+            border: 1px solid #cc33ff;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            display: none;
+        }
+        .solution::before {
+            content: "SOLUTION";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #cc33ff;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .toggle-solution {
+            background-color: #330033;
+            color: #cc33ff;
+            border-color: #cc33ff;
+            margin-top: 10px;
+        }
+        .toggle-solution:hover {
+            background-color: rgba(204, 51, 255, 0.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Security & Compliance - Practical Exercises</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#authentication">Authentication Setup</a></li>
+                <li><a href="#privileges">Privilege Management</a></li>
+                <li><a href="#rbac">Role-Based Access Control</a></li>
+                <li><a href="#dac">Discretionary Access Control</a></li>
+                <li><a href="#lbac">Label-Based Access Control</a></li>
+                <li><a href="#rcac">Row and Column Access Control</a></li>
+                <li><a href="#trusted-contexts">Trusted Contexts</a></li>
+                <li><a href="#auditing">Auditing</a></li>
+                <li><a href="#encryption">Encryption</a></li>
+                <li><a href="#compliance">Compliance Planning</a></li>
+            </ul>
+        </nav>
+
+        <section id="authentication">
+            <h2>Authentication Setup Exercises</h2>
+            <p>Practice configuring authentication mechanisms for DB2 on z/OS.</p>
+
+            <div class="exercise">
+                <h3>Exercise 1: Configure RACF User for DB2 Access</h3>
+                <p>Create a RACF user profile for a new DB2 user (DBUSER1) and permit access to a DB2 subsystem (DB2X).</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create a RACF user with a password</li>
+                    <li>Assign to a default group (DBGROUP)</li>
+                    <li>Permit READ access to the DB2 subsystem resource</li>
+                    <li>Provide RACF commands</li>
+                    <li>Explain the importance of ESM integration</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+// RACF Commands
+ADDUSER DBUSER1 DFLTGRP(DBGROUP) PASSWORD(TEMPPASS) NAME('DB2 User One')
+
+PERMIT DSN.DB2X.SYSUSER CLASS(DSNR) ID(DBUSER1) ACCESS(READ)
+                    </pre>
+                    <p><strong>Explanation:</strong> The ADDUSER command creates a RACF user profile for DBUSER1 with a temporary password and assigns it to the DBGROUP group. The PERMIT command grants READ access to the DB2X subsystem resource in the DSNR class, allowing DBUSER1 to connect to DB2. ESM (RACF) integration centralizes authentication, ensuring consistent security policies across z/OS and DB2, leveraging RACF's robust user management and auditing capabilities.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="privileges">
+            <h2>Privilege Management Exercises</h2>
+            <p>Practice granting and managing DB2 privileges and authorities.</p>
+
+            <div class="exercise">
+                <h3>Exercise 2: Grant Database-Level Authority</h3>
+                <p>Grant DBADM authority on a database (HRDB) to a user (DBA01) without data access privileges.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use GRANT statement</li>
+                    <li>Ensure no inherent data access</li>
+                    <li>Provide SQL statement</li>
+                    <li>Explain the implications of DBADM</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+GRANT DBADM WITHOUT DATAACCESS ON DATABASE HRDB TO USER DBA01;
+                    </pre>
+                    <p><strong>Explanation:</strong> The GRANT statement assigns DBADM authority to DBA01 for the HRDB database, with WITHOUT DATAACCESS ensuring no automatic SELECT, INSERT, UPDATE, or DELETE privileges on tables. DBADM allows full administrative control over the database (e.g., creating tables, running utilities, granting privileges), but explicit data access grants are needed for data operations, supporting separation of duties.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="rbac">
+            <h2>Role-Based Access Control Exercises</h2>
+            <p>Practice implementing RBAC using roles.</p>
+
+            <div class="exercise">
+                <h3>Exercise 3: Create and Assign a Role for Analysts</h3>
+                <p>Create a role for data analysts (ANALYST_ROLE) and grant it specific privileges on a table (SALES_DATA).</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create the role</li>
+                    <li>Grant SELECT and EXECUTE privileges</li>
+                    <li>Assign the role to a user (ANALYST01)</li>
+                    <li>Provide SQL statements</li>
+                    <li>Explain the benefits of RBAC</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE ROLE ANALYST_ROLE;
+
+GRANT SELECT ON TABLE MYSCHEMA.SALES_DATA TO ROLE ANALYST_ROLE;
+GRANT EXECUTE ON PROCEDURE MYSCHEMA.ANALYZE_SALES TO ROLE ANALYST_ROLE;
+
+GRANT ROLE ANALYST_ROLE TO USER ANALYST01;
+                    </pre>
+                    <p><strong>Explanation:</strong> The role ANALYST_ROLE is created and granted SELECT on SALES_DATA and EXECUTE on a stored procedure, enabling data analysis tasks. Assigning the role to ANALYST01 grants these privileges indirectly. RBAC simplifies privilege management by grouping permissions by job function, enhances consistency, and reduces administrative overhead when users change roles or leave.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="dac">
+            <h2>Discretionary Access Control Exercises</h2>
+            <p>Practice managing permissions with DAC.</p>
+
+            <div class="exercise">
+                <h3>Exercise 4: Grant and Revoke Privileges with Grant Option</h3>
+                <p>Grant SELECT privilege on a table (CUSTOMER_INFO) to a user (MGR01) with the ability to grant it to others, then revoke only the grant option.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use GRANT and REVOKE statements</li>
+                    <li>Ensure MGR01 retains SELECT privilege</li>
+                    <li>Provide SQL statements</li>
+                    <li>Explain the risks of WITH GRANT OPTION</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+GRANT SELECT ON TABLE MYSCHEMA.CUSTOMER_INFO TO USER MGR01 WITH GRANT OPTION;
+
+REVOKE GRANT OPTION FOR SELECT ON TABLE MYSCHEMA.CUSTOMER_INFO FROM USER MGR01;
+                    </pre>
+                    <p><strong>Explanation:</strong> The GRANT statement gives MGR01 SELECT privilege and the ability to grant it to others. The REVOKE statement removes only the grant option, preserving MGR01's SELECT privilege. WITH GRANT OPTION risks privilege proliferation, as grantees can extend access to others, potentially leading to unintended access. Careful tracking via SYSIBM.SYSTABAUTH is needed to manage dependencies.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="lbac">
+            <h2>Label-Based Access Control Exercises</h2>
+            <p>Practice implementing LBAC for multi-level security.</p>
+
+            <div class="exercise">
+                <h3>Exercise 5: Implement LBAC for Classified Data</h3>
+                <p>Create an LBAC policy for a table (PROJECT_FILES) to enforce access based on security levels and compartments.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create a security policy with levels and compartments</li>
+                    <li>Define security labels</li>
+                    <li>Apply to the table</li>
+                    <li>Provide SQL statements</li>
+                    <li>Explain LBAC enforcement</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE SECURITY LABEL COMPONENT LEVEL ('TOP_SECRET', 'SECRET', 'UNCLASSIFIED');
+CREATE SECURITY LABEL COMPONENT COMPARTMENT ('ALPHA', 'BETA');
+
+CREATE SECURITY POLICY CLASSIFIED_POLICY COMPONENTS LEVEL, COMPARTMENT;
+
+CREATE SECURITY LABEL CLASSIFIED_POLICY.TS_ALPHA 
+    COMPONENT LEVEL 'TOP_SECRET', 
+    COMPONENT COMPARTMENT 'ALPHA';
+CREATE SECURITY LABEL CLASSIFIED_POLICY.S_BETA 
+    COMPONENT LEVEL 'SECRET', 
+    COMPONENT COMPARTMENT 'BETA';
+
+ALTER TABLE MYSCHEMA.PROJECT_FILES 
+    ADD COLUMN DATA_LABEL SECPOLICYNAME CLASSIFIED_POLICY;
+                    </pre>
+                    <p><strong>Explanation:</strong> The security policy CLASSIFIED_POLICY uses LEVEL and COMPARTMENT components. Labels TS_ALPHA and S_BETA define specific access criteria. Adding a DATA_LABEL column to PROJECT_FILES enables LBAC. DB2 enforces access by comparing user labels (granted via SECADM) to row labels, ensuring users only access rows where their label dominates (e.g., TOP_SECRET users access SECRET rows, but not vice versa).</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="rcac">
+            <h2>Row and Column Access Control Exercises</h2>
+            <p>Practice configuring RCAC for fine-grained access.</p>
+
+            <div class="exercise">
+                <h3>Exercise 6: Create Row Permission and Column Mask</h3>
+                <p>Implement RCAC on a table (EMPLOYEE_DATA) to restrict row access to managers' departments and mask SSN for non-HR users.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create a row permission for department-based access</li>
+                    <li>Create a column mask for SSN</li>
+                    <li>Provide SQL statements</li>
+                    <li>Explain RCAC benefits</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE PERMISSION MGR_DEPT_ACCESS ON MYSCHEMA.EMPLOYEE_DATA
+    FOR ROWS WHERE DEPARTMENT_ID = 
+        (SELECT DEPT_ID FROM MYSCHEMA.MANAGERS WHERE MGR_USERID = SESSION_USER)
+    ENFORCED FOR ALL ACCESS ENABLE;
+
+CREATE MASK SSN_MASK ON MYSCHEMA.EMPLOYEE_DATA
+    FOR COLUMN SSN RETURN
+        CASE WHEN VERIFY_ROLE_FOR_USER(SESSION_USER, 'HR_ROLE') = 1
+             THEN SSN
+             ELSE 'XXX-XX-' || SUBSTR(SSN, 8, 4)
+        END
+    ENABLE;
+                    </pre>
+                    <p><strong>Explanation:</strong> The row permission restricts access to rows where the user's department matches their manager record. The column mask hides SSN for non-HR users, showing only the last four digits. RCAC provides fine-grained, transparent access control, reducing application changes, enhancing security, and supporting compliance by limiting sensitive data exposure.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="trusted-contexts">
+            <h2>Trusted Contexts Exercises</h2>
+            <p>Practice setting up trusted contexts for secure connections.</p>
+
+            <div class="exercise">
+                <h3>Exercise 7: Create a Trusted Context for Application Server</h3>
+                <p>Define a trusted context for an application server (APPSRV1) to assign a role (APP_USER_ROLE) to connections.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Specify server AUTHID and IP address</li>
+                    <li>Assign a default role</li>
+                    <li>Provide SQL statement</li>
+                    <li>Explain trusted context use cases</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TRUSTED CONTEXT APP_SERVER_CTX
+    BASED UPON CONNECTION USING SYSTEM AUTHID APPSRV1
+    ATTRIBUTES (ADDRESS '192.168.1.100')
+    DEFAULT ROLE APP_USER_ROLE
+    ENABLE;
+                    </pre>
+                    <p><strong>Explanation:</strong> The trusted context assigns APP_USER_ROLE to connections from APPSRV1 at the specified IP, ensuring only trusted connections gain the role's privileges. Trusted contexts are ideal for middleware servers, enabling secure user switching and connection pooling without repeated authentication, enhancing security and performance in multi-tier applications.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="auditing">
+            <h2>Auditing Exercises</h2>
+            <p>Practice configuring auditing for security events.</p>
+
+            <div class="exercise">
+                <h3>Exercise 8: Create an Audit Policy for Sensitive Data</h3>
+                <p>Create an audit policy to track access to a sensitive table (CUSTOMER_CREDIT_INFO).</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Audit all access types</li>
+                    <li>Provide SQL statements</li>
+                    <li>Explain auditing benefits</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE AUDIT POLICY CREDIT_AUDIT
+    CATEGORIES ALL STATUS BOTH ERROR TYPE NORMAL;
+
+ALTER TABLE MYSCHEMA.CUSTOMER_CREDIT_INFO 
+    AUDIT POLICY CREDIT_AUDIT;
+                    </pre>
+                    <p><strong>Explanation:</strong> The audit policy CREDIT_AUDIT logs all access (SELECT, INSERT, UPDATE, DELETE) to CUSTOMER_CREDIT_INFO, capturing both successful and failed attempts. Auditing provides visibility into data access, supports compliance (e.g., GDPR, PCI DSS), and enables forensic analysis of security incidents, ensuring accountability.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="encryption">
+            <h2>Encryption Exercises</h2>
+            <p>Practice enabling encryption for data protection.</p>
+
+            <div class="exercise">
+                <h3>Exercise 9: Enable Tablespace Encryption</h3>
+                <p>Configure a tablespace (SENSITIVE_TS) to use native DB2 encryption.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use a key label in ICSF</li>
+                    <li>Provide SQL statement</li>
+                    <li>Explain encryption considerations</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+ALTER TABLESPACE MYDB.SENSITIVE_TS 
+    USING STOGROUP SGSECURE
+    ENCRYPTION KEY LABEL 'MY_ENCR_KEY_LABEL';
+                    </pre>
+                    <p><strong>Explanation:</strong> The ALTER TABLESPACE statement enables encryption for SENSITIVE_TS using a key label managed in ICSF. Native encryption protects data at rest transparently, but requires secure key management to prevent data loss and coordination with z/OS cryptographic services. Performance impacts and backup procedures must also be considered.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="compliance">
+            <h2>Compliance Planning Exercises</h2>
+            <p>Practice developing plans to meet regulatory requirements.</p>
+
+            <div class="exercise">
+                <h3>Exercise 10: Develop a GDPR Compliance Plan</h3>
+                <p>Create a plan to ensure GDPR compliance for a DB2 table (PERSONAL_DATA) containing personal information.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Outline steps for access control, auditing, and encryption</li>
+                    <li>Provide a text-based procedure</li>
+                    <li>Explain GDPR relevance</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+GDPR COMPLIANCE PLAN FOR PERSONAL_DATA
+
+1. Implement Access Control
+   - Action: Create roles (e.g., DATA_PROCESSOR_ROLE) and grant minimal privileges (SELECT, UPDATE) on PERSONAL_DATA.
+   - SQL: 
+     CREATE ROLE DATA_PROCESSOR_ROLE;
+     GRANT SELECT, UPDATE(NAME, EMAIL) ON MYSCHEMA.PERSONAL_DATA TO ROLE DATA_PROCESSOR_ROLE;
+     GRANT ROLE DATA_PROCESSOR_ROLE TO USER PROC01;
+   - Rationale: Enforces least privilege, limiting access to authorized users.
+
+2. Configure RCAC for Data Minimization
+   - Action: Use row permissions to restrict access to relevant data and column masks to hide sensitive fields (e.g., SSN).
+   - SQL: 
+     CREATE PERMISSION DATA_ACCESS ON MYSCHEMA.PERSONAL_DATA
+       FOR ROWS WHERE REGION = (SELECT USER_REGION FROM USER_PROFILES WHERE USERID = SESSION_USER)
+       ENFORCED FOR ALL ACCESS ENABLE;
+     CREATE MASK SSN_MASK ON MYSCHEMA.PERSONAL_DATA
+       FOR COLUMN SSN RETURN
+         CASE WHEN VERIFY_ROLE_FOR_USER(SESSION_USER, 'HR_ROLE') = 1 THEN SSN ELSE 'XXX-XX-XXXX' END
+       ENABLE;
+   - Rationale: Minimizes data exposure, aligning with GDPR's data minimization principle.
+
+3. Enable Auditing
+   - Action: Create an audit policy to log all access to PERSONAL_DATA.
+   - SQL: 
+     CREATE AUDIT POLICY GDPR_AUDIT
+       CATEGORIES ALL STATUS BOTH ERROR TYPE NORMAL;
+     ALTER TABLE MYSCHEMA.PERSONAL_DATA AUDIT POLICY GDPR_AUDIT;
+   - Rationale: Provides evidence of data access for GDPR accountability and breach investigations.
+
+4. Encrypt Data
+   - Action: Enable native encryption for the tablespace containing PERSONAL_DATA.
+   - SQL: 
+     ALTER TABLESPACE MYDB.PERSONAL_TS ENCRYPTION KEY LABEL 'GDPR_KEY';
+   - Rationale: Protects personal data at rest, meeting GDPR's security requirements.
+
+5. Document Policies
+   - Action: Maintain documentation of security configurations, access policies, and audit procedures.
+   - Tool: Internal documentation system.
+   - Rationale: GDPR requires proof of compliance through documented controls.
+
+GDPR RELEVANCE:
+GDPR mandates strong protection for personal data, including access control, data minimization, encryption, and auditability. This plan uses DB2 features to enforce these requirements, ensuring compliance and reducing the risk of fines or reputational damage.
+                    </pre>
+                    <p><strong>Explanation:</strong> The plan leverages RBAC, RCAC, auditing, and encryption to meet GDPR requirements. Roles and RCAC ensure only authorized users access relevant data, auditing tracks all actions, and encryption secures data at rest. Documentation supports compliance audits, aligning with GDPR's emphasis on accountability and data protection.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. © 2025 Tom Deloddere.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle solution visibility
+        document.querySelectorAll('.toggle-solution').forEach(button => {
+            button.addEventListener('click', function() {
+                const solution = this.nextElementSibling;
+                if (solution.style.display === 'block') {
+                    solution.style.display = 'none';
+                    this.textContent = 'Show Solution';
+                } else {
+                    solution.style.display = 'block';
+                    this.textContent = 'Hide Solution';
+                }
+            });
+        });
+
+        // Back button functionality
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+        backToQuizBtn.addEventListener('click', function() {
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

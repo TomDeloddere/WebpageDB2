@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>DB2 Backup & Recovery - Practical Exercises</title>
+    <style>
+        button {
+            background-color: #001a00;
+            color: #33ff33;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border: 1px solid #33ff33;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        button:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+        }
+        button:disabled {
+            background-color: #05050a;
+            color: #447744;
+            border-color: #225522;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        button .lucide {
+            margin-right: 8px;
+        }
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav li {
+            margin: 5px 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        h4 {
+            color: #00e6b8;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            white-space: pre;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        .exercise {
+            background-color: rgba(0, 26, 0, 0.5);
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .exercise::before {
+            content: "EXERCISE";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #33ff33;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .solution {
+            background-color: rgba(26, 0, 26, 0.5);
+            border: 1px solid #cc33ff;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            display: none;
+        }
+        .solution::before {
+            content: "SOLUTION";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #cc33ff;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .toggle-solution {
+            background-color: #330033;
+            color: #cc33ff;
+            border-color: #cc33ff;
+            margin-top: 10px;
+        }
+        .toggle-solution:hover {
+            background-color: rgba(204, 51, 255, 0.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Backup & Recovery - Practical Exercises</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#backup-strategy">Backup Strategy</a></li>
+                <li><a href="#copy-utility">COPY Utility</a></li>
+                <li><a href="#recover-utility">RECOVER Utility</a></li>
+                <li><a href="#quiesce-utility">QUIESCE Utility</a></li>
+                <li><a href="#system-backup">System-Level Backup</a></li>
+                <li><a href="#recovery-planning">Recovery Planning</a></li>
+            </ul>
+        </nav>
+
+        <section id="backup-strategy">
+            <h2>Backup Strategy Exercises</h2>
+            <p>Practice designing backup strategies to meet RPO and RTO requirements.</p>
+
+            <div class="exercise">
+                <h3>Exercise 1: Design a Backup Strategy for an OLTP System</h3>
+                <p>Design a backup strategy for a high-transaction OLTP tablespace (TRANS_TS) to meet an RPO of 15 minutes and an RTO of 2 hours.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Specify frequency of full and incremental image copies</li>
+                    <li>Choose appropriate SHRLEVEL options</li>
+                    <li>Include log archival strategy</li>
+                    <li>Provide a text-based schedule</li>
+                    <li>Explain how the strategy meets RPO and RTO</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+BACKUP STRATEGY FOR TRANS_TS (OLTP)
+
+1. Full Image Copy
+   - Frequency: Weekly (Sunday 01:00 AM)
+   - Options: COPY TABLESPACE TRANS_TS FULL YES SHRLEVEL REFERENCE
+   - Rationale: Weekly full copy ensures a reliable base for recovery, using SHRLEVEL REFERENCE for consistency during low activity.
+
+2. Incremental Image Copy
+   - Frequency: Daily (00:30 AM)
+   - Options: COPY TABLESPACE TRANS_TS FULL NO SHRLEVEL CHANGE
+   - Rationale: Daily incremental copies reduce backup time while capturing changes, allowing concurrent access with SHRLEVEL CHANGE.
+
+3. Log Archival
+   - Frequency: Every 10 minutes
+   - Options: Archive logs to tape with dual copies
+   - Rationale: Frequent log archival minimizes data loss, supporting the 15-minute RPO.
+
+4. MODIFY RECOVERY
+   - Frequency: Monthly (First Saturday 04:00 AM)
+   - Options: MODIFY RECOVERY TABLESPACE TRANS_TS DELETE AGE(30)
+   - Rationale: Removes obsolete SYSCOPY entries to manage catalog space.
+
+MEETING RPO AND RTO:
+- RPO (15 minutes): Achieved through 10-minute log archival, ensuring minimal data loss by applying recent logs during recovery.
+- RTO (2 hours): Daily incremental and weekly full copies, combined with fast log apply (PARALLEL option in RECOVER), ensure recovery within 2 hours, assuming efficient tape access and hardware.
+                    </pre>
+                    <p><strong>Explanation:</strong> The strategy balances backup frequency with operational impact. Frequent log archival supports a tight RPO, while daily incremental and weekly full copies minimize recovery time. SHRLEVEL CHANGE allows concurrent access, and MODIFY RECOVERY maintains catalog efficiency. The RTO is met by leveraging parallel recovery and optimized backup schedules.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="copy-utility">
+            <h2>COPY Utility Exercises</h2>
+            <p>Practice creating image copies using the COPY utility.</p>
+
+            <div class="exercise">
+                <h3>Exercise 2: Create a Full Image Copy with FlashCopy</h3>
+                <p>Create a full image copy for a critical tablespace (CRIT_TS) using FlashCopy for minimal backup window.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use SHRLEVEL CHANGE for concurrent access</li>
+                    <li>Enable FlashCopy with consistency</li>
+                    <li>Specify dual output copies</li>
+                    <li>Provide JCL for the COPY job</li>
+                    <li>Explain the benefits of FlashCopy</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//COPYTS   EXEC PGM=DSNUTILB,REGION=0M,
+//         PARM='DB2X,COPYTS'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(10,5))
+//SYSCOPY1 DD DSN=DB2X.BACKUP.CRIT_TS.FIC.D&LYYMMDD..T&LHHMMSS,
+//         DISP=(NEW,CATLG,CATLG),UNIT=TAPE
+//SYSCOPY2 DD DSN=DB2X.BACKUP.CRIT_TS.FIC2.D&LYYMMDD..T&LHHMMSS,
+//         DISP=(NEW,CATLG,CATLG),UNIT=TAPE
+//SYSIN    DD *
+  COPY TABLESPACE MYDB.CRIT_TS
+       DSNUM ALL
+       FULL YES
+       SHRLEVEL CHANGE
+       FLASHCOPY CONSISTENT
+       COPYDDN(SYSCOPY1,SYSCOPY2)
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The JCL executes the COPY utility to create a full image copy of CRIT_TS with SHRLEVEL CHANGE for concurrent access. FLASHCOPY CONSISTENT leverages hardware capabilities for a near-instantaneous, transactionally consistent copy. Dual output copies (SYSCOPY1, SYSCOPY2) enhance redundancy. FlashCopy reduces the backup window significantly, minimizing application impact, and supports disaster recovery with consistent copies.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 3: Merge Incremental Copies</h3>
+                <p>Create a job to consolidate incremental image copies for a tablespace (DATA_TS) into a new full image copy.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use MERGECOPY utility</li>
+                    <li>Specify output to a new full copy</li>
+                    <li>Provide JCL for the job</li>
+                    <li>Explain why merging is useful</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//MERGE    EXEC PGM=DSNUTILB,REGION=0M,
+//         PARM='DB2X,MERGECPY'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(10,5))
+//SYSCOPY  DD DSN=DB2X.BACKUP.DATA_TS.FULL.D&LYYMMDD..T&LHHMMSS,
+//         DISP=(NEW,CATLG,CATLG),UNIT=TAPE
+//SYSIN    DD *
+  MERGECOPY TABLESPACE MYDB.DATA_TS
+            DSNUM ALL
+            NEWCOPY
+            COPYDDN(SYSCOPY)
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The MERGECOPY utility consolidates all incremental image copies for DATA_TS into a new full image copy. The NEWCOPY option ensures the output is a full copy, registered in SYSCOPY. Merging simplifies recovery by reducing the number of datasets needed, improving RTO, and is useful for long-term retention or before major maintenance tasks.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="recover-utility">
+            <h2>RECOVER Utility Exercises</h2>
+            <p>Practice recovering DB2 objects using the RECOVER utility.</p>
+
+            <div class="exercise">
+                <h3>Exercise 4: Point-in-Time Recovery for Application Error</h3>
+                <p>Recover a tablespace (APP_TS) and its related tablespaces to a point in time before an application error occurred at RBA X'00E2D4C0B2000000'.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Identify related tablespaces for referential integrity</li>
+                    <li>Use TORBA for point-in-time recovery</li>
+                    <li>Provide JCL for the RECOVER job</li>
+                    <li>Explain the importance of recovering related tablespaces</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//RECOVTS  EXEC PGM=DSNUTILB,REGION=0M,
+//         PARM='DB2X,RECOVERTS'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(50,10))
+//SYSIN    DD *
+  RECOVER TABLESPACE MYDB.APP_TS
+          TABLESPACE MYDB.REF_TS1
+          TABLESPACE MYDB.REF_TS2
+          DSNUM ALL
+          TORBA X'00E2D4C0B2000000'
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The RECOVER job restores APP_TS and related tablespaces (REF_TS1, REF_TS2) to the specified RBA, ensuring referential integrity. The TORBA option targets the point before the error. Recovering related tablespaces to the same point prevents constraint violations, maintaining data consistency. Use REPORT TABLESPACESET to identify related tablespaces before recovery.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 5: Partition-Level Recovery</h3>
+                <p>Recover a single partition (partition 3) of a partitioned tablespace (SALES_TS) to its last full image copy.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use TOLASTFULLCOPY option</li>
+                    <li>Provide JCL for the RECOVER job</li>
+                    <li>Rebuild associated indexes</li>
+                    <li>Explain the benefits of partition-level recovery</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//RECOVTS  EXEC PGM=DSNUTILB,REGION=0M,
+//         PARM='DB2X,RECOVERTS'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(50,10))
+//SYSIN    DD *
+  RECOVER TABLESPACE MYDB.SALES_TS
+          DSNUM 3
+          TOLASTFULLCOPY
+  REBUILD INDEX (MYDB.SALES_IX)
+          PART 3
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The RECOVER job targets partition 3 of SALES_TS, using TOLASTFULLCOPY to restore from the last full image copy, followed by log apply. The REBUILD INDEX step reconstructs the associated index partition. Partition-level recovery minimizes downtime and resource usage by isolating the recovery to the affected partition, ideal for large tablespaces with localized failures.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiesce-utility">
+            <h2>QUIESCE Utility Exercises</h2>
+            <p>Practice using the QUIESCE utility to establish consistency points.</p>
+
+            <div class="exercise">
+                <h3>Exercise 6: Quiesce a Tablespace Set</h3>
+                <p>Create a job to quiesce a tablespace (ORDER_TS) and its referentially related tablespaces to establish a consistent recovery point.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use TABLESPACESET option</li>
+                    <li>Enable write to disk</li>
+                    <li>Provide JCL for the QUIESCE job</li>
+                    <li>Explain the role of QUIESCE in recovery</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//QUIESCE  EXEC PGM=DSNUTILB,REGION=0M,
+//         PARM='DB2X,QUIESCEJ'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+  QUIESCE TABLESPACE MYDB.ORDER_TS
+          TABLESPACESET
+          WRITE(YES)
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The QUIESCE job establishes a consistent RBA/LRSN for ORDER_TS and its referentially related tablespaces, using TABLESPACESET to include dependent objects. WRITE(YES) ensures updated pages are written to disk. QUIESCE records the consistency point in SYSCOPY, enabling precise point-in-time recovery with RECOVER TORBA/TOLOGPOINT, critical for maintaining referential integrity across related objects.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="system-backup">
+            <h2>System-Level Backup Exercises</h2>
+            <p>Practice creating system-level backups for disaster recovery.</p>
+
+            <div class="exercise">
+                <h3>Exercise 7: Create a System-Level Backup</h3>
+                <p>Create a job to perform a full system-level backup of a DB2 subsystem using BACKUP SYSTEM.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use FlashCopy for speed</li>
+                    <li>Specify a dump class</li>
+                    <li>Provide JCL for the job</li>
+                    <li>Explain the advantages and limitations</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//BACKSYS  EXEC PGM=DSNUTILB,REGION=0M,
+//         PARM='DB2X,BACKSYS'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+  BACKUP SYSTEM FULL
+         DUMPCLASS(MYDUMP)
+         FLASHCOPY YES
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The BACKUP SYSTEM job creates a full backup of the DB2 subsystem, leveraging FlashCopy for near-instantaneous copying. The MYDUMP dump class specifies output handling. <strong>Advantages:</strong> Fast backup with minimal downtime, consistent across the subsystem, ideal for disaster recovery. <strong>Limitations:</strong> Lacks granularity for object-level recovery, requires specific hardware, and may need coordination with z/OS utilities like DFSMSdss.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="recovery-planning">
+            <h2>Recovery Planning Exercises</h2>
+            <p>Practice developing recovery plans and validating backups.</p>
+
+            <div class="exercise">
+                <h3>Exercise 8: Create a Recovery Plan for Media Failure</h3>
+                <p>Develop a recovery plan for a media failure affecting a tablespace (INVENT_TS).</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Outline steps for recovery</li>
+                    <li>Include validation steps</li>
+                    <li>Provide a text-based procedure</li>
+                    <li>Explain the importance of validation</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+RECOVERY PLAN FOR INVENT_TS MEDIA FAILURE
+
+1. Identify Failure
+   - Action: Check error messages (e.g., I/O errors) to confirm INVENT_TS dataset failure.
+   - Tool: z/OS logs, DB2 diagnostic reports.
+
+2. Run REPORT RECOVERY
+   - Action: Execute REPORT RECOVERY TABLESPACE MYDB.INVENT_TS to list required image copies and logs.
+   - Tool: DSNUTILB with REPORT RECOVERY.
+
+3. Allocate New Datasets
+   - Action: If the original volume is lost, allocate new datasets for INVENT_TS using IDCAMS or JCL.
+   - Tool: IDCAMS DEFINE CLUSTER.
+
+4. Run RECOVER
+   - Action: Execute RECOVER TABLESPACE MYDB.INVENT_TS DSNUM ALL to restore from the latest image copy and apply logs.
+   - Tool: DSNUTILB with RECOVER utility.
+
+5. Rebuild Indexes
+   - Action: Run REBUILD INDEX (MYDB.INVENT_IX) to reconstruct associated indexes.
+   - Tool: DSNUTILB with REBUILD INDEX.
+
+6. Validate Data
+   - Action: Run CHECK DATA on INVENT_TS to verify integrity and consistency.
+   - Tool: DSNUTILB with CHECK DATA.
+   - Action: Execute application-specific queries to confirm data correctness.
+   - Tool: SPUFI or application tests.
+
+7. Notify Stakeholders
+   - Action: Inform application owners and users that the tablespace is restored and validated.
+   - Tool: Email or incident management system.
+
+VALIDATION IMPORTANCE:
+Validation ensures data integrity and application functionality post-recovery, preventing issues like constraint violations or logical errors. CHECK DATA confirms physical consistency, while application tests verify business logic, ensuring the recovery meets operational requirements.
+                    </pre>
+                    <p><strong>Explanation:</strong> The plan outlines a systematic approach to recover INVENT_TS, from identifying the failure to validating the restored data. REPORT RECOVERY ensures the correct assets are used, and REBUILD INDEX addresses associated indexes. Validation is critical to confirm the recovery's success, ensuring no hidden issues affect production.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 9: Validate Recovery Assets</h3>
+                <p>Create a job to validate the availability of image copies and logs for a tablespace (CUST_TS).</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use REPORT RECOVERY utility</li>
+                    <li>Provide JCL for the job</li>
+                    <li>Explain how the report aids recovery planning</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//REPORT   EXEC PGM=DSNUTILB,REGION=0M,
+//         PARM='DB2X,REPORT'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+  REPORT RECOVERY TABLESPACE MYDB.CUST_TS
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The REPORT RECOVERY job generates a report listing all image copies and log datasets needed to recover CUST_TS, including timestamps, RBAs, and dataset names from SYSCOPY and BSDS. This report aids recovery planning by identifying available recovery points, verifying asset accessibility, and ensuring sufficient log coverage, reducing the risk of recovery failures due to missing or corrupted backups.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. © 2025 Tom Deloddere.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle solution visibility
+        document.querySelectorAll('.toggle-solution').forEach(button => {
+            button.addEventListener('click', function() {
+                const solution = this.nextElementSibling;
+                if (solution.style.display === 'block') {
+                    solution.style.display = 'none';
+                    this.textContent = 'Show Solution';
+                } else {
+                    solution.style.display = 'block';
+                    this.textContent = 'Hide Solution';
+                }
+            });
+        });
+
+        // Back button functionality
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+        backToQuizBtn.addEventListener('click', function() {
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

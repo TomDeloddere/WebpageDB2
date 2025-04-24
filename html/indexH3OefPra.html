@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>DB2 Design & Implementation - Practical Exercises</title>
+    <style>
+        button {
+            background-color: #001a00;
+            color: #33ff33;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border: 1px solid #33ff33;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        button:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+        }
+        button:disabled {
+            background-color: #05050a;
+            color: #447744;
+            border-color: #225522;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        button .lucide {
+            margin-right: 8px;
+        }
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav li {
+            margin: 5px 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        h4 {
+            color: #00e6b8;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            white-space: pre;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        .exercise {
+            background-color: rgba(0, 26, 0, 0.5);
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .exercise::before {
+            content: "EXERCISE";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #33ff33;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .solution {
+            background-color: rgba(26, 0, 26, 0.5);
+            border: 1px solid #cc33ff;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            display: none;
+        }
+        .solution::before {
+            content: "SOLUTION";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #cc33ff;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .toggle-solution {
+            background-color: #330033;
+            color: #cc33ff;
+            border-color: #cc33ff;
+            margin-top: 10px;
+        }
+        .toggle-solution:hover {
+            background-color: rgba(204, 51, 255, 0.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Design & Implementation - Practical Exercises</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#schema-design">Schema Design</a></li>
+                <li><a href="#database-objects">Database Objects</a></li>
+                <li><a href="#referential-integrity">Referential Integrity</a></li>
+                <li><a href="#advanced-techniques">Advanced Techniques</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+            </ul>
+        </nav>
+
+        <section id="schema-design">
+            <h2>Schema Design Exercises</h2>
+            <p>Practice designing and normalizing database schemas for DB2.</p>
+
+            <div class="exercise">
+                <h3>Exercise 1: Normalize a Schema to 3NF</h3>
+                <p>Given a denormalized table structure for an order management system, normalize it to Third Normal Form (3NF). The initial table is:</p>
+                <pre class="code-block">
+ORDERS (
+    ORDER_ID, CUSTOMER_ID, CUSTOMER_NAME, CUSTOMER_ADDRESS,
+    ORDER_DATE, PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE,
+    QUANTITY, TOTAL_AMOUNT
+)
+                </pre>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Eliminate repeating groups (1NF)</li>
+                    <li>Remove partial dependencies (2NF)</li>
+                    <li>Remove transitive dependencies (3NF)</li>
+                    <li>Define primary and foreign keys</li>
+                    <li>Provide DDL for the normalized tables</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TABLE CUSTOMERS (
+    CUSTOMER_ID INTEGER NOT NULL,
+    CUSTOMER_NAME VARCHAR(100) NOT NULL,
+    CUSTOMER_ADDRESS VARCHAR(200),
+    PRIMARY KEY (CUSTOMER_ID)
+) IN DB.TS1;
+
+CREATE TABLE PRODUCTS (
+    PRODUCT_ID INTEGER NOT NULL,
+    PRODUCT_NAME VARCHAR(100) NOT NULL,
+    PRODUCT_PRICE DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (PRODUCT_ID)
+) IN DB.TS1;
+
+CREATE TABLE ORDERS (
+    ORDER_ID INTEGER NOT NULL,
+    CUSTOMER_ID INTEGER NOT NULL,
+    ORDER_DATE DATE NOT NULL,
+    PRIMARY KEY (ORDER_ID),
+    FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMERS(CUSTOMER_ID)
+) IN DB.TS1;
+
+CREATE TABLE ORDER_DETAILS (
+    ORDER_ID INTEGER NOT NULL,
+    PRODUCT_ID INTEGER NOT NULL,
+    QUANTITY INTEGER NOT NULL,
+    TOTAL_AMOUNT DECIMAL(12,2) NOT NULL,
+    PRIMARY KEY (ORDER_ID, PRODUCT_ID),
+    FOREIGN KEY (ORDER_ID) REFERENCES ORDERS(ORDER_ID),
+    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(PRODUCT_ID)
+) IN DB.TS1;
+                    </pre>
+                    <p><strong>Explanation:</strong> The denormalized table is split into four tables: CUSTOMERS (customer data), PRODUCTS (product data), ORDERS (order header), and ORDER_DETAILS (order lines). This eliminates repeating groups, partial dependencies (e.g., CUSTOMER_NAME depending on CUSTOMER_ID), and transitive dependencies (e.g., PRODUCT_NAME depending on PRODUCT_ID). Primary and foreign keys ensure referential integrity.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 2: Design a Star Schema for Reporting</h3>
+                <p>Design a star schema for a data warehouse to support sales reporting. The reports need to analyze sales by product, customer, region, and date.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create a fact table for sales</li>
+                    <li>Create dimension tables for product, customer, region, and date</li>
+                    <li>Define appropriate keys and relationships</li>
+                    <li>Provide DDL for the schema</li>
+                    <li>Optimize for query performance</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TABLE DATE_DIM (
+    DATE_ID INTEGER NOT NULL,
+    FULL_DATE DATE NOT NULL,
+    YEAR INTEGER NOT NULL,
+    QUARTER INTEGER NOT NULL,
+    MONTH INTEGER NOT NULL,
+    DAY INTEGER NOT NULL,
+    PRIMARY KEY (DATE_ID)
+) IN DB.TS1;
+
+CREATE TABLE PRODUCT_DIM (
+    PRODUCT_ID INTEGER NOT NULL,
+    PRODUCT_NAME VARCHAR(100) NOT NULL,
+    CATEGORY VARCHAR(50),
+    PRIMARY KEY (PRODUCT_ID)
+) IN DB.TS1;
+
+CREATE TABLE CUSTOMER_DIM (
+    CUSTOMER_ID INTEGER NOT NULL,
+    CUSTOMER_NAME VARCHAR(100) NOT NULL,
+    REGION_ID INTEGER NOT NULL,
+    PRIMARY KEY (CUSTOMER_ID)
+) IN DB.TS1;
+
+CREATE TABLE REGION_DIM (
+    REGION_ID INTEGER NOT NULL,
+    REGION_NAME VARCHAR(50) NOT NULL,
+    PRIMARY KEY (REGION_ID)
+) IN DB.TS1;
+
+CREATE TABLE SALES_FACT (
+    SALE_ID INTEGER NOT NULL,
+    DATE_ID INTEGER NOT NULL,
+    PRODUCT_ID INTEGER NOT NULL,
+    CUSTOMER_ID INTEGER NOT NULL,
+    REGION_ID INTEGER NOT NULL,
+    AMOUNT DECIMAL(12,2) NOT NULL,
+    QUANTITY INTEGER NOT NULL,
+    PRIMARY KEY (SALE_ID),
+    FOREIGN KEY (DATE_ID) REFERENCES DATE_DIM(DATE_ID),
+    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT_DIM(PRODUCT_ID),
+    FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMER_DIM(CUSTOMER_ID),
+    FOREIGN KEY (REGION_ID) REFERENCES REGION_DIM(REGION_ID)
+) IN DB.TS1;
+                    </pre>
+                    <p><strong>Explanation:</strong> The star schema includes a SALES_FACT table with measures (AMOUNT, QUANTITY) and foreign keys to dimension tables (DATE_DIM, PRODUCT_DIM, CUSTOMER_DIM, REGION_DIM). Dimension tables store descriptive attributes for reporting, optimized for joins and aggregations. Foreign keys ensure referential integrity, and the structure supports efficient query performance for analytical workloads.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="database-objects">
+            <h2>Database Objects Exercises</h2>
+            <p>Practice creating and managing DB2 database objects.</p>
+
+            <div class="exercise">
+                <h3>Exercise 3: Create a Partitioned Table and Index</h3>
+                <p>Create a partitioned table to store sales data by year, along with a clustering index to optimize range queries.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Partition by sale year (2021–2025)</li>
+                    <li>Include columns for sale ID, date, amount, and customer ID</li>
+                    <li>Create a clustering index on sale date</li>
+                    <li>Use appropriate tablespace and storage options</li>
+                    <li>Provide DDL statements</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TABLESPACE SALES_TS
+    IN DB
+    USING STOGROUP SG1
+    PRIQTY 7200
+    SECQTY 7200
+    SEGSIZE 32
+    BUFFERPOOL BP32K;
+
+CREATE TABLE SALES (
+    SALE_ID INTEGER NOT NULL,
+    SALE_DATE DATE NOT NULL,
+    AMOUNT DECIMAL(12,2) NOT NULL,
+    CUSTOMER_ID INTEGER NOT NULL,
+    PRIMARY KEY (SALE_ID)
+) IN DB.SALES_TS
+  PARTITION BY RANGE (YEAR(SALE_DATE)) (
+      PARTITION 1 ENDING AT (2021),
+      PARTITION 2 ENDING AT (2022),
+      PARTITION 3 ENDING AT (2023),
+      PARTITION 4 ENDING AT (2024),
+      PARTITION 5 ENDING AT (2025)
+  );
+
+CREATE INDEX SALES_IX1
+    ON SALES (SALE_DATE)
+    CLUSTER
+    USING STOGROUP SG1
+    BUFFERPOOL BP1
+    PARTITIONED;
+                    </pre>
+                    <p><strong>Explanation:</strong> The SALES_TS tablespace is created with a segmented structure for efficiency. The SALES table is partitioned by year, with each partition covering one year (2021–2025). The clustering index on SALE_DATE optimizes range queries, and partitioning aligns with the table for maintenance efficiency. Storage options ensure scalability.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 4: Create a View with Check Option</h3>
+                <p>Create a view to display active employees in a specific department, ensuring that updates through the view maintain the department constraint.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use the EMPLOYEE table (EMP_ID, NAME, DEPT_ID, STATUS)</li>
+                    <li>Filter for active employees in department 'D01'</li>
+                    <li>Include WITH CHECK OPTION</li>
+                    <li>Provide DDL for the view</li>
+                    <li>Explain the check option's effect</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE VIEW ACTIVE_D01_EMPLOYEES
+    AS SELECT EMP_ID, NAME, DEPT_ID, STATUS
+    FROM EMPLOYEE
+    WHERE DEPT_ID = 'D01' AND STATUS = 'ACTIVE'
+    WITH CHECK OPTION;
+                    </pre>
+                    <p><strong>Explanation:</strong> The view filters employees in department 'D01' with 'ACTIVE' status. The WITH CHECK OPTION ensures that any INSERT or UPDATE operations through the view maintain the DEPT_ID = 'D01' and STATUS = 'ACTIVE' conditions, preventing invalid data modifications. This enforces data integrity at the view level.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="referential-integrity">
+            <h2>Referential Integrity Exercises</h2>
+            <p>Practice implementing and managing referential integrity in DB2.</p>
+
+            <div class="exercise">
+                <h3>Exercise 5: Implement Declarative Referential Integrity</h3>
+                <p>Create parent and child tables for a project management system, implementing referential integrity with a CASCADE delete rule.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create a PROJECTS table (PROJECT_ID, NAME)</li>
+                    <li>Create a TASKS table (TASK_ID, PROJECT_ID, DESCRIPTION)</li>
+                    <li>Ensure tasks are deleted when their project is deleted</li>
+                    <li>Provide DDL statements</li>
+                    <li>Explain the CASCADE rule's impact</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TABLE PROJECTS (
+    PROJECT_ID INTEGER NOT NULL,
+    NAME VARCHAR(100) NOT NULL,
+    PRIMARY KEY (PROJECT_ID)
+) IN DB.TS1;
+
+CREATE TABLE TASKS (
+    TASK_ID INTEGER NOT NULL,
+    PROJECT_ID INTEGER NOT NULL,
+    DESCRIPTION VARCHAR(200),
+    PRIMARY KEY (TASK_ID),
+    FOREIGN KEY (PROJECT_ID) REFERENCES PROJECTS(PROJECT_ID)
+        ON DELETE CASCADE
+) IN DB.TS1;
+                    </pre>
+                    <p><strong>Explanation:</strong> The PROJECTS table is the parent, and TASKS is the child with a foreign key referencing PROJECT_ID. The ON DELETE CASCADE rule ensures that deleting a project automatically deletes all associated tasks, maintaining referential integrity. This simplifies deletion logic but requires careful consideration to avoid unintended data loss.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 6: Trigger-Based Referential Integrity</h3>
+                <p>Create a trigger to implement ON UPDATE CASCADE for a department table, updating employee records when the department ID changes.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use DEPARTMENT (DEPT_ID, NAME) and EMPLOYEE (EMP_ID, DEPT_ID, NAME)</li>
+                    <li>Create a trigger to update EMPLOYEE.DEPT_ID when DEPARTMENT.DEPT_ID changes</li>
+                    <li>Provide DDL for the trigger</li>
+                    <li>Explain why triggers are needed</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TRIGGER DEPT_UPDATE_CASCADE
+    AFTER UPDATE OF DEPT_ID ON DEPARTMENT
+    REFERENCING OLD AS O NEW AS N
+    FOR EACH ROW MODE DB2SQL
+BEGIN ATOMIC
+    UPDATE EMPLOYEE
+    SET DEPT_ID = N.DEPT_ID
+    WHERE DEPT_ID = O.DEPT_ID;
+END;
+                    </pre>
+                    <p><strong>Explanation:</strong> DB2 does not support ON UPDATE CASCADE in declarative referential integrity, so a trigger is used. The trigger fires after a DEPT_ID update, updating all EMPLOYEE records with the old DEPT_ID to the new value. This ensures referential integrity for updates, which is critical for maintaining consistent relationships.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="advanced-techniques">
+            <h2>Advanced Techniques Exercises</h2>
+            <p>Practice advanced DB2 implementation techniques.</p>
+
+            <div class="exercise">
+                <h3>Exercise 7: Implement a Temporal Table</h3>
+                <p>Create a temporal table to track employee salary changes with system versioning, including a history table.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create an EMPLOYEE_SALARY table (EMP_ID, SALARY)</li>
+                    <li>Enable system time versioning</li>
+                    <li>Create a history table</li>
+                    <li>Provide DDL statements</li>
+                    <li>Explain how versioning works</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TABLE EMPLOYEE_SALARY (
+    EMP_ID INTEGER NOT NULL,
+    SALARY DECIMAL(10,2) NOT NULL,
+    SYS_START TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN,
+    SYS_END TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW END,
+    TRANS_ID TIMESTAMP(12) GENERATED ALWAYS AS TRANSACTION START ID,
+    PRIMARY KEY (EMP_ID),
+    PERIOD SYSTEM_TIME (SYS_START, SYS_END)
+) IN DB.TS1;
+
+CREATE TABLE EMPLOYEE_SALARY_HISTORY (
+    EMP_ID INTEGER NOT NULL,
+    SALARY DECIMAL(10,2) NOT NULL,
+    SYS_START TIMESTAMP(12) NOT NULL,
+    SYS_END TIMESTAMP(12) NOT NULL,
+    TRANS_ID TIMESTAMP(12)
+) IN DB.TS1;
+
+ALTER TABLE EMPLOYEE_SALARY
+    ADD VERSIONING USE HISTORY TABLE EMPLOYEE_SALARY_HISTORY;
+                    </pre>
+                    <p><strong>Explanation:</strong> The EMPLOYEE_SALARY table includes system time columns (SYS_START, SYS_END) and a transaction ID for versioning. The history table stores previous row states. When a row is updated or deleted, the old version is moved to EMPLOYEE_SALARY_HISTORY, allowing point-in-time queries. This supports auditing and compliance requirements.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 8: Optimize a Table for OLTP</h3>
+                <p>Design a table and index structure optimized for an OLTP workload with frequent inserts and updates to customer transactions.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create a TRANSACTIONS table (TRANS_ID, CUSTOMER_ID, AMOUNT, TRANS_DATE)</li>
+                    <li>Optimize for high insert/update performance</li>
+                    <li>Create necessary indexes</li>
+                    <li>Provide DDL statements</li>
+                    <li>Explain optimization choices</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TABLESPACE TRANS_TS
+    IN DB
+    USING STOGROUP SG1
+    PRIQTY 7200
+    SECQTY 7200
+    BUFFERPOOL BP4K
+    LOCKSIZE ROW
+    PCTFREE 20
+    FREEPAGE 10;
+
+CREATE TABLE TRANSACTIONS (
+    TRANS_ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
+    CUSTOMER_ID INTEGER NOT NULL,
+    AMOUNT DECIMAL(12,2) NOT NULL,
+    TRANS_DATE DATE NOT NULL,
+    PRIMARY KEY (TRANS_ID)
+) IN DB.TRANS_TS;
+
+CREATE INDEX TRANS_IX1
+    ON TRANSACTIONS (CUSTOMER_ID)
+    USING STOGROUP SG1
+    BUFFERPOOL BP1
+    PCTFREE 20;
+                    </pre>
+                    <p><strong>Explanation:</strong> The TRANSACTIONS table uses an identity column for TRANS_ID to avoid contention on key generation. The tablespace uses a small 4K page size and ROW-level locking for high concurrency. PCTFREE and FREEPAGE settings reserve space for updates, reducing page splits. The index on CUSTOMER_ID supports frequent queries by customer, with free space to minimize maintenance overhead.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="best-practices">
+            <h2>Best Practices Exercises</h2>
+            <p>Practice applying DB2 best practices for maintenance and documentation.</p>
+
+            <div class="exercise">
+                <h3>Exercise 9: Document a Schema with Metadata</h3>
+                <p>Add documentation to a table and its columns using DB2 catalog metadata for an inventory management system.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create an INVENTORY table (ITEM_ID, NAME, QUANTITY, PRICE)</li>
+                    <li>Use COMMENT ON to document the table and columns</li>
+                    <li>Provide DDL statements</li>
+                    <li>Explain the benefits of documentation</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TABLE INVENTORY (
+    ITEM_ID INTEGER NOT NULL,
+    NAME VARCHAR(100) NOT NULL,
+    QUANTITY INTEGER NOT NULL,
+    PRICE DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (ITEM_ID)
+) IN DB.TS1;
+
+COMMENT ON TABLE INVENTORY IS
+    'Stores inventory data for items in the warehouse';
+
+COMMENT ON COLUMN INVENTORY.ITEM_ID IS
+    'Unique identifier for each inventory item';
+COMMENT ON COLUMN INVENTORY.NAME IS
+    'Name or description of the inventory item';
+COMMENT ON COLUMN INVENTORY.QUANTITY IS
+    'Current quantity in stock';
+COMMENT ON COLUMN INVENTORY.PRICE IS
+    'Unit price of the item';
+                    </pre>
+                    <p><strong>Explanation:</strong> The COMMENT ON statements populate the DB2 catalog with metadata, making it accessible via catalog queries. This documentation aids developers, DBAs, and auditors in understanding the table’s purpose and column meanings, improving maintainability and compliance. It also supports automated documentation tools.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 10: Plan a Maintenance Schedule</h3>
+                <p>Create a maintenance schedule for a DB2 database with high transaction volume, focusing on key utilities.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Schedule RUNSTATS, REORG, and COPY for a TRANSACTIONS table</li>
+                    <li>Specify frequency and options</li>
+                    <li>Provide a text-based schedule</li>
+                    <li>Explain the rationale for each task</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+MAINTENANCE SCHEDULE FOR TRANSACTIONS TABLE
+
+1. RUNSTATS
+   - Frequency: Weekly (Sunday 02:00 AM)
+   - Options: RUNSTATS TABLE(TRANSACTIONS) INDEX(ALL) SHRLEVEL CHANGE
+   - Rationale: Updates catalog statistics for optimizer accuracy, using SHRLEVEL CHANGE to minimize downtime.
+
+2. REORG
+   - Frequency: Monthly (First Saturday 03:00 AM)
+   - Options: REORG TABLESPACE DB.TRANS_TS SHRLEVEL CHANGE
+   - Rationale: Reorganizes data to maintain clustering and free space, using SHRLEVEL CHANGE for high availability.
+
+3. COPY
+   - Frequency: Daily (00:30 AM)
+   - Options: COPY TABLESPACE DB.TRANS_TS FULL YES SHRLEVEL CHANGE
+   - Rationale: Creates a full image copy for recovery, run daily due to high transaction volume, with SHRLEVEL CHANGE to allow concurrent access.
+                    </pre>
+                    <p><strong>Explanation:</strong> RUNSTATS ensures the optimizer has current statistics, critical for performance. REORG maintains physical data organization, reducing I/O costs. COPY provides recovery points, essential for a high-transaction table. Frequencies balance performance needs with operational overhead, and SHRLEVEL CHANGE minimizes application impact.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. © 2025 Tom Deloddere.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle solution visibility
+        document.querySelectorAll('.toggle-solution').forEach(button => {
+            button.addEventListener('click', function() {
+                const solution = this.nextElementSibling;
+                if (solution.style.display === 'block') {
+                    solution.style.display = 'none';
+                    this.textContent = 'Show Solution';
+                } else {
+                    solution.style.display = 'block';
+                    this.textContent = 'Hide Solution';
+                }
+            });
+        });
+
+        // Back button functionality
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+        backToQuizBtn.addEventListener('click', function() {
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

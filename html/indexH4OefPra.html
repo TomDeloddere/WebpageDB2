@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>DB2 Performance Optimization - Practical Exercises</title>
+    <style>
+        button {
+          background-color: #001a00; /* Dark green background */
+          color: #33ff33; /* Bright green text */
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          border: 1px solid #33ff33;
+          padding: 8px 15px;
+          cursor: pointer;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: flex; /* Align icon and text */
+          align-items: center;
+      }
+      button:hover {
+          background-color: rgba(51, 255, 51, 0.2);
+          color: #ffffff; /* White text on hover */
+          box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      button:disabled {
+          background-color: #05050a; /* Darker background when disabled */
+          color: #447744; /* Dimmed green text */
+          border-color: #225522; /* Dimmed border */
+          cursor: not-allowed;
+          opacity: 0.6;
+      }
+      button .lucide {
+          margin-right: 8px; /* Space before text */
+      }
+        /* General styles - Mainframe inspired but optimized for learning */
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        nav li {
+            margin: 5px 15px; /* Add vertical margin for wrapped items */
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        h4 { /* Style for h4 */
+            color: #00e6b8; /* Slightly different color */
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            white-space: pre; /* Preserve whitespace and line breaks */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        .exercise {
+            background-color: rgba(0, 26, 0, 0.5);
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .exercise::before {
+            content: "EXERCISE";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #33ff33;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .solution {
+            background-color: rgba(26, 0, 26, 0.5);
+            border: 1px solid #cc33ff;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            display: none;
+        }
+        .solution::before {
+            content: "SOLUTION";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #cc33ff;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .toggle-solution {
+            background-color: #330033;
+            color: #cc33ff;
+            border-color: #cc33ff;
+            margin-top: 10px;
+        }
+        .toggle-solution:hover {
+            background-color: rgba(204, 51, 255, 0.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Performance Optimization - Practical Exercises</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide">&#xe3a7;</span> Back To Mainpage
+            </button>
+        </header>
+
+        <nav>
+             <ul>
+                 <li><a href="#runstats">RUNSTATS Exercises</a></li>
+                 <li><a href="#query">Query Tuning</a></li>
+                 <li><a href="#bottlenecks">Bottleneck Resolution</a></li>
+                 <li><a href="#advanced">Advanced Scenarios</a></li>
+             </ul>
+         </nav>
+
+        <section id="runstats">
+            <h2>RUNSTATS Practical Exercises</h2>
+            <p>These exercises will help you practice collecting and interpreting statistics for DB2 performance optimization.</p>
+
+            <div class="exercise">
+                <h3>Exercise 1: Basic RUNSTATS Execution</h3>
+                <p>You need to collect comprehensive statistics for the <code>DB2ADMIN.EMPLOYEE</code> table and all its indexes in the <code>HRDATA</code> tablespace.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Allow concurrent updates during statistics collection</li>
+                    <li>Update both catalog and RTS tables</li>
+                    <li>Include histogram statistics with 100 quantiles</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+RUNSTATS TABLESPACE HRDATA
+         TABLE(DB2ADMIN.EMPLOYEE) INDEX(ALL)
+         SHRLEVEL CHANGE
+         UPDATE ALL
+         HISTOGRAM NUMQUANTILES 100;</pre>
+                    <p><strong>Explanation:</strong> This command collects detailed statistics while allowing concurrent updates. The HISTOGRAM option provides distribution statistics for better predicate selectivity estimates.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 2: Focused Statistics Collection</h3>
+                <p>The <code>SALES.ORDERS</code> table has grown very large (50+ million rows). You need to collect statistics efficiently for columns frequently used in queries:</p>
+                <ul>
+                    <li><code>ORDER_DATE</code> (date column used in range predicates)</li>
+                    <li><code>CUSTOMER_ID</code> (join column with high cardinality)</li>
+                    <li><code>STATUS</code> (low cardinality column with skewed distribution)</li>
+                </ul>
+                <p>Also include statistics for the index on <code>(CUSTOMER_ID, ORDER_DATE)</code>.</p>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+RUNSTATS TABLESPACE SALES.TS_ORDERS
+         TABLE(SALES.ORDERS) 
+         COLUMN(ORDER_DATE, CUSTOMER_ID) 
+         COLUMN(STATUS) FREQVAL COUNT 10
+         INDEX(SALES.IDX_CUST_ORDDATE)
+         SHRLEVEL REFERENCE
+         UPDATE ACCESSPATH
+         SAMPLE 20;</pre>
+                    <p><strong>Explanation:</strong> Using SAMPLE 20 reduces resource usage while still providing representative statistics. FREQVAL COUNT 10 captures the most frequent values for the STATUS column.</p>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 3: Interpreting Statistics</h3>
+                <p>After running RUNSTATS on the <code>INVENTORY.PRODUCTS</code> table, you examine the catalog and find these statistics:</p>
+                <table>
+                    <tr><th>Statistic</th><th>Value</th></tr>
+                    <tr><td>CARDF</td><td>1,250,000</td></tr>
+                    <tr><td>NPAGES</td><td>45,000</td></tr>
+                    <tr><td>PCTPAGES</td><td>72%</td></tr>
+                    <tr><td>CLUSTERRATIO (primary index)</td><td>35%</td></tr>
+                    <tr><td>NLEVELS (primary index)</td><td>4</td></tr>
+                </table>
+                <p><strong>Questions:</strong></p>
+                <ol>
+                    <li>What does the CLUSTERRATIO value indicate about the physical organization of data?</li>
+                    <li>Is the NLEVELS value appropriate for a table of this size?</li>
+                    <li>What maintenance action might you recommend based on these statistics?</li>
+                </ol>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <p><strong>Answers:</strong></p>
+                    <ol>
+                        <li>The low CLUSTERRATIO (35%) indicates poor clustering - rows are not physically ordered by the primary key, which can hurt sequential access performance.</li>
+                        <li>4 levels is reasonable for an index on a 1.25 million row table, though monitoring growth would be advisable.</li>
+                        <li>A REORG is recommended to improve clustering and reclaim space (PCTPAGES shows 28% unused space).</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section id="query">
+            <h2>Query Tuning Exercises</h2>
+            <p>Practice optimizing SQL queries for better DB2 performance.</p>
+
+            <div class="exercise">
+                <h3>Exercise 4: Rewriting Problematic Queries</h3>
+                <p>Optimize the following query that's performing poorly:</p>
+                <pre class="code-block">
+SELECT * FROM CUSTOMERS 
+WHERE UPPER(LAST_NAME) = 'SMITH' 
+AND YEAR(REGISTRATION_DATE) = 2023
+ORDER BY CREDIT_LIMIT DESC;</pre>
+                <p>The table has these indexes:</p>
+                <ul>
+                    <li>Primary key on CUSTOMER_ID</li>
+                    <li>Index on (LAST_NAME, FIRST_NAME)</li>
+                    <li>Index on REGISTRATION_DATE</li>
+                    <li>Index on CREDIT_LIMIT</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+SELECT * FROM CUSTOMERS 
+WHERE LAST_NAME = 'SMITH'  -- Remove UPPER() to make predicate indexable
+AND REGISTRATION_DATE BETWEEN '2023-01-01' AND '2023-12-31'  -- Better date range
+ORDER BY CREDIT_LIMIT DESC
+OPTIMIZE FOR 100 ROWS;  -- Assuming UI only shows first page of results</pre>
+                    <p><strong>Improvements:</strong></p>
+                    <ul>
+                        <li>Removed UPPER() function to allow index usage on LAST_NAME</li>
+                        <li>Replaced YEAR() function with date range for index usage</li>
+                        <li>Added OPTIMIZE FOR hint since UI likely shows limited results</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 5: Join Optimization</h3>
+                <p>You have a query joining three large tables with poor performance:</p>
+                <pre class="code-block">
+SELECT o.ORDER_ID, c.CUSTOMER_NAME, p.PRODUCT_NAME, oi.QUANTITY
+FROM ORDERS o
+JOIN CUSTOMERS c ON o.CUST_ID = c.CUST_ID
+JOIN ORDER_ITEMS oi ON o.ORDER_ID = oi.ORDER_ID
+JOIN PRODUCTS p ON oi.PRODUCT_ID = p.PRODUCT_ID
+WHERE o.ORDER_DATE > CURRENT DATE - 30 DAYS
+AND c.REGION = 'EAST'
+ORDER BY o.ORDER_DATE DESC;</pre>
+                <p><strong>Available indexes:</strong></p>
+                <ul>
+                    <li>ORDERS: PK on ORDER_ID, index on CUST_ID, index on ORDER_DATE</li>
+                    <li>CUSTOMERS: PK on CUST_ID, index on REGION</li>
+                    <li>ORDER_ITEMS: PK on (ORDER_ID, ITEM_ID), index on PRODUCT_ID</li>
+                    <li>PRODUCTS: PK on PRODUCT_ID</li>
+                </ul>
+                <p>Rewrite the query for better performance and suggest any additional indexes that might help.</p>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+SELECT o.ORDER_ID, c.CUSTOMER_NAME, p.PRODUCT_NAME, oi.QUANTITY
+FROM ORDERS o
+JOIN CUSTOMERS c ON o.CUST_ID = c.CUST_ID AND c.REGION = 'EAST'
+JOIN ORDER_ITEMS oi ON o.ORDER_ID = oi.ORDER_ID
+JOIN PRODUCTS p ON oi.PRODUCT_ID = p.PRODUCT_ID
+WHERE o.ORDER_DATE > CURRENT DATE - 30 DAYS
+ORDER BY o.ORDER_DATE DESC
+FETCH FIRST 1000 ROWS ONLY;</pre>
+                    <p><strong>Improvements:</strong></p>
+                    <ul>
+                        <li>Moved REGION filter into the JOIN condition to filter early</li>
+                        <li>Added FETCH FIRST to limit result set if UI doesn't need all rows</li>
+                        <li>Consider adding a covering index on (REGION, CUST_ID, CUSTOMER_NAME)</li>
+                        <li>Consider adding a composite index on (ORDER_DATE, CUST_ID) for the date-filtered orders</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="bottlenecks">
+            <h2>Bottleneck Resolution Exercises</h2>
+            <p>Practice identifying and resolving common performance bottlenecks.</p>
+
+            <div class="exercise">
+                <h3>Exercise 6: Buffer Pool Tuning</h3>
+                <p>Your monitoring shows BP0 has these characteristics:</p>
+                <ul>
+                    <li>Hit ratio: 65%</li>
+                    <li>Synchronous read I/Os: 12,000 per hour</li>
+                    <li>Prefetch requests: 500 per hour</li>
+                    <li>Current size: 10,000 pages</li>
+                </ul>
+                <p>This buffer pool primarily serves the transactional ORDER_ENTRY tablespace. What actions would you recommend?</p>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <p><strong>Recommended Actions:</strong></p>
+                    <ol>
+                        <li><strong>Increase buffer pool size:</strong> A 65% hit ratio is low for transactional workload. Consider increasing to 20,000 pages.</li>
+                        <li><strong>Check sequential detection:</strong> Low prefetch requests might indicate sequential access isn't being detected.</li>
+                        <li><strong>Review threshold settings:</strong> Adjust VPSEQT and VPPSEQT thresholds to trigger prefetch earlier.</li>
+                        <li><strong>Consider page fixing:</strong> For frequently accessed objects, use PGFIX(YES).</li>
+                        <li><strong>Monitor after changes:</strong> Verify hit ratio improves and synchronous I/Os decrease.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 7: Lock Contention Scenario</h3>
+                <p>Users report frequent timeouts during month-end processing when updating the INVENTORY table. Your investigation reveals:</p>
+                <ul>
+                    <li>Most updates use WHERE clauses on PRODUCT_ID (primary key)</li>
+                    <li>Isolation level is CS (Cursor Stability)</li>
+                    <li>Average lock wait time spikes to 5 seconds during peak</li>
+                    <li>Some processes update multiple rows in a single transaction</li>
+                </ul>
+                <p>Propose solutions to reduce lock contention.</p>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <p><strong>Solutions:</strong></p>
+                    <ul>
+                        <li><strong>Commit more frequently:</strong> Break large transactions into smaller units of work.</li>
+                        <li><strong>Consider RR isolation:</strong> For critical month-end processes that need consistency.</li>
+                        <li><strong>Optimize update order:</strong> Have all processes access rows in the same order to prevent deadlocks.</li>
+                        <li><strong>Review lock size:</strong> Consider using row-level locking if currently using page locks.</li>
+                        <li><strong>Schedule:</strong> Stagger heavy updates if possible.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="advanced">
+            <h2>Advanced Performance Scenarios</h2>
+            <p>Challenging exercises for complex performance situations.</p>
+
+            <div class="exercise">
+                <h3>Exercise 8: Data Sharing Performance</h3>
+                <p>In your DB2 data sharing group, you notice:</p>
+                <ul>
+                    <li>High GBP dependency for BP5 (80%)</li>
+                    <li>Frequent castout operations</li>
+                    <li>Increased CF response times during peak</li>
+                    <li>BP5 serves the high-update CUSTOMER_ORDERS tablespace</li>
+                </ul>
+                <p>What tuning options would you consider for this data sharing environment?</p>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <p><strong>Tuning Options:</strong></p>
+                    <ol>
+                        <li><strong>GBP Cache Structure:</strong> Consider increasing the GBP size or adding additional GBP structures.</li>
+                        <li><strong>GBPCACHE Setting:</strong> Change from GBPCAHE=CHANGED to GBPCAHE=ALL for hot objects.</li>
+                        <li><strong>Member Affinity:</strong> Route updates for specific customer ranges to specific members.</li>
+                        <li><strong>Group Buffer Pool Thresholds:</strong> Adjust GBP write thresholds to reduce castout frequency.</li>
+                        <li><strong>CF Priority:</strong> Assign higher CF priority to the GBP structure.</li>
+                        <li><strong>Consider non-GBP buffer pool:</strong> For member-private data that doesn't need sharing.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="exercise">
+                <h3>Exercise 9: Temporal Table Performance</h3>
+                <p>Your application uses system-period temporal tables for EMPLOYEE history tracking. Queries against historical data are slow. The tables have:</p>
+                <ul>
+                    <li>Base table: 50,000 rows</li>
+                    <li>History table: 5 million rows</li>
+                    <li>Queries often use time ranges in SYSTEM_TIME clauses</li>
+                    <li>No partitioning on the history table</li>
+                </ul>
+                <p>Recommend optimization strategies for temporal queries.</p>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <p><strong>Optimization Strategies:</strong></p>
+                    <ul>
+                        <li><strong>Partition the history table:</strong> By time range (month/year) to enable partition elimination.</li>
+                        <li><strong>Add appropriate indexes:</strong> On the period start/end columns and frequently queried columns.</li>
+                        <li><strong>Consider MDC:</strong> Multi-dimensional clustering on time ranges and other dimensions.</li>
+                        <li><strong>Archive old data:</strong> Move very old history to separate tablespace or archive.</li>
+                        <li><strong>Review statistics:</strong> Ensure RUNSTATS runs frequently on history table.</li>
+                        <li><strong>Optimize queries:</strong> Ensure SYSTEM_TIME predicates are sargable.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. &copy; 2025 Tom Deloddere.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle solution visibility
+        document.querySelectorAll('.toggle-solution').forEach(button => {
+            button.addEventListener('click', function() {
+                const solution = this.nextElementSibling;
+                if (solution.style.display === 'block') {
+                    solution.style.display = 'none';
+                    this.textContent = 'Show Solution';
+                } else {
+                    solution.style.display = 'block';
+                    this.textContent = 'Hide Solution';
+                }
+            });
+        });
+
+        // Back button functionality
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+        backToQuizBtn.addEventListener('click', function() {
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

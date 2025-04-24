@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>DB2 Fundamentals - Practical Exercises</title>
+    <style>
+        button {
+            background-color: #001a00;
+            color: #33ff33;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border: 1px solid #33ff33;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        button:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+        }
+        button:disabled {
+            background-color: #05050a;
+            color: #447744;
+            border-color: #225522;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        button .lucide {
+            margin-right: 8px;
+        }
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav li {
+            margin: 5px 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        h4 {
+            color: #00e6b8;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            white-space: pre;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "z/OS >";
+            color: #00ff99;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        .exercise {
+            background-color: rgba(0, 26, 0, 0.5);
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .exercise::before {
+            content: "EXERCISE";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #33ff33;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .solution {
+            background-color: rgba(26, 0, 26, 0.5);
+            border: 1px solid #cc33ff;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            display: none;
+        }
+        .solution::before {
+            content: "SOLUTION";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #cc33ff;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .toggle-solution {
+            background-color: #330033;
+            color: #cc33ff;
+            border-color: #cc33ff;
+            margin-top: 10px;
+        }
+        .toggle-solution:hover {
+            background-color: rgba(204, 51, 255, 0.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Fundamentals - Practical Exercises</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#relational-concepts">Relational Concepts</a></li>
+                <li><a href="#normalization">Normalization</a></li>
+                <li><a href="#db2-components">DB2 Components</a></li>
+                <li><a href="#logging-recovery">Logging & Recovery</a></li>
+                <li><a href="#data-sharing">Data Sharing</a></li>
+                <li><a href="#zos-integration">z/OS Integration</a></li>
+            </ul>
+        </nav>
+
+        <section id="relational-concepts">
+            <h2>Relational Database Concepts Exercises</h2>
+            <p>Practice creating relational database objects with proper constraints.</p>
+
+            <div class="exercise">
+                <h3>Exercise 1: Create Tables with Constraints</h3>
+                <p>Write SQL to create CUSTOMER and ORDER tables with primary and foreign key constraints.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>CUSTOMER: CUST_ID (INTEGER, PK), NAME (VARCHAR(50)), EMAIL (VARCHAR(100))</li>
+                    <li>ORDER: ORDER_ID (INTEGER, PK), CUST_ID (INTEGER, FK to CUSTOMER), ORDER_DATE (DATE)</li>
+                    <li>Ensure referential integrity</li>
+                    <li>Provide SQL</li>
+                    <li>Explain the role of constraints</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+CREATE TABLE CUSTOMER (
+    CUST_ID INTEGER NOT NULL,
+    NAME VARCHAR(50) NOT NULL,
+    EMAIL VARCHAR(100),
+    CONSTRAINT PK_CUST PRIMARY KEY (CUST_ID)
+);
+
+CREATE TABLE ORDER (
+    ORDER_ID INTEGER NOT NULL,
+    CUST_ID INTEGER NOT NULL,
+    ORDER_DATE DATE,
+    CONSTRAINT PK_ORDER PRIMARY KEY (ORDER_ID),
+    CONSTRAINT FK_CUST FOREIGN KEY (CUST_ID)
+        REFERENCES CUSTOMER (CUST_ID)
+        ON DELETE RESTRICT
+);
+                    </pre>
+                    <p><strong>Explanation:</strong> The SQL creates CUSTOMER with CUST_ID as the primary key and ORDER with ORDER_ID as the primary key and CUST_ID as a foreign key referencing CUSTOMER. The primary key ensures entity integrity by uniquely identifying rows. The foreign key enforces referential integrity, preventing orders from referencing non-existent customers. ON DELETE RESTRICT ensures customers with orders cannot be deleted, maintaining data consistency.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="normalization">
+            <h2>Normalization Exercises</h2>
+            <p>Practice normalizing a dataset to eliminate redundancy.</p>
+
+            <div class="exercise">
+                <h3>Exercise 2: Normalize a Dataset to 3NF</h3>
+                <p>Normalize an unnormalized dataset of student course registrations.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Unnormalized data: STUDENT (STUDENT_ID, NAME, COURSE_ID, COURSE_NAME, INSTRUCTOR)</li>
+                    <li>Normalize to 3NF</li>
+                    <li>Provide table definitions</li>
+                    <li>Explain the normalization steps</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+-- 1NF: Eliminate repeating groups (already atomic)
+-- 2NF: Remove partial dependencies
+CREATE TABLE COURSE (
+    COURSE_ID INTEGER NOT NULL,
+    COURSE_NAME VARCHAR(50) NOT NULL,
+    INSTRUCTOR VARCHAR(50),
+    CONSTRAINT PK_COURSE PRIMARY KEY (COURSE_ID)
+);
+
+-- 3NF: Remove transitive dependencies
+CREATE TABLE STUDENT (
+    STUDENT_ID INTEGER NOT NULL,
+    NAME VARCHAR(50) NOT NULL,
+    CONSTRAINT PK_STUDENT PRIMARY KEY (STUDENT_ID)
+);
+
+CREATE TABLE REGISTRATION (
+    STUDENT_ID INTEGER NOT NULL,
+    COURSE_ID INTEGER NOT NULL,
+    CONSTRAINT PK_REG PRIMARY KEY (STUDENT_ID, COURSE_ID),
+    CONSTRAINT FK_STUDENT FOREIGN KEY (STUDENT_ID) REFERENCES STUDENT (STUDENT_ID),
+    CONSTRAINT FK_COURSE FOREIGN KEY (COURSE_ID) REFERENCES COURSE (COURSE_ID)
+);
+                    </pre>
+                    <p><strong>Explanation:</strong> The unnormalized table has repeating groups and dependencies. <strong>1NF</strong> is satisfied as values are atomic. <strong>2NF</strong> splits COURSE (COURSE_ID, COURSE_NAME, INSTRUCTOR) to remove partial dependency of COURSE_NAME and INSTRUCTOR on the composite key (STUDENT_ID, COURSE_ID). <strong>3NF</strong> splits STUDENT (STUDENT_ID, NAME) to eliminate the transitive dependency of NAME on STUDENT_ID via REGISTRATION. The REGISTRATION table links students and courses, reducing redundancy and ensuring data integrity.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="db2-components">
+            <h2>DB2 Components Exercises</h2>
+            <p>Practice configuring DB2 components like buffer pools.</p>
+
+            <div class="exercise">
+                <h3>Exercise 3: Configure a Buffer Pool</h3>
+                <p>Define a buffer pool for a tablespace with specific performance requirements.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Create BP1 for a 4K-page tablespace MYDB.MYTS</li>
+                    <li>Set VPSIZE to 5000, VPSEQT to 80%, DWQT to 50%</li>
+                    <li>Provide SQL and command</li>
+                    <li>Explain buffer pool tuning benefits</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+-- Create tablespace with buffer pool
+CREATE TABLESPACE MYTS IN MYDB
+    USING STOGROUP SG1
+    BUFFERPOOL BP1
+    SEGSIZE 32;
+
+-- Configure buffer pool
+-ALTER BUFFERPOOL BP1
+    VPSIZE(5000)
+    VPSEQT(80)
+    DWQT(50)
+                    </pre>
+                    <p><strong>Explanation:</strong> The SQL assigns BP1 to the MYTS tablespace. The -ALTER BUFFERPOOL command sets VPSIZE (5000 buffers), VPSEQT (80% sequential steal threshold for prefetch), and DWQT (50% deferred write threshold). Buffer pool tuning optimizes memory usage, reduces I/O by caching frequently accessed pages, and improves query performance by prioritizing sequential access and efficient write operations.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="logging-recovery">
+            <h2>Logging and Recovery Exercises</h2>
+            <p>Practice setting up recovery procedures.</p>
+
+            <div class="exercise">
+                <h3>Exercise 4: Create a Recovery JCL for Image Copy</h3>
+                <p>Write JCL to create a full image copy of a tablespace for recovery.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Copy MYDB.MYTS on subsystem DB2X</li>
+                    <li>Use DSNUTILB, output to MYUSER.BACKUP</li>
+                    <li>Provide JCL</li>
+                    <li>Explain importance of image copies</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//COPYTS   JOB (ACCT),'COPY JOB',CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP1    EXEC PGM=DSNUTILB,PARM='DB2X,COPY1'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSCOPY  DD DSN=MYUSER.BACKUP,DISP=(NEW,CATLG),
+//            UNIT=SYSDA,SPACE=(CYL,(10,5))
+//SYSIN    DD *
+  COPY TABLESPACE MYDB.MYTS
+    FULL YES
+    SHRLEVEL CHANGE
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The JCL uses DSNUTILB to create a full image copy of MYDB.MYTS, stored in MYUSER.BACKUP. Image copies are critical for recovery, enabling point-in-time restoration with log apply. They provide a consistent snapshot, protect against data loss from hardware failures or corruption, and are tracked in SYSIBM.SYSCOPY for efficient recovery operations.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="data-sharing">
+            <h2>Data Sharing Exercises</h2>
+            <p>Practice configuring DB2 data sharing environments.</p>
+
+            <div class="exercise">
+                <h3>Exercise 5: Define a Data Sharing Group</h3>
+                <p>Configure a DB2 data sharing group with two members.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Group DSNGRP1, members DB2A and DB2B</li>
+                    <li>Use Coupling Facility structures</li>
+                    <li>Provide conceptual configuration</li>
+                    <li>Explain data sharing benefits</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+-- DSNZPARM for DB2A
+DSN6GRP
+    GRPNAME=DSNGRP1
+    MEMBER=DB2A
+    CFSTRUCT=LOCK1,SCA,GBP1
+    TCPPORT=446
+    RESPORT=447
+
+-- DSNZPARM for DB2B
+DSN6GRP
+    GRPNAME=DSNGRP1
+    MEMBER=DB2B
+    CFSTRUCT=LOCK1,SCA,GBP1
+    TCPPORT=448
+    RESPORT=449
+
+-- Coupling Facility Structure Definitions
+DEFINE STRUCTURE NAME(DSNGRP1_LOCK1) SIZE(10240) PREFLIST(CF01,CF02)
+DEFINE STRUCTURE NAME(DSNGRP1_SCA) SIZE(5120) PREFLIST(CF01,CF02)
+DEFINE STRUCTURE NAME(DSNGRP1_GBP1) SIZE(20480) PREFLIST(CF01,CF02)
+                    </pre>
+                    <p><strong>Explanation:</strong> The DSNZPARM settings define DB2A and DB2B as members of DSNGRP1, using shared Coupling Facility structures (LOCK1 for locking, SCA for control, GBP1 for buffer pools). Data sharing enhances scalability by distributing workload, improves availability by allowing failover, and provides flexibility for adding members, critical for high-availability mainframe applications.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="zos-integration">
+            <h2>z/OS Integration Exercises</h2>
+            <p>Practice integrating DB2 with z/OS security and workload management.</p>
+
+            <div class="exercise">
+                <h3>Exercise 6: Configure RACF Security for DB2</h3>
+                <p>Define RACF profiles to control access to a DB2 subsystem and tables.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Subsystem DB2X, table MYDB.MYTABLE</li>
+                    <li>Allow user USER1 SELECT and UPDATE, user USER2 only SELECT</li>
+                    <li>Provide RACF commands</li>
+                    <li>Explain external security benefits</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+-- Define DB2 subsystem access
+RDEFINE DSNR DB2X.BATCH UACC(NONE)
+PERMIT DB2X.BATCH CLASS(DSNR) ID(USER1,USER2) ACCESS(READ)
+
+-- Define table access
+RDEFINE MDSNTB MYDB.MYTABLE.SELECT UACC(NONE)
+RDEFINE MDSNTB MYDB.MYTABLE.UPDATE UACC(NONE)
+PERMIT MYDB.MYTABLE.SELECT CLASS(MDSNTB) ID(USER1,USER2) ACCESS(READ)
+PERMIT MYDB.MYTABLE.UPDATE CLASS(MDSNTB) ID(USER1) ACCESS(READ)
+
+-- Activate profiles
+SETROPTS CLASSACT(DSNR,MDSNTB) RACLIST(DSNR,MDSNTB)
+                    </pre>
+                    <p><strong>Explanation:</strong> The RACF commands define profiles for DB2X subsystem access (batch connection) and table MYDB.MYTABLE access (SELECT and UPDATE). USER1 gets both SELECT and UPDATE, USER2 only SELECT. External security via RACF centralizes access control, integrates with z/OS security policies, enhances auditing, and ensures consistent authorization across subsystems, improving security management.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. © 2025 Tom Deloddere.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle solution visibility
+        document.querySelectorAll('.toggle-solution').forEach(button => {
+            button.addEventListener('click', function() {
+                const solution = this.nextElementSibling;
+                if (solution.style.display === 'block') {
+                    solution.style.display = 'none';
+                    this.textContent = 'Show Solution';
+                } else {
+                    solution.style.display = 'block';
+                    this.textContent = 'Hide Solution';
+                }
+            });
+        });
+
+        // Back button functionality
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+        backToQuizBtn.addEventListener('click', function() {
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>DB2 Automation & Scripting - Practical Exercises</title>
+    <style>
+        button {
+            background-color: #001a00;
+            color: #33ff33;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border: 1px solid #33ff33;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        button:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+        }
+        button:disabled {
+            background-color: #05050a;
+            color: #447744;
+            border-color: #225522;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        button .lucide {
+            margin-right: 8px;
+        }
+        body {
+            background-color: #0a0a14;
+            color: #b3ffb3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            text-shadow: 0 0 2px rgba(179, 255, 179, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(10, 10, 20, 0.7);
+            border: 1px solid #33ff33;
+            box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+        }
+        header {
+            background-color: #001a00;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #33ff33;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #33ff33;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        nav {
+            background-color: #001a00;
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #33ff33;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav li {
+            margin: 5px 15px;
+        }
+        nav a {
+            color: #33ff33;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(51, 255, 51, 0.2);
+            color: #ffffff;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 26, 0, 0.3);
+            border-left: 3px solid #33ff33;
+        }
+        h2 {
+            color: #00ff99;
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-top: 25px;
+        }
+        h4 {
+            color: #00e6b8;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .code-block {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            white-space: pre;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #33ff33;
+        }
+        th {
+            background-color: #001a00;
+            color: #00ff99;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background-color: rgba(51, 255, 51, 0.1);
+        }
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background-color: rgba(0, 26, 51, 0.5);
+            border-left: 4px solid #3399ff;
+            padding: 15px;
+            margin: 20px 0;
+            color: #99ccff;
+        }
+        .important {
+            background-color: rgba(51, 0, 0, 0.5);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffb3b3;
+        }
+        .terminal {
+            background-color: #000000;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            position: relative;
+        }
+        .terminal::before {
+            content: "AUTO_CONSOLE >";
+            color: #ff6347;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .diagram {
+            background-color: #000000;
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #33ff33;
+            font-size: 0.9rem;
+            color: #66ff66;
+        }
+        .exercise {
+            background-color: rgba(0, 26, 0, 0.5);
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .exercise::before {
+            content: "EXERCISE";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #33ff33;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .solution {
+            background-color: rgba(26, 0, 26, 0.5);
+            border: 1px solid #cc33ff;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            display: none;
+        }
+        .solution::before {
+            content: "SOLUTION";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background-color: #0a0a14;
+            color: #cc33ff;
+            padding: 0 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .toggle-solution {
+            background-color: #330033;
+            color: #cc33ff;
+            border-color: #cc33ff;
+            margin-top: 10px;
+        }
+        .toggle-solution:hover {
+            background-color: rgba(204, 51, 255, 0.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav li {
+                margin: 5px 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DB2 Automation & Scripting - Practical Exercises</h1>
+            <button id="back-to-quiz-btn">
+                <span class="lucide"></span> Back To Mainpage
+            </button>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#jcl-fundamentals">JCL Fundamentals</a></li>
+                <li><a href="#jcl-db2">DB2-Specific JCL</a></li>
+                <li><a href="#jcl-advanced">Advanced JCL</a></li>
+                <li><a href="#rexx-scripting">REXX Scripting</a></li>
+                <li><a href="#utility-automation">Utility Automation</a></li>
+                <li><a href="#automation-tools">Automation Tools</a></li>
+                <li><a href="#monitoring-alerting">Monitoring & Alerting</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+                <li><a href="#advanced-techniques">Advanced Techniques</a></li>
+            </ul>
+        </nav>
+
+        <section id="jcl-fundamentals">
+            <h2>JCL Fundamentals Exercises</h2>
+            <p>Practice creating basic JCL for DB2 tasks.</p>
+
+            <div class="exercise">
+                <h3>Exercise 1: Create JCL for Dataset Allocation</h3>
+                <p>Write JCL to allocate a new sequential dataset for storing DB2 utility output.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Allocate dataset MYUSER.DB2.OUTPUT</li>
+                    <li>Use SYSDA unit, fixed-block format (FB), 80-byte records</li>
+                    <li>Allocate 10 primary, 5 secondary cylinders, release unused space</li>
+                    <li>Provide JCL</li>
+                    <li>Explain the purpose of IEFBR14</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//ALLOCDS  JOB (ACCT),'ALLOCATE DS',CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP1    EXEC PGM=IEFBR14
+//OUTPUTDS DD DSN=MYUSER.DB2.OUTPUT,
+//            DISP=(NEW,CATLG,DELETE),
+//            UNIT=SYSDA,
+//            SPACE=(CYL,(10,5),RLSE),
+//            DCB=(RECFM=FB,LRECL=80,BLKSIZE=27920)
+                    </pre>
+                    <p><strong>Explanation:</strong> The JCL uses IEFBR14, a null program, to trigger dataset allocation via the DD statement. The OUTPUTDS DD defines a new sequential dataset with specified attributes. IEFBR14 is used because it processes DD statements without executing a program, ideal for allocation/deletion tasks. The dataset can store DB2 utility output, with space released to optimize storage.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="jcl-db2">
+            <h2>DB2-Specific JCL Exercises</h2>
+            <p>Practice writing JCL for DB2 utilities and SQL execution.</p>
+
+            <div class="exercise">
+                <h3>Exercise 2: JCL for RUNSTATS Utility</h3>
+                <p>Create JCL to run the RUNSTATS utility on a tablespace (MYDB.MYTS).</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use DSNUTILB program, DB2 subsystem DB2X</li>
+                    <li>Include STEPLIB, SYSPRINT, SYSUT1, and SYSIN</li>
+                    <li>Update all statistics, allow concurrent access</li>
+                    <li>Provide JCL</li>
+                    <li>Explain why RUNSTATS is important</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//RUNSTAT  JOB (ACCT),'RUNSTATS JOB',CLASS=B,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP010  EXEC PGM=DSNUTILB,REGION=0M,PARM='DB2X,RUNSTAT1'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(5,5))
+//SYSIN    DD *
+  RUNSTATS TABLESPACE MYDB.MYTS
+    TABLE(ALL) INDEX(ALL)
+    UPDATE ALL HISTORY ALL
+    REPORT YES
+    SHRLEVEL CHANGE
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The JCL executes DSNUTILB to run RUNSTATS on MYDB.MYTS, updating table and index statistics. STEPLIB points to DB2 libraries, SYSPRINT captures output, SYSUT1 provides work space, and SYSIN specifies utility controls. RUNSTATS is critical for providing the DB2 optimizer with current statistics, ensuring efficient query execution plans and optimal performance.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="jcl-advanced">
+            <h2>Advanced JCL Techniques Exercises</h2>
+            <p>Practice using parameterization and conditional processing in JCL.</p>
+
+            <div class="exercise">
+                <h3>Exercise 3: Parameterized JCL Procedure for COPY</h3>
+                <p>Create a JCL procedure for the COPY utility with symbolic parameters.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Define a PROC with parameters for subsystem ID, tablespace, and output dataset</li>
+                    <li>Include full image copy with SHRLEVEL REFERENCE</li>
+                    <li>Provide PROC and sample execution JCL</li>
+                    <li>Explain benefits of parameterization</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//COPYPROC PROC SSID='DB2X',TSNAME='MYDB.MYTS',OUTDSN='MYUSER.BACKUP'
+//STEP1    EXEC PGM=DSNUTILB,PARM='&SSID.,COPY1'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSCOPY  DD DSN=&OUTDSN.,DISP=(NEW,CATLG),UNIT=SYSDA,SPACE=(CYL,(10,5))
+//SYSIN    DD *
+  COPY TABLESPACE &TSNAME.
+    FULL YES
+    SHRLEVEL REFERENCE
+/*
+//         PEND
+//*
+//RUNJOB   JOB (ACCT),'RUN COPY',CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
+//COPYTS   EXEC PROC=COPYPROC,SSID='DB2A',TSNAME='PROD.SALES',OUTDSN='PROD.BKUP.SALES'
+                    </pre>
+                    <p><strong>Explanation:</strong> The COPYPROC procedure uses symbolic parameters for flexibility. The sample job overrides defaults to copy the PROD.SALES tablespace. Parameterization allows reuse across different subsystems, objects, and datasets, reducing JCL maintenance, ensuring consistency, and simplifying automation for multiple objects.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="rexx-scripting">
+            <h2>REXX Scripting Exercises</h2>
+            <p>Practice writing REXX scripts for DB2 automation.</p>
+
+            <div class="exercise">
+                <h3>Exercise 4: REXX Script to Query Table Count</h3>
+                <p>Write a REXX script to count tables in a schema using DSNREXX.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Connect to DB2 subsystem DB2X</li>
+                    <li>Query SYSIBM.SYSTABLES for schema MYSCHEMA</li>
+                    <li>Handle SQL errors</li>
+                    <li>Provide REXX script</li>
+                    <li>Explain DSNREXX usage</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+/* REXX: Count tables in MYSCHEMA */
+ADDRESS TSO "SUBCOM DSNREXX"
+IF RC <> 0 THEN DO
+   SAY "SUBCOM DSNREXX FAILED, RC="RC
+   EXIT 8
+END
+
+ADDRESS DSNREXX "CONNECT DB2X"
+IF SQLCODE <> 0 THEN DO
+   SAY "CONNECT FAILED, SQLCODE="SQLCODE
+   EXIT 12
+END
+
+SQL_STATEMENT = "SELECT COUNT(*) FROM SYSIBM.SYSTABLES WHERE CREATOR = ?"
+HOST_VAR_CREATOR = 'MYSCHEMA'
+
+ADDRESS DSNREXX "PREPARE S1 FROM :SQL_STATEMENT"
+IF SQLCODE <> 0 THEN DO
+   SAY "PREPARE FAILED, SQLCODE="SQLCODE
+   EXIT 16
+END
+
+ADDRESS DSNREXX "EXECUTE S1 USING :HOST_VAR_CREATOR INTO :TABLE_COUNT"
+IF SQLCODE = 0 THEN
+   SAY "Number of tables in" HOST_VAR_CREATOR":" TABLE_COUNT
+ELSE
+   SAY "EXECUTE FAILED, SQLCODE="SQLCODE
+
+ADDRESS DSNREXX "DISCONNECT"
+EXIT 0
+                    </pre>
+                    <p><strong>Explanation:</strong> The REXX script uses DSNREXX to connect to DB2X, execute a parameterized query, and retrieve the table count for MYSCHEMA. Error handling checks RC and SQLCODE. DSNREXX enables REXX to interact with DB2, supporting dynamic SQL, cursor operations, and command execution, ideal for automation tasks like catalog queries or generating utility JCL.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="utility-automation">
+            <h2>Utility Automation Exercises</h2>
+            <p>Practice automating DB2 utilities.</p>
+
+            <div class="exercise">
+                <h3>Exercise 5: Automate REORG with Conditional Execution</h3>
+                <p>Create JCL to run REORG on a tablespace (MYDB.MYTS) with a conditional RUNSTATS step.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Use DSNUTILB for REORG and RUNSTATS</li>
+                    <li>Run RUNSTATS only if REORG succeeds (RC=0)</li>
+                    <li>Provide JCL</li>
+                    <li>Explain conditional processing benefits</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//REORGTS  JOB (ACCT),'REORG JOB',CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP1    EXEC PGM=DSNUTILB,PARM='DB2X,REORG1'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(10,5))
+//SYSIN    DD *
+  REORG TABLESPACE MYDB.MYTS
+    LOG NO
+/*
+//STEP2    EXEC PGM=DSNUTILB,PARM='DB2X,STAT1',COND=(0,EQ,STEP1)
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(5,5))
+//SYSIN    DD *
+  RUNSTATS TABLESPACE MYDB.MYTS
+    TABLE(ALL) INDEX(ALL)
+    UPDATE ALL HISTORY ALL
+    SHRLEVEL CHANGE
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> The JCL runs REORG on MYDB.MYTS, followed by RUNSTATS only if REORG returns RC=0. The COND parameter ensures RUNSTATS executes only on success, preventing unnecessary statistics collection if REORG fails. Conditional processing enhances automation reliability, optimizes resource usage, and ensures dependent tasks execute in the correct sequence.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="automation-tools">
+            <h2>Automation Tools Exercises</h2>
+            <p>Practice configuring automation tools for DB2.</p>
+
+            <div class="exercise">
+                <h3>Exercise 6: Define a Job Scheduler Dependency</h3>
+                <p>Define a job stream in a scheduler (e.g., IBM Workload Scheduler) to run COPY after LOAD completes.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Specify jobs LOADJOB and COPYJOB</li>
+                    <li>Ensure COPYJOB runs only after LOADJOB succeeds</li>
+                    <li>Provide a conceptual scheduler definition</li>
+                    <li>Explain job scheduling benefits</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+SCHEDULE DB2_MAINT
+  JOB LOADJOB
+    JCL DSN=MYUSER.JCL.LOADJOB
+    CLASS=A
+    RUN DAILY AT 0200
+  JOB COPYJOB
+    JCL DSN=MYUSER.JCL.COPYJOB
+    CLASS=A
+    DEPENDS ON LOADJOB SUCCESS
+    RUN DAILY
+END
+                    </pre>
+                    <p><strong>Explanation:</strong> The scheduler definition ensures COPYJOB runs only after LOADJOB completes successfully, enforcing dependency. Job schedulers like IBM Workload Scheduler manage complex job streams, handle dependencies, optimize batch windows, and provide monitoring, reducing manual coordination and ensuring reliable execution of DB2 maintenance tasks.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="monitoring-alerting">
+            <h2>Monitoring and Alerting Exercises</h2>
+            <p>Practice setting up monitoring and alerting for DB2 automation.</p>
+
+            <div class="exercise">
+                <h3>Exercise 7: Configure System Automation for DB2 Messages</h3>
+                <p>Create a System Automation (SA z/OS) policy to react to a DB2 tablespace space warning message.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Monitor for DSNT501I message (space issue)</li>
+                    <li>Trigger a notification and start an extension job</li>
+                    <li>Provide conceptual policy</li>
+                    <li>Explain monitoring importance</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+DEFINE POLICY DB2_SPACE_MONITOR
+  WHEN MESSAGE ID = 'DSNT501I'
+    EXECUTE COMMAND 'MVS S EXTEND_SPACE_JOB'
+    NOTIFY OPERATOR 'DB2 Tablespace space warning detected, extension job started.'
+END
+                    </pre>
+                    <p><strong>Explanation:</strong> The SA z/OS policy monitors for DSNT501I, triggering a job to extend space and notifying operators. Monitoring console messages enables proactive issue detection, ensuring timely responses to critical conditions like space shortages, maintaining DB2 availability, and reducing downtime risks.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="best-practices">
+            <h2>Best Practices Exercises</h2>
+            <p>Practice applying best practices in automation.</p>
+
+            <div class="exercise">
+                <h3>Exercise 8: Documented and Modular JCL</h3>
+                <p>Create a documented JCL procedure for CHECK DATA with modular error handling.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Include comments and error notification step</li>
+                    <li>Use a PROC for reusability</li>
+                    <li>Provide JCL</li>
+                    <li>Explain documentation benefits</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//CHECKPRC PROC TSNAME='MYDB.MYTS',SSID='DB2X'
+//* Purpose: Run CHECK DATA on specified tablespace
+//* Parameters: TSNAME - Tablespace name, SSID - DB2 subsystem
+//CHECK    EXEC PGM=DSNUTILB,PARM='&SSID.,CHECK1'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSUT1   DD UNIT=SYSDA,SPACE=(CYL,(5,5))
+//SYSIN    DD *
+  CHECK DATA TABLESPACE &TSNAME.
+    SCOPE ALL
+/*
+//* Error notification if CHECK fails
+//ERRNOTIF EXEC PGM=IKJEFT01,COND=(4,GT,CHECK)
+//SYSTSPRT DD SYSOUT=*
+//SYSTSIN  DD *
+  NOTIFY 'CHECK DATA FAILED FOR &TSNAME., RC=&RC'
+/*
+//         PEND
+//*
+//CHECKJOB JOB (ACCT),'CHECK DATA',CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
+//RUNCHECK EXEC PROC=CHECKPRC,TSNAME='PROD.CUST',SSID='DB2A'
+                    </pre>
+                    <p><strong>Explanation:</strong> The PROC modularizes CHECK DATA execution, with comments explaining purpose and parameters. An error notification step runs if CHECK fails (RC>4). Documentation clarifies usage, aids maintenance, and supports team collaboration, reducing errors during updates or debugging.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="advanced-techniques">
+            <h2>Advanced Techniques Exercises</h2>
+            <p>Practice implementing advanced automation techniques.</p>
+
+            <div class="exercise">
+                <h3>Exercise 9: Use TEMPLATE and LISTDEF for COPY</h3>
+                <p>Create JCL with TEMPLATE and LISTDEF to copy multiple tablespaces.</p>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Copy all tablespaces in database MYDB</li>
+                    <li>Use dynamic dataset naming with date</li>
+                    <li>Provide JCL</li>
+                    <li>Explain TEMPLATE and LISTDEF advantages</li>
+                </ul>
+                <button class="toggle-solution">Show Solution</button>
+                <div class="solution">
+                    <pre class="code-block">
+//COPYTS   JOB (ACCT),'COPY JOB',CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP1    EXEC PGM=DSNUTILB,PARM='DB2X,COPY1'
+//STEPLIB  DD DISP=SHR,DSN=DB2.V12.SDSNLOAD
+//SYSPRINT DD SYSOUT=*
+//SYSIN    DD *
+  LISTDEF MYDB_TBS INCLUDE TABLESPACES DATABASE MYDB
+
+  TEMPLATE COPYDS
+    DSN 'BACKUP.&DB..&TS..D&JDATE.'
+    UNIT SYSDA SPACE=(CYL,(10,5)) DISP=(NEW,CATLG)
+
+  COPY LIST MYDB_TBS
+    COPYDDN(COPYDS)
+    FULL YES
+    SHRLEVEL CHANGE
+/*
+                    </pre>
+                    <p><strong>Explanation:</strong> LISTDEF defines a list of all tablespaces in MYDB, and TEMPLATE creates dynamic dataset names incorporating the date. The COPY utility processes all listed tablespaces. These features simplify JCL for large object sets, ensure consistent naming, and reduce manual configuration, enhancing automation scalability.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with passion for mainframes & DB2. © 2025 Tom Deloddere.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle solution visibility
+        document.querySelectorAll('.toggle-solution').forEach(button => {
+            button.addEventListener('click', function() {
+                const solution = this.nextElementSibling;
+                if (solution.style.display === 'block') {
+                    solution.style.display = 'none';
+                    this.textContent = 'Show Solution';
+                } else {
+                    solution.style.display = 'block';
+                    this.textContent = 'Hide Solution';
+                }
+            });
+        });
+
+        // Back button functionality
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+        backToQuizBtn.addEventListener('click', function() {
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>
