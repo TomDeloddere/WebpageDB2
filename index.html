@@ -2,9 +2,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-32x32.png">
     <link rel="manifest" href="/site.webmanifest">
     <title>Mainframe DB2 Webpage - Made by Tom Deloddere</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -12,11 +12,10 @@
 <meta id="ConnectiveDocSignExtentionInstalled" name="ConnectiveDocSignExtentionInstalled" data-extension-version="1.0.7"></head>
 
 <style>
-/* General styles */
 body {
-  background-color: #121212; /* Dark terminal background */
-  color: #33ff33; /* Classic green terminal text */
-  font-family: 'Courier New', monospace; /* Retro monospaced font */
+  background-color: #121212; 
+  color: #33ff33; 
+  font-family: 'Courier New', monospace; 
   text-shadow: 0 0 5px rgba(51, 255, 51, 0.8);
 }
 
@@ -29,7 +28,7 @@ footer {
 }
 
 
-/* Headings */
+
 h1, h2 {
   color: #00ff99;
   font-weight: bold;
@@ -37,8 +36,8 @@ h1, h2 {
   border-bottom: 2px solid #00ff99;
   display: inline-block;
   padding-bottom: 5px;
-  width: 100%; /* Ensures full width */
-  box-sizing: border-box; /* Ensures full width */  
+  width: 100%; 
+  box-sizing: border-box;  
 }
 
 /* Links */
@@ -68,48 +67,48 @@ a:hover {
   border: 1px solid #33ff33;
 }
 
-/* Mainframe-style header */
+
 .collection-header h2 {
   font-size: 1.5rem;
   padding: 20px;
   margin: 0;
   text-align: center;
   text-transform: uppercase;
-  background-color: #003300; /* Deep green, terminal-like */
-  color: #33ff33; /* Classic green text */
+  background-color: #003300; 
+  color: #33ff33;
   border-bottom: 2px solid #009900;
   box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.4);
   text-shadow: 0 0 5px rgba(51, 255, 51, 0.8);
-  height: auto; /* Adjusted for dynamic content */
+  height: auto; 
 }
 
-/* Hover effect for the header */
+
 .collection-header h2:hover {
-  background-color: #004d00; /* Slightly lighter green */
+  background-color: #004d00; 
   text-shadow: 0 0 10px rgba(51, 255, 51, 1);
   border-bottom: 2px solid #00ff00;
   transition: background 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
 }
 
-/* Collection items */
+
 .collection-item {
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid #33ff33;
   transition: background 0.3s;
-  justify-content: space-between; /* Ensures text on left, icon on right */
-  align-items: center; /* Aligns vertically */
+  justify-content: space-between; 
+  align-items: center; 
 }
 
 .collection-item-inhoud {
   display: flex;
-  justify-content: space-between; /* Keeps text on the left, icons on the right */
+  justify-content: space-between; 
   align-items: center;
   padding: 12px 20px;
   background-color: rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid #33ff33;
   transition: background 0.3s ease-in-out, color 0.3s;
-  font-size: 1.1rem; /* Slightly larger for readability */
+  font-size: 1.1rem; 
   line-height: 1.5;
   color: #33ff33;
   text-shadow: 0 0 4px rgba(51, 255, 51, 0.7);
@@ -129,14 +128,14 @@ a:hover {
 }
 
 .collection-item span {
-  padding-left: 10px; /* Moves text slightly inwards */
+  padding-left: 10px; 
 }
 
 
 /* Icon styles */
 .secondary-content {
   display: flex;
-  justify-content: flex-end; /* Align icons to the right */
+  justify-content: flex-end; 
 }
 
 .secondary-content i {
@@ -144,20 +143,19 @@ a:hover {
   transition: transform 0.2s ease-in-out, color 0.2s;
 }
 
-/* Fix disappearing issue */
+
 .secondary-content a {
-  display: inline-flex; /* Ensures the link wraps around the icon properly */
+  display: inline-flex; 
   align-items: center;
 }
 
-/* Hover effect */
+
 .secondary-content i:hover {
   transform: scale(1.5);
   color: #00ff99;
   cursor: pointer;
 }
 
-/* Improve grid layout */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -166,7 +164,7 @@ a:hover {
 }
 
 .container {
-    max-width: 1200px; /* Limit container width for larger screens */
+    max-width: 1200px; 
     margin: 20px auto;
   border: 2px solid #33ff33;
   padding: 20px;
@@ -176,7 +174,7 @@ a:hover {
 
 
 
-/* Make it more responsive */
+
 @media (max-width: 600px) {
   h1 {
       font-size: 1.8rem;
