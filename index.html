@@ -172,6 +172,31 @@ a:hover {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
+/* Add this to your existing <style> block */
+    .collection-item-inhoud ul {
+    /* Remove default browser padding */
+    padding-left: 20px; /* Add some left padding for indentation */
+    margin-top: 0; /* Remove top margin from the list */
+    margin-bottom: 0; /* Remove bottom margin from the list */
+    list-style-type: '» '; /* Use a custom marker */
+}
+
+.collection-item-inhoud li {
+    margin-bottom: 5px; /* Add some space between list items */
+    padding-left: 5px; /* Add a little padding after the marker */
+}
+
+/* Adjust the padding of the .collection-item-inhoud itself if needed */
+.collection-item-inhoud {
+    padding: 15px 20px; /* Adjusted padding to look better with the list */
+}
+
+/* Optional: Style for the hover effect on list items within content */
+.collection-item-inhoud li:hover {
+    color: #00ff99;
+    text-shadow: 0 0 6px rgba(0, 255, 153, 0.9);
+}
+
 
 
 
@@ -201,7 +226,6 @@ a:hover {
                 <h2>DB2 Fundamentals</h2>
             </li>
             <li class="collection-item-inhoud">
-                <p>Content:</p>
                 <ul class="browser-default">
                     <li>Understanding relational database concepts</li>
                     <li>Knowledge of DB2 components and structures</li>
@@ -235,7 +259,6 @@ a:hover {
                 <h2>SQL and Application Programming</h2>
             </li>
             <li class="collection-item-inhoud">
-                <p>Content:</p>
                 <ul class="browser-default">
                     <li>Writing and optimizing SQL queries</li>
                     <li>Developing and managing stored procedures</li>
@@ -272,7 +295,6 @@ a:hover {
                 <h2>Database Design and Implementation</h2>
             </li>
             <li class="collection-item-inhoud">
-                <p>Content:</p>
                 <ul class="browser-default">
                     <li>Designing efficient database schemas</li>
                     <li>Creating and managing tables, indexes, and views</li>
@@ -308,7 +330,6 @@ a:hover {
                 <h2>Performance Optimization</h2>
             </li>
             <li class="collection-item-inhoud">
-                <p>Content:</p>
                 <ul class="browser-default">
                     <li>Executing RUNSTATS and interpreting results</li>
                     <li>Identifying and resolving performance bottlenecks</li>
@@ -344,7 +365,6 @@ a:hover {
                 <h2>Backup and Recovery</h2>
             </li>
             <li class="collection-item-inhoud">
-                <p>Content:</p>
                 <ul class="browser-default">
                     <li>Implementing backup strategies</li>
                     <li>Executing recovery procedures</li>
@@ -380,7 +400,6 @@ a:hover {
                 <h2>Security and Compliance</h2>
             </li>
             <li class="collection-item-inhoud">
-                <p>Content:</p>
                 <ul class="browser-default">
                     <li>Implementing access control</li>
                     <li>Managing user permissions</li>
@@ -416,7 +435,6 @@ a:hover {
                 <h2>Automation and Scripting</h2>
             </li>
             <li class="collection-item-inhoud">
-                <p>Content:</p>
                 <ul class="browser-default">
                     <li>Writing and debugging JCL scripts</li>
                     <li>Automating routine tasks</li>
